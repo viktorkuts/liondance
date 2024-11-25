@@ -1,0 +1,42 @@
+services:
+  frontend:
+    image: liondance-fe
+    container_name: liondance-fe
+    build:
+      context: ./liondance-fe
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./liondance-fe/src:/app/src
+      - ./liondance-fe/data:/app/data
+  backend:
+    image: liondance-be
+    container_name: liondance-be
+    build: liondance-be
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - mongo
+  mongo:
+    image: mongo
+    container_name: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: toor
+
+  mongo-web:
+    image: mongo-express
+    restart: always
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=root
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=toor
+      - ME_CONFIG_MONGODB_SERVER=mongo
+      - ME_CONFIG_MONGODB_ENABLE_ADMIN=true
+    ports:
+      - "9000:8081"
+    depends_on:
+      - mongo
