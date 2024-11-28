@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Date;
+import java.time.Instant;
 
 @Document(collection = "users")
 @Data
@@ -14,7 +14,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Student extends User {
-    private Date joinDate;
+    private Instant joinDate;
     private RegistrationStatus registrationStatus;
     private String parentFirstName;
     private String parentMiddleName;

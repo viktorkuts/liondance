@@ -1,14 +1,14 @@
 package com.liondance.liondance_backend.datalayer.User;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.util.EnumSet;
 
 @Document(collection = "users")
 @Data
@@ -23,8 +23,9 @@ public class User {
     private String middleName;
     private String lastName;
     private Gender gender;
-    private Date dob;
+    private LocalDate dob;
     private String email;
     private String phone;
     private Address address;
+    private EnumSet<Role> roles;
 }

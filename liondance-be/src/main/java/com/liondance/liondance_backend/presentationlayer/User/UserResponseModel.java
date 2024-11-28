@@ -1,9 +1,6 @@
 package com.liondance.liondance_backend.presentationlayer.User;
 
-import com.liondance.liondance_backend.datalayer.User.Address;
-import com.liondance.liondance_backend.datalayer.User.Gender;
-import com.liondance.liondance_backend.datalayer.User.RegistrationStatus;
-import com.liondance.liondance_backend.datalayer.User.User;
+import com.liondance.liondance_backend.datalayer.User.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.beans.BeanUtils;
 
 import java.util.Date;
+import java.util.EnumSet;
 
 @Data
 @Builder
@@ -26,6 +24,7 @@ public class UserResponseModel {
     private String email;
     private String phone;
     private Address address;
+    private EnumSet<Role> roles;
     private Date joinDate;
     private RegistrationStatus registrationStatus;
     private String parentFirstName;
