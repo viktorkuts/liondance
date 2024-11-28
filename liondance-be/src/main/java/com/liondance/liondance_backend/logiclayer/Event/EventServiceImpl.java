@@ -2,7 +2,6 @@ package com.liondance.liondance_backend.logiclayer.Event;
 
 import com.liondance.liondance_backend.datalayer.Event.EventRepository;
 import com.liondance.liondance_backend.presentationlayer.Event.EventResponseModel;
-import com.liondance.liondance_backend.utils.EntityModelUtil;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -17,6 +16,6 @@ public class EventServiceImpl implements EventService {
     @Override
     public Flux<EventResponseModel> getAllEvents() {
         return eventRepository.findAll()
-                .map(EntityModelUtil::toEventResponseModel);
+                .map(EventResponseModel::from);
     }
 }
