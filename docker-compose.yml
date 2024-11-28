@@ -17,7 +17,10 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
-      - mongo
+      mongo:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
   mongo:
     image: mongo
     container_name: mongo
@@ -25,18 +28,23 @@ services:
     ports:
       - "27017:27017"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: toor
-
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASS}
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASS}@localhost:${MONGO_PORT}/ --quiet
+      interval: 30s
+      timeout: 10s
+      retries: 5
   mongo-web:
     image: mongo-express
     restart: always
     environment:
-      - ME_CONFIG_MONGODB_ADMINUSERNAME=root
-      - ME_CONFIG_MONGODB_ADMINPASSWORD=toor
-      - ME_CONFIG_MONGODB_SERVER=mongo
-      - ME_CONFIG_MONGODB_ENABLE_ADMIN=true
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_WEB_USER}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_WEB_PASS}
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_MONGODB_ENABLE_ADMIN: true
     ports:
-      - "9000:8081"
+      - "8081:8081"
     depends_on:
-      - mongo
+      mongo:
+        condition: service_healthy

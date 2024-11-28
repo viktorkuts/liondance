@@ -1,0 +1,34 @@
+server:
+  port: 8080
+  error:
+    include-message: always
+
+logging:
+  level:
+    root: INFO
+    org.springframework: INFO
+    com.liondance: DEBUG
+
+de:
+  flapdoodle:
+    mongodb:
+      embedded:
+        version: 8.0.0
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: docker
+  autoconfigure:
+    exclude: de.flapdoodle.embed.mongo.spring.autoconfigure.EmbeddedMongoAutoConfiguration
+
+  data:
+    mongodb:
+      host: mongo
+      port: 27017
+      database: products
+      username: root
+      password: toor
+      authentication-database: admin
