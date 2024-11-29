@@ -2,9 +2,7 @@ package com.liondance.liondance_backend.presentationlayer.User;
 
 import com.liondance.liondance_backend.datalayer.User.Address;
 import com.liondance.liondance_backend.datalayer.User.Gender;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -25,6 +23,11 @@ public class UserRequestModel {
     @NotNull(message = "dob is required")
     private LocalDate dob;
     @NotBlank(message = "email is required")
+    @Email(
+            message = "email is invalid",
+            regexp = "^(?![_.])[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
+            flags = Pattern.Flag.CASE_INSENSITIVE
+    )
     private String email;
     @NotNull(message = "address is required")
     private Address address;

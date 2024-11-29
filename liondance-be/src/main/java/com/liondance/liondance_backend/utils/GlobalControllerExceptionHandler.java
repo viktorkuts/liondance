@@ -6,6 +6,7 @@ import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.mail.MailSendException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -34,6 +35,12 @@ public class GlobalControllerExceptionHandler {
         final List<String> errorsList = errors.stream().map(ObjectError::getDefaultMessage).toList();
         log.debug("Returning HTTP Status: {} for path {} with message {}", status, path, msg);
         return new HttpErrorInfo(status, path, msg, errorsList);
+    }
+
+    @ResponseStatus(INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(MailSendException.class)
+    public HttpErrorInfo handleMailSendException(ServerHttpRequest request, MailSendException ex){
+        return createHttpErrorInfo(INTERNAL_SERVER_ERROR, request, ex);
     }
 
     @ResponseStatus(UNPROCESSABLE_ENTITY)
