@@ -9,6 +9,10 @@ on:
 jobs:
   liondance_be:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      checks: write
     steps:
       - name: Checkout sources
         uses: actions/checkout@v4
@@ -21,6 +25,10 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
+
+      - name: Permissions Gradle
+        run: chmod +x ./gradlew
+        working-directory: ./liondance-be
 
       - name: Build Gradle
         run: ./gradlew clean build
@@ -42,4 +50,3 @@ jobs:
           min-coverage-changed-files: 80
           title: Jacoco Coverage Report
           update-comment: true
-          debug-mode: true
