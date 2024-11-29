@@ -31,7 +31,9 @@ jobs:
         working-directory: ./liondance-be
       
       - name: Add .env file
-        run: echo ${{ secrets.ENV_FILE }} | base64 -d > .env
+        env:
+          ENV_FILE: ${{ secrets.ENV_FILE }}
+        run: echo $ENV_FILE | base64 -d > .env
         working-directory: ./liondance-be
 
       - name: Build Gradle
