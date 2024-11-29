@@ -7,7 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.BeanUtils;
 
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.EnumSet;
 
 @Data
@@ -20,12 +21,12 @@ public class UserResponseModel {
     private String middleName;
     private String lastName;
     private Gender gender;
-    private Date dob;
+    private LocalDate dob;
     private String email;
     private String phone;
     private Address address;
     private EnumSet<Role> roles;
-    private Date joinDate;
+    private Instant joinDate;
     private RegistrationStatus registrationStatus;
     private String parentFirstName;
     private String parentMiddleName;

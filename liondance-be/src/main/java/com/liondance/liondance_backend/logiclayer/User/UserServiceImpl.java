@@ -1,9 +1,10 @@
 package com.liondance.liondance_backend.logiclayer.User;
 
+import com.liondance.liondance_backend.datalayer.Notification.NotificationType;
 import com.liondance.liondance_backend.datalayer.User.RegistrationStatus;
 import com.liondance.liondance_backend.datalayer.User.Role;
 import com.liondance.liondance_backend.datalayer.User.UserRepository;
-import com.liondance.liondance_backend.logiclayer.Mail.MailService;
+import com.liondance.liondance_backend.logiclayer.Notification.NotificationService;
 import com.liondance.liondance_backend.presentationlayer.User.StudentRequestModel;
 import com.liondance.liondance_backend.presentationlayer.User.UserResponseModel;
 import org.springframework.mail.MailSendException;
@@ -18,11 +19,11 @@ import java.util.UUID;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final MailService mailService;
+    private final NotificationService notificationService;
 
-    public UserServiceImpl(UserRepository userRepository, MailService mailService) {
+    public UserServiceImpl(UserRepository userRepository, NotificationService notificationService) {
         this.userRepository = userRepository;
-        this.mailService = mailService;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -55,7 +56,13 @@ public class UserServiceImpl implements UserService {
                             .append("\nA staff member will validate details and approve shortly")
                             .append("\n\nThank you for joining Lion Dance!")
                             .toString();
-                    Boolean success = mailService.sendMail(user.getEmail(), "Welcome to Lion Dance - Pending Registration", message);
+
+                    Boolean success = notificationService.sendMail(
+                            user.getEmail(),
+                            "Welcome to Lion Dance - Pending Registration",
+                            message,
+                            NotificationType.STUDENT_REGISTRATION
+                    );
 
                     if(!success){
                         throw new MailSendException("Failed to send email to " + user.getEmail());
