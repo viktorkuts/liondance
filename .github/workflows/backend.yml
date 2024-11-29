@@ -1,0 +1,52 @@
+name: Gradle Build
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  liondance_be:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      checks: write
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      - name: Setup JDK17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: 17
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Permissions Gradle
+        run: chmod +x ./gradlew
+        working-directory: ./liondance-be
+
+      - name: Build Gradle
+        run: ./gradlew clean build
+        working-directory: ./liondance-be
+
+      - name: Archive coverage data
+        if: success() || failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gradle-coverage-data
+          path: ./liondance-be/build/reports
+
+      - name: JaCoCo PR Comment
+        uses: madrapps/jacoco-report@v1.5
+        with:
+          paths: ${{ github.workspace }}/liondance-be/build/reports/jacoco/test/jacocoTestReport.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          min-coverage-overall: 80
+          min-coverage-changed-files: 80
+          title: Jacoco Coverage Report
+          update-comment: true
