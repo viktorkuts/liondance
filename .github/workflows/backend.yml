@@ -29,6 +29,10 @@ jobs:
       - name: Permissions Gradle
         run: chmod +x ./gradlew
         working-directory: ./liondance-be
+      
+      - name: Add .env file
+        run: echo ${{ secrets.ENV_FILE }} | base64 -d > .env
+        working-directory: ./liondance-be
 
       - name: Build Gradle
         run: ./gradlew clean build
