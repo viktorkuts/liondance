@@ -34,7 +34,7 @@ jobs:
           path: ./liondance-be/build/reports
 
       - name: JaCoCo PR Comment
-        uses: madrapps/jacoco-report@1.5
+        uses: madrapps/jacoco-report@v1.5
         with:
           paths: ${{ github.workspace }}/liondance-be/build/reports/jacoco/test/jacocoTestReport.xml
           token: ${{ secrets.GITHUB_TOKEN }}
