@@ -23,7 +23,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
 
       - name: Build Gradle
-        run: ./gradlew build
+        run: ./gradlew clean build
         working-directory: ./liondance-be
 
       - name: Archive coverage data
@@ -42,4 +42,4 @@ jobs:
           min-coverage-changed-files: 80
           title: Jacoco Coverage Report
           update-comment: true
-          continue-on-error: true
+          debug-mode: true
