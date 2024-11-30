@@ -4,6 +4,8 @@ import com.liondance.liondance_backend.datalayer.User.Role;
 import com.liondance.liondance_backend.logiclayer.User.UserService;
 import com.liondance.liondance_backend.utils.exceptions.InvalidInputException;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -24,8 +26,9 @@ public class StudentController {
     }
 
     @PostMapping(consumes = "application/json")
-    public Mono<UserResponseModel> registerStudent(@Valid @RequestBody Mono<StudentRequestModel> studentRequestModel) {
-        return userService.registerStudent(studentRequestModel);
+    public Mono<ResponseEntity<UserResponseModel>> registerStudent(@Valid @RequestBody Mono<StudentRequestModel> studentRequestModel) {
+        return userService.registerStudent(studentRequestModel)
+                .map(userResponseModel -> ResponseEntity.status(HttpStatus.CREATED).body(userResponseModel));
     }
 
 }
