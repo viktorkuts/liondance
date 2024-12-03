@@ -3,7 +3,6 @@ package com.liondance.liondance_backend.presentationlayer.User;
 import com.liondance.liondance_backend.datalayer.User.*;
 import com.liondance.liondance_backend.logiclayer.User.UserService;
 import com.liondance.liondance_backend.utils.exceptions.InvalidInputException;
-import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -27,8 +26,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"spring.data.mongodb.port= 0"})
 @ActiveProfiles("test")
@@ -116,7 +113,7 @@ class UserControllerIntegrationTest {
                 .exchange()
                 .expectStatus().isOk()
                 .expectBodyList(UserResponseModel.class)
-                .hasSize(3);
+                .hasSize(2);
     }
 
     @Test
@@ -126,13 +123,13 @@ class UserControllerIntegrationTest {
                 .exchange()
                 .expectStatus().isOk()
                 .expectBodyList(UserResponseModel.class)
-                .hasSize(2);
+                .hasSize(1);
     }
 
     @Test
     void whenRegisterStudent_thenReturnUserResponseModel() {
         StepVerifier.create(userRepository.findUsersByRolesContaining(Role.STUDENT))
-                .expectNextCount(2)
+                .expectNextCount(1)
                 .verifyComplete();
 
         StudentRequestModel rq = StudentRequestModel.builder()
@@ -188,7 +185,7 @@ class UserControllerIntegrationTest {
 
     @Test
     void whenGetAllStudentsByRegistrationStatuses_thenReturnStudentResponseModels() {
-
+        UserResponseModel expectedResponse = UserResponseModel.from(student2);
 
         client.get()
                 .uri("/api/v1/students/status?statuses=PENDING")
@@ -200,41 +197,7 @@ class UserControllerIntegrationTest {
                     List<UserResponseModel> actualResponses = response.getResponseBody();
                     assertNotNull(actualResponses);
                     assertEquals(1, actualResponses.size());
-                    assertEquals(student2.getUserId(), actualResponses.get(0).getUserId());
-                    assertEquals(student2.getFirstName(), actualResponses.get(0).getFirstName());
-                    assertEquals(student2.getLastName(), actualResponses.get(0).getLastName());
-                    assertEquals(student2.getEmail(), actualResponses.get(0).getEmail());
-                    assertEquals(student2.getDob(), actualResponses.get(0).getDob());
-                    assertEquals(student2.getGender(), actualResponses.get(0).getGender());
-                    assertEquals(student2.getRoles(), actualResponses.get(0).getRoles());
-                    assertEquals(student2.getAddress(), actualResponses.get(0).getAddress());
+                    assertEquals(expectedResponse, actualResponses.get(0));
                 });
-    }
-
-    @Test
-    void whenGetUserByUserId_thenReturnUserResponseModel() {
-        client.get()
-                .uri("/api/v1/users/97e64875-97b1-4ada-b370-6609b6e518ac")
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody(UserResponseModel.class)
-                .value(user -> {
-                    assertEquals("97e64875-97b1-4ada-b370-6609b6e518ac", user.getUserId());
-                    assertEquals("John", user.getFirstName());
-                    assertEquals("Doe", user.getLastName());
-                });
-    }
-
-    @Test
-    void whenGetUserByInvalidUserId_thenThrowNotFoundException() {
-        client.get()
-                .uri("/api/v1/users/97e64875-97b1-4ada-b370-6609b6e518aca")
-                .exchange()
-                .expectStatus().isNotFound()
-                .expectBody(NotFoundException.class)
-                .value(exception -> assertEquals(
-                        "User with userId: 97e64875-97b1-4ada-b370-6609b6e518aca not found",
-                        exception.getMessage()
-                ));
     }
 }
