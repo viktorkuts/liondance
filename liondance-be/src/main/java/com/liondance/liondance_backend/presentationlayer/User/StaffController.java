@@ -20,8 +20,5 @@ public class StaffController {
         this.userService = userService;
     }
 
-    @GetMapping("/registrations")
-    public Flux<UserResponseModel> getStudentsByStatuses(@RequestParam List<RegistrationStatus> statuses) {
-        return userService.getStudentsByRegistrationStatuses(statuses);
-    }
+
 }
