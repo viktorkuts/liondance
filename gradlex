@@ -1,0 +1,8 @@
+#!/bin/bash
+# Obviously this is a "fake" gradlew.
+# This is a wrapper to the gradle wrapper, I know..
+# It provides .env to gradle
+# Run using bash or git bash
+export $(xargs < .env)
+cd liondance-be
+. ./gradlew
