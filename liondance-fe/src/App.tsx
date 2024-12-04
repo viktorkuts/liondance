@@ -1,6 +1,7 @@
 import "./App.css";
 import { BrowserRouter } from "react-router";
 import Router from "./pages/router";
+import "@mantine/core/styles.css";
 import { MantineProvider } from "@mantine/core";
 import Navbar from "./components/navbar";
 
