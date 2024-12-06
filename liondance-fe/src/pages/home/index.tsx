@@ -1,9 +1,12 @@
 import React from "react";
+import classes from "./home.module.css";
 
 function Home() {
   return (
     <div>
-      <h1>This is the home!</h1>
+      <div className={classes.welcomeHero}>
+        <h1>Montrel Youth LVH Lion Dance Wushu Team</h1>
+      </div>
     </div>
   );
 }
