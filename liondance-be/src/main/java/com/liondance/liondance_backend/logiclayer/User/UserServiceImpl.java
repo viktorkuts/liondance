@@ -14,6 +14,7 @@ import reactor.core.publisher.Mono;
 
 import java.time.Instant;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -72,4 +73,12 @@ public class UserServiceImpl implements UserService {
                 .flatMap(userRepository::save)
                 .map(UserResponseModel::from);
     }
+
+    @Override
+    public Flux<UserResponseModel> getStudentsByRegistrationStatuses(List<RegistrationStatus> statuses) {
+        return userRepository.findStudentsByRegistrationStatuses(statuses)
+                .map(UserResponseModel::from);
+    }
+
+
 }

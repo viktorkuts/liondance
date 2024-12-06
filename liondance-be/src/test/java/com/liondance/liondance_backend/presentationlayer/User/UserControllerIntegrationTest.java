@@ -20,7 +20,12 @@ import reactor.test.StepVerifier;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.EnumSet;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"spring.data.mongodb.port= 0"})
 @ActiveProfiles("test")
@@ -68,15 +73,37 @@ class UserControllerIntegrationTest {
             .joinDate(Instant.now())
             .registrationStatus(RegistrationStatus.ACTIVE)
             .build();
+    Student student2 = Student.builder()
+            .userId("7876ea26-3f76-4e50-870f-5e5dad6d63d1")
+            .firstName("John")
+            .lastName("Doe")
+            .email("john.doe@null.local")
+            .dob(LocalDate.parse("2000-01-01"))
+            .gender(Gender.MALE)
+            .roles(EnumSet.of(Role.STUDENT))
+            .address(Address.builder()
+                    .streetAddress("500 Main St")
+                    .city("Montreal")
+                    .state("QC")
+                    .zip("H1H 0H0")
+                    .build()
+            )
+            .joinDate(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant())
+            .registrationStatus(RegistrationStatus.PENDING)
+            .build();
 
     @BeforeEach
-    public void setupDB(){
-        Publisher<User> userPublisher = userRepository.deleteAll()
-                .thenMany(
-                        Flux.just(user1, student1)
-                                .flatMap(userRepository::save)
-                );
-        StepVerifier.create(userPublisher).expectNextCount(2).verifyComplete();
+    public void setupDB() {
+        StepVerifier.create(userRepository.deleteAll())
+                .verifyComplete();
+
+        Publisher<User> userPublisher = Flux.just(user1, student1, student2)
+                .flatMap(userRepository::save);
+
+        StepVerifier.create(userPublisher)
+                .expectNextCount(3)
+                .verifyComplete();
+
     }
 
     @Test
@@ -86,7 +113,7 @@ class UserControllerIntegrationTest {
                 .exchange()
                 .expectStatus().isOk()
                 .expectBodyList(UserResponseModel.class)
-                .hasSize(2);
+                .hasSize(3);
     }
 
     @Test
@@ -96,13 +123,13 @@ class UserControllerIntegrationTest {
                 .exchange()
                 .expectStatus().isOk()
                 .expectBodyList(UserResponseModel.class)
-                .hasSize(1);
+                .hasSize(2);
     }
 
     @Test
     void whenRegisterStudent_thenReturnUserResponseModel() {
         StepVerifier.create(userRepository.findUsersByRolesContaining(Role.STUDENT))
-                .expectNextCount(1)
+                .expectNextCount(2)
                 .verifyComplete();
 
         StudentRequestModel rq = StudentRequestModel.builder()
@@ -128,7 +155,7 @@ class UserControllerIntegrationTest {
                 .expectBody(UserResponseModel.class);
 
         StepVerifier.create(userRepository.findUsersByRolesContaining(Role.STUDENT))
-                .expectNextCount(2)
+                .expectNextCount(3)
                 .verifyComplete();
     }
 
@@ -154,5 +181,30 @@ class UserControllerIntegrationTest {
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY)
                 .expectBody(InvalidInputException.class);
+    }
+
+    @Test
+    void whenGetAllStudentsByRegistrationStatuses_thenReturnStudentResponseModels() {
+
+
+        client.get()
+                .uri("/api/v1/students/status?statuses=PENDING")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(UserResponseModel.class)
+                .hasSize(1)
+                .consumeWith(response -> {
+                    List<UserResponseModel> actualResponses = response.getResponseBody();
+                    assertNotNull(actualResponses);
+                    assertEquals(1, actualResponses.size());
+                    assertEquals(student2.getUserId(), actualResponses.get(0).getUserId());
+                    assertEquals(student2.getFirstName(), actualResponses.get(0).getFirstName());
+                    assertEquals(student2.getLastName(), actualResponses.get(0).getLastName());
+                    assertEquals(student2.getEmail(), actualResponses.get(0).getEmail());
+                    assertEquals(student2.getDob(), actualResponses.get(0).getDob());
+                    assertEquals(student2.getGender(), actualResponses.get(0).getGender());
+                    assertEquals(student2.getRoles(), actualResponses.get(0).getRoles());
+                    assertEquals(student2.getAddress(), actualResponses.get(0).getAddress());
+                });
     }
 }

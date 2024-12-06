@@ -1,5 +1,6 @@
 package com.liondance.liondance_backend.presentationlayer.User;
 
+import com.liondance.liondance_backend.datalayer.User.RegistrationStatus;
 import com.liondance.liondance_backend.datalayer.User.Role;
 import com.liondance.liondance_backend.logiclayer.User.UserService;
 import com.liondance.liondance_backend.utils.exceptions.InvalidInputException;
@@ -11,8 +12,11 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/students")
+@CrossOrigin(origins = "http://localhost:5173")
 public class StudentController {
     private final UserService userService;
 
@@ -30,5 +34,8 @@ public class StudentController {
         return userService.registerStudent(studentRequestModel)
                 .map(userResponseModel -> ResponseEntity.status(HttpStatus.CREATED).body(userResponseModel));
     }
-
+    @GetMapping("/status")
+    public Flux<UserResponseModel> getStudentsByStatuses(@RequestParam List<RegistrationStatus> statuses) {
+        return userService.getStudentsByRegistrationStatuses(statuses);
+    }
 }
