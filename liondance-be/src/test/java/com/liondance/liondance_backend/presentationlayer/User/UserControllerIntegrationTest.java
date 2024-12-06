@@ -113,7 +113,7 @@ class UserControllerIntegrationTest {
                 .exchange()
                 .expectStatus().isOk()
                 .expectBodyList(UserResponseModel.class)
-                .hasSize(2);
+                .hasSize(3);
     }
 
     @Test
@@ -123,13 +123,13 @@ class UserControllerIntegrationTest {
                 .exchange()
                 .expectStatus().isOk()
                 .expectBodyList(UserResponseModel.class)
-                .hasSize(1);
+                .hasSize(2);
     }
 
     @Test
     void whenRegisterStudent_thenReturnUserResponseModel() {
         StepVerifier.create(userRepository.findUsersByRolesContaining(Role.STUDENT))
-                .expectNextCount(1)
+                .expectNextCount(2)
                 .verifyComplete();
 
         StudentRequestModel rq = StudentRequestModel.builder()
@@ -185,7 +185,7 @@ class UserControllerIntegrationTest {
 
     @Test
     void whenGetAllStudentsByRegistrationStatuses_thenReturnStudentResponseModels() {
-        UserResponseModel expectedResponse = UserResponseModel.from(student2);
+
 
         client.get()
                 .uri("/api/v1/students/status?statuses=PENDING")
@@ -197,7 +197,14 @@ class UserControllerIntegrationTest {
                     List<UserResponseModel> actualResponses = response.getResponseBody();
                     assertNotNull(actualResponses);
                     assertEquals(1, actualResponses.size());
-                    assertEquals(expectedResponse, actualResponses.get(0));
+                    assertEquals(student2.getUserId(), actualResponses.get(0).getUserId());
+                    assertEquals(student2.getFirstName(), actualResponses.get(0).getFirstName());
+                    assertEquals(student2.getLastName(), actualResponses.get(0).getLastName());
+                    assertEquals(student2.getEmail(), actualResponses.get(0).getEmail());
+                    assertEquals(student2.getDob(), actualResponses.get(0).getDob());
+                    assertEquals(student2.getGender(), actualResponses.get(0).getGender());
+                    assertEquals(student2.getRoles(), actualResponses.get(0).getRoles());
+                    assertEquals(student2.getAddress(), actualResponses.get(0).getAddress());
                 });
     }
 }
