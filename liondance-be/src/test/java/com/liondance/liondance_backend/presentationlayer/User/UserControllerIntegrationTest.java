@@ -3,6 +3,7 @@ package com.liondance.liondance_backend.presentationlayer.User;
 import com.liondance.liondance_backend.datalayer.User.*;
 import com.liondance.liondance_backend.logiclayer.User.UserService;
 import com.liondance.liondance_backend.utils.exceptions.InvalidInputException;
+import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -21,6 +22,8 @@ import reactor.test.StepVerifier;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.EnumSet;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"spring.data.mongodb.port= 0"})
 @ActiveProfiles("test")
@@ -155,4 +158,32 @@ class UserControllerIntegrationTest {
                 .expectStatus().isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY)
                 .expectBody(InvalidInputException.class);
     }
+
+    @Test
+    void whenGetUserByUserId_thenReturnUserResponseModel() {
+        client.get()
+                .uri("/api/v1/users/97e64875-97b1-4ada-b370-6609b6e518ac")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(UserResponseModel.class)
+                .value(user -> {
+                    assertEquals("97e64875-97b1-4ada-b370-6609b6e518ac", user.getUserId());
+                    assertEquals("John", user.getFirstName());
+                    assertEquals("Doe", user.getLastName());
+                });
+    }
+
+    @Test
+    void whenGetUserByInvalidUserId_thenThrowNotFoundException() {
+        client.get()
+                .uri("/api/v1/users/97e64875-97b1-4ada-b370-6609b6e518aca")
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody(NotFoundException.class)
+                .value(exception -> assertEquals(
+                        "User with userId: 97e64875-97b1-4ada-b370-6609b6e518aca not found",
+                        exception.getMessage()
+                ));
+    }
+
 }

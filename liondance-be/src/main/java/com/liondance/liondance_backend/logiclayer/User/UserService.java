@@ -9,5 +9,6 @@ import reactor.core.publisher.Mono;
 public interface UserService {
     Flux<UserResponseModel> getAllUsers();
     Flux<UserResponseModel> getAllUsers(Role role);
+    Mono<UserResponseModel> getUserByUserId(String userId);
     Mono<UserResponseModel> registerStudent(Mono<StudentRequestModel> studentRequestModel);
 }

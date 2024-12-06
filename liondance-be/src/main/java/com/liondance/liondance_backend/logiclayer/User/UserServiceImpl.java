@@ -7,6 +7,7 @@ import com.liondance.liondance_backend.datalayer.User.UserRepository;
 import com.liondance.liondance_backend.logiclayer.Notification.NotificationService;
 import com.liondance.liondance_backend.presentationlayer.User.StudentRequestModel;
 import com.liondance.liondance_backend.presentationlayer.User.UserResponseModel;
+import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
 import org.springframework.mail.MailSendException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -34,6 +35,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public Flux<UserResponseModel> getAllUsers(Role role){
         return userRepository.findUsersByRolesContaining(role).map(UserResponseModel::from);
+    }
+
+    @Override
+    public Mono<UserResponseModel> getUserByUserId(String userId) {
+        return userRepository.findUserByUserId(userId)
+                .switchIfEmpty(Mono.error(new NotFoundException("User with userId " + userId + " not found")))
+                .map(UserResponseModel::from);
     }
 
     @Override
