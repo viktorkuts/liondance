@@ -26,6 +26,9 @@ function Navbar() {
         <Anchor href="/registration" fw={1000} fz="h2">
           Registration
         </Anchor>
+        <Anchor href="/pending-registrations" fw={1000} fz="h2">
+          Pending Registrations
+        </Anchor>
         <Anchor href="/login" fw={1000} fz="h2">
           Login
         </Anchor>
