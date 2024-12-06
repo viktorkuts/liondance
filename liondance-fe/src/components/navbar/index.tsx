@@ -1,7 +1,8 @@
 import { Anchor, Image } from "@mantine/core";
 import React from "react";
 import classes from "./navbar.module.css";
-import logo from "@/assets/logo.png";
+import logo from "../../assets/logo.png";
+
 
 function Navbar() {
   return (
