@@ -3,6 +3,7 @@ import Home from "./home";
 import Registration from "./registration";
 import PendingRegistrations from "./registration/pending-registrations";
 
+
 const pagesData: routerType[] = [
   {
     path: "",
