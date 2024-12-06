@@ -1,7 +1,6 @@
 import { routerType } from "../types/router.types";
 import Home from "./home";
 import Registration from "./registration";
-import React from "react";
 
 const pagesData: routerType[] = [
   {
