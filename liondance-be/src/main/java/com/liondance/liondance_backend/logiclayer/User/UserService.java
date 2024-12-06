@@ -12,6 +12,7 @@ import java.util.List;
 public interface UserService {
     Flux<UserResponseModel> getAllUsers();
     Flux<UserResponseModel> getAllUsers(Role role);
+    Mono<UserResponseModel> getUserByUserId(String userId);
     Mono<UserResponseModel> registerStudent(Mono<StudentRequestModel> studentRequestModel);
     Flux<UserResponseModel> getStudentsByRegistrationStatuses(List<RegistrationStatus> statuses);
 
