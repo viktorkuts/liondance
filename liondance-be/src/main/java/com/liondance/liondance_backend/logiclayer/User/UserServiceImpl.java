@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Mono<UserResponseModel> getUserByUserId(String userId) {
         return userRepository.findUserByUserId(userId)
-                .switchIfEmpty(Mono.error(new NotFoundException("User with userId " + userId + " not found")))
+                .switchIfEmpty(Mono.error(new NotFoundException("User with userId: " + userId + " not found")))
                 .map(UserResponseModel::from);
     }
 
