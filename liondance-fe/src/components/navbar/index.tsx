@@ -1,7 +1,8 @@
 import { Anchor, Image } from "@mantine/core";
 import React from "react";
 import classes from "./navbar.module.css";
-import logo from "@/assets/logo.png";
+import logo from "../../assets/logo.png";
+
 
 function Navbar() {
   return (
@@ -31,6 +32,9 @@ function Navbar() {
         </Anchor>
         <Anchor href="/login" fw={1000} fz="h2">
           Login
+        </Anchor>
+        <Anchor href="/users" fw={1000} fz="h2">
+          Admin
         </Anchor>
       </div>
     </div>
