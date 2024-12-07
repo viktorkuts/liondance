@@ -56,6 +56,27 @@ public class DataLoaderService implements CommandLineRunner {
         );
         students.add(
                 Student.builder()
+                        .userId("a79b0c3c-2462-42a1-922d-1a20be857cba")
+                        .joinDate(Instant.now())
+                        .registrationStatus(RegistrationStatus.ACTIVE)
+                        .firstName("John")
+                        .middleName("Doe")
+                        .lastName("Smith")
+                        .gender(Gender.MALE)
+                        .dob(LocalDate.parse("2000-01-01"))
+                        .email("john.doe@myfunnywebsite.org")
+                        .phone("1234567890")
+                        .address(Address.builder()
+                                .streetAddress("1234 Main St")
+                                .zip("H1H 1H1")
+                                .state("QC")
+                                .city("Montreal")
+                                .build())
+                        .roles(EnumSet.of(Role.STUDENT))
+                        .build()
+        );
+        students.add(
+                Student.builder()
                         .userId("c56a8e9d-4362-42c8-965d-2b8b98f9f4d9")
                         .joinDate(Instant.now())
                         .registrationStatus(RegistrationStatus.ACTIVE)

@@ -1,0 +1,56 @@
+.pending-registrations {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #ECBA4B;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: Montserrat ;
+  }
+  
+  h1 {
+    text-align: center;
+    color: #000000;
+    margin-bottom: 20px;
+  }
+  
+  .loading,
+  .error,
+  .no-data {
+    text-align: center;
+    font-size: 18px;
+    margin: 20px 0;
+  }
+  
+  .error {
+    color: #e53e3e;
+  }
+  
+  .students-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #ECBA4B;
+  }
+  
+  .students-table th,
+  .students-table td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+  }
+  
+  .students-table th {
+    background-color: #ffe4c4;
+    color: #333;
+    font-weight: bold;
+  }
+  
+  .students-table tr:nth-child(even) {
+    background-color: #fff7eb;
+  }
+  
+  .students-table tr:hover {
+    background-color: #fde2c4;
+  }
+  
