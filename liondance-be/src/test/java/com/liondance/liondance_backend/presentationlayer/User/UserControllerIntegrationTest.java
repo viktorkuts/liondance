@@ -6,6 +6,7 @@ import com.liondance.liondance_backend.datalayer.User.*;
 import com.liondance.liondance_backend.logiclayer.User.UserService;
 import com.liondance.liondance_backend.presentationlayer.Course.CourseResponseModel;
 import com.liondance.liondance_backend.utils.exceptions.InvalidInputException;
+import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
