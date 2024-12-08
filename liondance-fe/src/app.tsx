@@ -3,6 +3,7 @@ import classes from "./app.module.css";
 import { BrowserRouter } from "react-router";
 import Router from "./pages/router";
 import "@mantine/core/styles.css";
+import "@mantine/dates/styles.css";
 import { createTheme, MantineProvider } from "@mantine/core";
 import Navbar from "./components/navbar";
 
