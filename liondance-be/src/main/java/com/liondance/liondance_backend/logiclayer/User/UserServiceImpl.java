@@ -93,10 +93,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public Mono<UserResponseModel> getPendingStudentById(String userId) {
         return userRepository.findByUserId(userId)
-                .filter(user -> user instanceof Student)       // Ensure the User is a Student
-                .cast(Student.class)                           // Cast to Student
-                .filter(student -> student.getRegistrationStatus() == RegistrationStatus.PENDING) // Check status
-                .map(StudentResponseModel::from)               // Convert to StudentResponseModel
+                .filter(user -> user instanceof Student)
+                .cast(Student.class)
+                .filter(student -> student.getRegistrationStatus() == RegistrationStatus.PENDING)
+                .map(StudentResponseModel::from)
                 .switchIfEmpty(Mono.error(new NotFoundException("Pending student not found with userId: " + userId)));
     }
 
