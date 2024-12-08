@@ -1,7 +1,10 @@
 package com.liondance.liondance_backend.presentationlayer.User;
 
+import com.liondance.liondance_backend.datalayer.Course.Course;
+import com.liondance.liondance_backend.datalayer.Course.CourseRepository;
 import com.liondance.liondance_backend.datalayer.User.*;
 import com.liondance.liondance_backend.logiclayer.User.UserService;
+import com.liondance.liondance_backend.presentationlayer.Course.CourseResponseModel;
 import com.liondance.liondance_backend.utils.exceptions.InvalidInputException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,9 +21,9 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -36,7 +39,21 @@ class UserControllerIntegrationTest {
     private UserRepository userRepository;
 
     @Autowired
+    private CourseRepository courseRepository;
+
+    @Autowired
     private WebTestClient client;
+
+    Course course1 = Course.builder()
+            .courseId("1")
+            .name("Course 1")
+            .instructorId("97e64875-97b1-4ada-b370-6609b6e518ac")
+            .userIds(List.of("7876ea26-3f76-4e50-870f-5e5dad6d63d1"))
+            .cancelledDates(new ArrayList<>())
+            .dayOfWeek(DayOfWeek.SUNDAY)
+            .startTime(LocalTime.parse("10:00", DateTimeFormatter.ofPattern("HH:mm")))
+            .endTime(LocalTime.NOON)
+            .build();
 
     User user1 = User.builder()
             .userId("97e64875-97b1-4ada-b370-6609b6e518ac")
@@ -45,7 +62,7 @@ class UserControllerIntegrationTest {
             .email("john.doe@null.local")
             .dob(LocalDate.parse("1990-01-01"))
             .gender(Gender.MALE)
-            .roles(EnumSet.of(Role.CLIENT))
+            .roles(EnumSet.of(Role.STAFF))
             .address(Address.builder()
                     .streetAddress("123 Main St")
                     .city("Montreal")
@@ -96,12 +113,20 @@ class UserControllerIntegrationTest {
     public void setupDB() {
         StepVerifier.create(userRepository.deleteAll())
                 .verifyComplete();
+        StepVerifier.create(courseRepository.deleteAll())
+                .verifyComplete();
 
         Publisher<User> userPublisher = Flux.just(user1, student1, student2)
                 .flatMap(userRepository::save);
 
+        Publisher<Course> coursePublisher = Flux.just(course1).flatMap(courseRepository::save);
+
         StepVerifier.create(userPublisher)
                 .expectNextCount(3)
+                .verifyComplete();
+
+        StepVerifier.create(coursePublisher)
+                .expectNextCount(1)
                 .verifyComplete();
 
     }
@@ -206,5 +231,38 @@ class UserControllerIntegrationTest {
                     assertEquals(student2.getRoles(), actualResponses.get(0).getRoles());
                     assertEquals(student2.getAddress(), actualResponses.get(0).getAddress());
                 });
+    }
+
+    @Test
+    void whenGetCoursesByStudentIdWithValidStudent_ReturnCourses() {
+        client.get()
+                .uri("/api/v1/students/{studentId}/courses", student1.getUserId())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(CourseResponseModel.class)
+                .hasSize(1)
+                .consumeWith(response -> {
+                    List<CourseResponseModel> actualResponses = response.getResponseBody();
+                    assertNotNull(actualResponses);
+                    assertEquals(1, actualResponses.size());
+                    assertEquals(course1.getCourseId(), actualResponses.get(0).getCourseId());
+                    assertEquals(course1.getName(), actualResponses.get(0).getName());
+                    assertEquals(course1.getInstructorId(), actualResponses.get(0).getInstructorId());
+                    assertEquals(user1.getFirstName(), actualResponses.get(0).getInstructorFirstName());
+                    assertEquals(user1.getLastName(), actualResponses.get(0).getInstructorLastName());
+                    assertEquals(course1.getUserIds(), actualResponses.get(0).getUserIds());
+                    assertEquals(course1.getCancelledDates(), actualResponses.get(0).getCancelledDates());
+                    assertEquals(course1.getDayOfWeek(), actualResponses.get(0).getDayOfWeek());
+                    assertEquals(course1.getStartTime(), actualResponses.get(0).getStartTime());
+                    assertEquals(course1.getEndTime(), actualResponses.get(0).getEndTime());
+                });
+    }
+
+    @Test
+    void whenGetCoursesByStudentIdWithInvalidStudent_ReturnNotFound() {
+        client.get()
+                .uri("/api/v1/students/{studentId}/courses", "invalid")
+                .exchange()
+                .expectStatus().isNotFound();
     }
 }
