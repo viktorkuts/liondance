@@ -123,6 +123,7 @@ class UserServiceImplUnitTest {
                 .verify();
         Mockito.verify(userRepository, Mockito.times(1))
                 .findByUserId(userId);
+    }
 
       @Test
       void whenUpdateUser_thenReturnUpdatedUser() {
