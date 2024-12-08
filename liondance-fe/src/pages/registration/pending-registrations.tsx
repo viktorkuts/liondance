@@ -2,11 +2,14 @@ import React, { useEffect, useState } from "react";
 import axiosInstance from "../../utils/axiosInstance.ts";
 import { Student } from "@/models/Users";
 import "./PendingRegistrations.css";
+import StudentDetailsOverlay from "@/components/studentDetailsOverlay";
 
 function PendingRegistrations() {
   const [students, setStudents] = useState<Student[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true); 
   const [error, setError] = useState<string>("");
+  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
+
 
   useEffect(() => {
     const fetchPendingStudents = async () => {
@@ -24,6 +27,20 @@ function PendingRegistrations() {
 
     fetchPendingStudents();
   }, []);
+
+  const handleRowClick = async (userId: string) => {
+    try {
+      const response = await axiosInstance.get<Student>(`/students/pending/${userId}`);
+      setSelectedStudent(response.data);
+    } catch (err) {
+      console.error("Error fetching student details:", err);
+    }
+  };
+
+  const closeOverlay = () => {
+    setSelectedStudent(null);
+  };
+
 
   if (loading) return <div className="loading">Loading...</div>;
   if (error) return <div className="error">{error}</div>;
@@ -45,7 +62,10 @@ function PendingRegistrations() {
           </thead>
           <tbody>
             {students.map((student) => (
-              <tr key={student.userId}>
+              <tr key={student.userId}
+              onClick={() => handleRowClick(student.userId)}
+              style={{ cursor: "pointer" }}
+              >
                 <td>
                   {student.firstName} {student.lastName}
                 </td>
@@ -56,6 +76,9 @@ function PendingRegistrations() {
             ))}
           </tbody>
         </table>
+      )}
+      {selectedStudent && (
+        <StudentDetailsOverlay student={selectedStudent} onClose={closeOverlay} />
       )}
     </div>
   );

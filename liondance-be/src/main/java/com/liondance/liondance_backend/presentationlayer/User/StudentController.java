@@ -6,6 +6,7 @@ import com.liondance.liondance_backend.logiclayer.User.UserService;
 import com.liondance.liondance_backend.utils.exceptions.InvalidInputException;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -38,4 +39,11 @@ public class StudentController {
     public Flux<UserResponseModel> getStudentsByStatuses(@RequestParam List<RegistrationStatus> statuses) {
         return userService.getStudentsByRegistrationStatuses(statuses);
     }
+
+    @GetMapping(value = "/pending/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<UserResponseModel> getPendingStudentById(@PathVariable String userId) {
+        return userService.getPendingStudentById(userId);
+    }
+
+
 }

@@ -20,4 +20,5 @@ public class StudentResponseModel extends UserResponseModel {
     private String parentLastName;
     private String parentEmail;
     private String parentPhone;
+
 }
