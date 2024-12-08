@@ -4,7 +4,7 @@ import Registration from "./registration";
 import PendingRegistrations from "./registration/pending-registrations";
 import UserList from "../components/userList";
 import UserProfile from "../components/userProfile";
-
+import StudentCourses from "./student/StudentCourses";
 const pagesData: routerType[] = [
   {
     path: "",
@@ -30,6 +30,11 @@ const pagesData: routerType[] = [
     path: "profile/:userId",
     element: <UserProfile />,
     title: "User Profile",
+  },
+  {
+    path: "student-courses",
+    element: <StudentCourses />,
+    title: "Student Courses",
   },
 ];
 

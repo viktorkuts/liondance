@@ -2,7 +2,9 @@ package com.liondance.liondance_backend.presentationlayer.User;
 
 import com.liondance.liondance_backend.datalayer.User.RegistrationStatus;
 import com.liondance.liondance_backend.datalayer.User.Role;
+import com.liondance.liondance_backend.logiclayer.Course.CourseService;
 import com.liondance.liondance_backend.logiclayer.User.UserService;
+import com.liondance.liondance_backend.presentationlayer.Course.CourseResponseModel;
 import com.liondance.liondance_backend.utils.exceptions.InvalidInputException;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -20,9 +22,11 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:5173")
 public class StudentController {
     private final UserService userService;
+    private final CourseService courseService;
 
-    public StudentController(UserService userService) {
+    public StudentController(UserService userService, CourseService courseService) {
         this.userService = userService;
+        this.courseService = courseService;
     }
 
     @GetMapping
@@ -45,5 +49,8 @@ public class StudentController {
         return userService.getPendingStudentById(userId);
     }
 
-
+    @GetMapping("/{studentId}/courses")
+    public Flux<CourseResponseModel> getCoursesByStudentId(@PathVariable String studentId) {
+        return courseService.getAllCoursesByStudentId(studentId);
+    }
 }
