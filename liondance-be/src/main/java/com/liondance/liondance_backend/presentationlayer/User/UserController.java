@@ -2,6 +2,8 @@ package com.liondance.liondance_backend.presentationlayer.User;
 
 import com.liondance.liondance_backend.logiclayer.User.UserService;
 import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -26,10 +28,8 @@ public class UserController {
         return userService.getUserByUserId(userId)
                 .switchIfEmpty(Mono.error(new NotFoundException("User not found with id: " + userId)));
     }
-
     @PutMapping("{userId}")
     public Mono<UserResponseModel> updateUser(@PathVariable String userId, @RequestBody UserResponseModel userResponseModel) {
         return userService.updateUser(userId, userResponseModel);
     }
-
 }

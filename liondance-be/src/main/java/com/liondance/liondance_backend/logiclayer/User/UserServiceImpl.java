@@ -3,9 +3,11 @@ package com.liondance.liondance_backend.logiclayer.User;
 import com.liondance.liondance_backend.datalayer.Notification.NotificationType;
 import com.liondance.liondance_backend.datalayer.User.RegistrationStatus;
 import com.liondance.liondance_backend.datalayer.User.Role;
+import com.liondance.liondance_backend.datalayer.User.Student;
 import com.liondance.liondance_backend.datalayer.User.UserRepository;
 import com.liondance.liondance_backend.logiclayer.Notification.NotificationService;
 import com.liondance.liondance_backend.presentationlayer.User.StudentRequestModel;
+import com.liondance.liondance_backend.presentationlayer.User.StudentResponseModel;
 import com.liondance.liondance_backend.presentationlayer.User.UserResponseModel;
 import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
 import org.springframework.mail.MailSendException;
@@ -107,6 +109,22 @@ public class UserServiceImpl implements UserService {
         return userRepository.findStudentsByRegistrationStatuses(statuses)
                 .map(UserResponseModel::from);
     }
+
+    @Override
+    public Mono<UserResponseModel> getPendingStudentById(String userId) {
+        return userRepository.findByUserId(userId)
+                .filter(user -> user instanceof Student)
+                .cast(Student.class)
+                .filter(student -> student.getRegistrationStatus() == RegistrationStatus.PENDING)
+                .map(StudentResponseModel::from)
+                .switchIfEmpty(Mono.error(new NotFoundException("Pending student not found with userId: " + userId)));
+    }
+
+
+
+
+
+
 
 
 }

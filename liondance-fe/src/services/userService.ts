@@ -12,6 +12,11 @@ const getUserProfile = async (userId: string) => {
   return response.data;
 };
 
+export const getPendingStudentById = async (userId: string) => {
+  const response = await axiosInstance.get(`/students/pending/${userId}`);
+  return response.data;
+};
+
 export const updateUser = async (
  userId: string,
  user: User
@@ -21,5 +26,7 @@ export const updateUser = async (
 
 export default {
   getAllUsers,
-  getUserProfile
+  getUserProfile,
+  getPendingStudentById,
+  
 };
