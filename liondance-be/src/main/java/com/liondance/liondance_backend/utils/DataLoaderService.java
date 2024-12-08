@@ -1,5 +1,7 @@
 package com.liondance.liondance_backend.utils;
 
+import com.liondance.liondance_backend.datalayer.Course.Course;
+import com.liondance.liondance_backend.datalayer.Course.CourseRepository;
 import com.liondance.liondance_backend.datalayer.Event.Event;
 import com.liondance.liondance_backend.datalayer.Event.EventRepository;
 import com.liondance.liondance_backend.datalayer.User.*;
@@ -7,12 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
 
 @Service
 public class DataLoaderService implements CommandLineRunner {
@@ -22,6 +23,9 @@ public class DataLoaderService implements CommandLineRunner {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    CourseRepository courseRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -35,15 +39,36 @@ public class DataLoaderService implements CommandLineRunner {
         ArrayList<User> students = new ArrayList<>();
         students.add(
                 Student.builder()
+                        .userId("eb07c6c6-dc48-489f-aa20-0d7d6fb12448")
+                        .joinDate(Instant.now())
+                        .registrationStatus(RegistrationStatus.ACTIVE)
+                        .firstName("Sarah")
+                        .middleName("Jane")
+                        .lastName("Smith")
+                        .gender(Gender.FEMALE)
+                        .dob(LocalDate.parse("2000-01-01"))
+                        .email("Sarah.Smith@myfunnywebsite.org")
+                        .phone("1234567890")
+                        .address(Address.builder()
+                                .streetAddress("1234 Main St")
+                                .zip("H1H 1H1")
+                                .state("QC")
+                                .city("Montreal")
+                                .build())
+                        .roles(EnumSet.of(Role.STAFF))
+                        .build()
+        );
+        students.add(
+                Student.builder()
                         .userId("b79b0c3c-2462-42a1-922d-1a20be857cba")
                         .joinDate(Instant.now())
                         .registrationStatus(RegistrationStatus.PENDING)
-                        .firstName("John")
+                        .firstName("Jane")
                         .middleName("Doe")
                         .lastName("Smith")
-                        .gender(Gender.MALE)
+                        .gender(Gender.FEMALE)
                         .dob(LocalDate.parse("2000-01-01"))
-                        .email("john.doe@myfunnywebsite.org")
+                        .email("jane.doe@myfunnywebsite.org")
                         .phone("1234567890")
                         .address(Address.builder()
                                 .streetAddress("1234 Main St")
@@ -264,8 +289,21 @@ public class DataLoaderService implements CommandLineRunner {
                         .roles(EnumSet.of(Role.CLIENT))
                         .build()
         );
+        List<String> userIds = new ArrayList<>();
+        userIds.add("a79b0c3c-2462-42a1-922d-1a20be857cba");
+        Course course = Course.builder()
+                .courseId("40374c92-6c55-417e-b8bc-9dfb38740255")
+                .name("Martial Arts")
+                .userIds(userIds)
+                .startTime(LocalTime.parse("10:00", DateTimeFormatter.ofPattern("HH:mm")))
+                .endTime(LocalTime.NOON)
+                .dayOfWeek(DayOfWeek.SUNDAY)
+                .instructorId("eb07c6c6-dc48-489f-aa20-0d7d6fb12448")
+                .cancelledDates(new ArrayList<>())
+                .build();
 
         eventRepository.insert(events).subscribe();
         userRepository.insert(students).subscribe();
+        courseRepository.insert(course).subscribe();
     }
 }

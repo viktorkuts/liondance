@@ -36,6 +36,9 @@ function Navbar() {
         <Anchor href="/users" fw={1000} fz="h2">
           Admin
         </Anchor>
+        <Anchor href="/student-courses" fw={1000} fz={"h2"}>
+          Courses
+        </Anchor>
       </div>
     </div>
   );

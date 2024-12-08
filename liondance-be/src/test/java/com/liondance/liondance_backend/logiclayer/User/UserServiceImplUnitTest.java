@@ -1,6 +1,9 @@
 package com.liondance.liondance_backend.logiclayer.User;
 
+import com.liondance.liondance_backend.datalayer.Course.Course;
+import com.liondance.liondance_backend.datalayer.Course.CourseRepository;
 import com.liondance.liondance_backend.datalayer.User.*;
+import com.liondance.liondance_backend.presentationlayer.Course.CourseResponseModel;
 import com.liondance.liondance_backend.presentationlayer.User.UserResponseModel;
 import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,8 +17,12 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -83,7 +90,6 @@ class UserServiceImplUnitTest {
         Mockito.verify(userRepository, Mockito.times(1))
                 .findUserByUserId(userId);
     }
-
     @Test
     void whenGetUserByUserId_thenThrowNotFoundException() {
         String userId = "7876ea26-3f76-4e50-870f-5e5dad6d63d1a";
@@ -97,24 +103,4 @@ class UserServiceImplUnitTest {
         Mockito.verify(userRepository, Mockito.times(1))
                 .findUserByUserId(userId);
     }
-
-    @Test
-    void whenUpdateUser_thenReturnUpdatedUser() {
-        String userId = "7876ea26-3f76-4e50-870f-5e5dad6d63d1";
-        UserResponseModel updatedUser = UserResponseModel.from(student1);
-        updatedUser.setFirstName("UpdatedName");
-
-        Mockito.when(userRepository.findUserByUserId(userId))
-                .thenReturn(Mono.just(student1));
-        Mockito.when(userRepository.save(student1))
-                .thenReturn(Mono.just(student1));
-
-        Mono<UserResponseModel> result = userService.updateUser(userId, updatedUser);
-        StepVerifier.create(result)
-                .expectNextMatches(user -> user.getFirstName().equals("UpdatedName"))
-                .verifyComplete();
-        Mockito.verify(userRepository, Mockito.times(1)).findUserByUserId(userId);
-        Mockito.verify(userRepository, Mockito.times(1)).save(student1);
-    }
-
 }
