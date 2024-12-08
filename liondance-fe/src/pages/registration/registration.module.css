@@ -1,0 +1,15 @@
+.registrationForm {
+  width: 50vw;
+  background-color: var(--mantine-color-lionGold-1);
+  padding: 2em;
+  margin: 0 auto;
+  margin-top: 10vh;
+  border-radius: 25px;
+}
+
+.completedForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}

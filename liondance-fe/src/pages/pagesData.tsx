@@ -12,7 +12,7 @@ const pagesData: routerType[] = [
     title: "home",
   },
   {
-    path: "register",
+    path: "registration",
     element: <Registration />,
     title: "registration",
   },
