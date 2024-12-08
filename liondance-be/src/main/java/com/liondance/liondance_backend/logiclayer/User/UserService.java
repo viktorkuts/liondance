@@ -13,6 +13,7 @@ public interface UserService {
     Flux<UserResponseModel> getAllUsers();
     Flux<UserResponseModel> getAllUsers(Role role);
     Mono<UserResponseModel> getUserByUserId(String userId);
+    Mono<UserResponseModel> updateUser(String userId, UserResponseModel userResponseModel);
     Mono<UserResponseModel> registerStudent(Mono<StudentRequestModel> studentRequestModel);
     Flux<UserResponseModel> getStudentsByRegistrationStatuses(List<RegistrationStatus> statuses);
 

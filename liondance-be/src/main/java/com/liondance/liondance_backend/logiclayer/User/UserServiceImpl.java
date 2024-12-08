@@ -48,6 +48,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Mono<UserResponseModel> updateUser(String userId, UserResponseModel userResponseModel) {
+        return userRepository.findUserByUserId(userId)
+                .switchIfEmpty(Mono.error(new NotFoundException("User with userId: " + userId + " not found")))
+                .map(user -> {
+                    user.setFirstName(userResponseModel.getFirstName());
+                    user.setMiddleName(userResponseModel.getMiddleName());
+                    user.setLastName(userResponseModel.getLastName());
+                    user.setGender(userResponseModel.getGender());
+                    user.setDob(userResponseModel.getDob());
+                    user.setEmail(userResponseModel.getEmail());
+                    user.setPhone(userResponseModel.getPhone());
+                    user.setAddress(userResponseModel.getAddress());
+                    user.setRoles(userResponseModel.getRoles());
+                    return user;
+                })
+                .flatMap(userRepository::save)
+                .map(UserResponseModel::from);
+    }
+
+    @Override
     public Mono<UserResponseModel> registerStudent(Mono<StudentRequestModel> studentRequestModel) {
         return studentRequestModel
                 .map(StudentRequestModel::toEntity)

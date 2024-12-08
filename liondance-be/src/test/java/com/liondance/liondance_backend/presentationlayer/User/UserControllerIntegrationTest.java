@@ -264,5 +264,36 @@ class UserControllerIntegrationTest {
                         exception.getMessage()
                 ));
     }
+  
+    @Test
+    void whenUpdateUserWithValidUserId_thenReturnUpdatedUserResponseModel() {
+        UserResponseModel updatedUser = UserResponseModel.builder()
+                .userId("97e64875-97b1-4ada-b370-6609b6e518ac")
+                .firstName("UpdatedName")
+                .lastName("Doe")
+                .email("john.doe@null.local")
+                .dob(LocalDate.parse("1990-01-01"))
+                .gender(Gender.MALE)
+                .roles(EnumSet.of(Role.CLIENT))
+                .address(Address.builder()
+                        .streetAddress("123 Main St")
+                        .city("Montreal")
+                        .state("QC")
+                        .zip("H0H 0H0")
+                        .build())
+                .build();
+
+        client.put()
+                .uri("/api/v1/users/97e64875-97b1-4ada-b370-6609b6e518ac")
+                .bodyValue(updatedUser)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(UserResponseModel.class)
+                .value(user -> {
+                    assertEquals("97e64875-97b1-4ada-b370-6609b6e518ac", user.getUserId());
+                    assertEquals("UpdatedName", user.getFirstName());
+                    assertEquals("Doe", user.getLastName());
+                });
+    }
 
 }

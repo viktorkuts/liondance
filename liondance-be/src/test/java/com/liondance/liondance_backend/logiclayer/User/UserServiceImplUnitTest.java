@@ -123,6 +123,24 @@ class UserServiceImplUnitTest {
                 .verify();
         Mockito.verify(userRepository, Mockito.times(1))
                 .findByUserId(userId);
+
+      @Test
+      void whenUpdateUser_thenReturnUpdatedUser() {
+        String userId = "7876ea26-3f76-4e50-870f-5e5dad6d63d1";
+        UserResponseModel updatedUser = UserResponseModel.from(student1);
+        updatedUser.setFirstName("UpdatedName");
+
+        Mockito.when(userRepository.findUserByUserId(userId))
+                .thenReturn(Mono.just(student1));
+        Mockito.when(userRepository.save(student1))
+                .thenReturn(Mono.just(student1));
+
+        Mono<UserResponseModel> result = userService.updateUser(userId, updatedUser);
+        StepVerifier.create(result)
+                .expectNextMatches(user -> user.getFirstName().equals("UpdatedName"))
+                .verifyComplete();
+        Mockito.verify(userRepository, Mockito.times(1)).findUserByUserId(userId);
+        Mockito.verify(userRepository, Mockito.times(1)).save(student1);
     }
 
 }
