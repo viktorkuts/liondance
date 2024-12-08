@@ -2,3 +2,9 @@ data/
 .liondance-fe
 .env
 .idea
+liondance-fe/yarn.lock
+node_modules/.yarn-integrity
+liondance-fe/package-lock.json
+yarn.lock
+env
+.vscode/settings.json
