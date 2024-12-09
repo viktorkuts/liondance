@@ -293,7 +293,7 @@ class UserControllerIntegrationTest {
                         exception.getMessage()
                 ));
     }
-  
+
     @Test
     void whenUpdateUserWithValidUserId_thenReturnUpdatedUserResponseModel() {
         UserResponseModel updatedUser = UserResponseModel.builder()

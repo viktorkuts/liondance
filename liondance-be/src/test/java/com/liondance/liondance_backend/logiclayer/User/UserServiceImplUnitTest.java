@@ -1,9 +1,6 @@
 package com.liondance.liondance_backend.logiclayer.User;
 
-import com.liondance.liondance_backend.datalayer.Course.Course;
-import com.liondance.liondance_backend.datalayer.Course.CourseRepository;
 import com.liondance.liondance_backend.datalayer.User.*;
-import com.liondance.liondance_backend.presentationlayer.Course.CourseResponseModel;
 import com.liondance.liondance_backend.presentationlayer.User.UserResponseModel;
 import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
