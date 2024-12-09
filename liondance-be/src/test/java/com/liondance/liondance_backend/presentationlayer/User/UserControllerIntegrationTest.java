@@ -325,4 +325,30 @@ class UserControllerIntegrationTest {
                 });
     }
 
+    @Test
+    void whenGetUserByUserIdWithValidId_thenReturnUserResponseModel() {
+        String userId = "7876ea26-3f76-4e50-870f-5e5dad6d63d1";
+        client.get()
+                .uri("/api/v1/users/{userId}", userId)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(UserResponseModel.class)
+                .value(user -> {
+                    assertEquals(userId, user.getUserId());
+                    assertEquals(student1.getFirstName(), user.getFirstName());
+                    assertEquals(student1.getLastName(), user.getLastName());
+                });
+    }
+
+    @Test
+    void whenGetUserByUserIdWithInvalidId_thenThrowNotFoundException() {
+        String userId = "7876ea26-3f76-4e50-870f-5e5dad6d63d1o";
+        client.get()
+                .uri("/api/v1/users/{userId}", userId)
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody(NotFoundException.class)
+                .value(exception -> assertEquals("User with userId: " + userId + " not found", exception.getMessage()));
+    }
+
 }
