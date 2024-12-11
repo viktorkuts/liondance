@@ -196,6 +196,26 @@ public class UserServiceImpl implements UserService {
                     user.setRoles(EnumSet.of(Role.valueOf(role)));
                     return user;
                 })
+                .doOnNext(user -> {
+                    String message = new StringBuilder()
+                            .append("Welcome to Lion Dance, ")
+                            .append(user.getFirstName())
+                            .append("!")
+                            .append("\nYou have been registered")
+                            .append("\n\nThank you for joining Lion Dance!")
+                            .toString();
+
+                    Boolean success = notificationService.sendMail(
+                            user.getEmail(),
+                            "Welcome to Lion Dance - Account Registration Confirmation",
+                            message,
+                            NotificationType.USER_REGISTRATION
+                    );
+
+                    if(!success){
+                        throw new MailSendException("Failed to send email to " + user.getEmail());
+                    }
+                })
                 .flatMap(userRepository::save)
                 .map(UserResponseModel::from);
     }
