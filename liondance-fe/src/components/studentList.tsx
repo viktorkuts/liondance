@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Title, MultiSelect } from '@mantine/core';
+import { Link } from 'react-router-dom';
+import { Button, Title, MultiSelect } from '@mantine/core';
 import studentService from '../services/userService';
 import { Student } from '../models/Users';
-import './userList.css';
+import './studentList.css';
 import './loader.css';
 
 const StudentList: React.FC = () => {
@@ -60,6 +61,9 @@ const StudentList: React.FC = () => {
                 <td>{new Date(student.dob).toLocaleDateString()}</td>
                 <td>{student.registrationStatus}</td>
                 <td>
+                  <Link to={`/student-profile/${student.userId}`}>
+                    <Button className="view-profile-button" variant="outline">View Profile</Button>
+                  </Link>
                 </td>
               </tr>
             ))}

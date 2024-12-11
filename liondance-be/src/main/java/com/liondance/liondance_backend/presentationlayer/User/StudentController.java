@@ -54,5 +54,10 @@ public class StudentController {
         return courseService.getAllCoursesByStudentId(studentId);
     }
 
+    @GetMapping("/{studentId}")
+    public Mono<UserResponseModel> getStudentById(@PathVariable String studentId) {
+        return userService.getStudentById(studentId);
+    }
+
 
 }

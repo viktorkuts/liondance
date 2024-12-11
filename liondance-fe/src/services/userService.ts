@@ -1,5 +1,6 @@
+// userService.ts
 import axiosInstance from "../utils/axiosInstance";
-import { Student, User } from "@/models/Users.ts";
+import { Student, User } from "@/models/Users";
 import { AxiosResponse } from "axios";
 
 const getAllUsers = async () => {
@@ -9,6 +10,11 @@ const getAllUsers = async () => {
 
 const getUserProfile = async (userId: string) => {
   const response = await axiosInstance.get(`/users/${userId}`);
+  return response.data;
+};
+
+const getStudentProfile = async (studentId: string) => {
+  const response = await axiosInstance.get(`/students/${studentId}`);
   return response.data;
 };
 
@@ -53,6 +59,7 @@ const getStudentsByStatuses = async (statuses: string[]): Promise<Student[]> => 
 export default {
   getAllUsers,
   getUserProfile,
+  getStudentProfile,
   getPendingStudentById,
   updateUser,
   registerStudent,

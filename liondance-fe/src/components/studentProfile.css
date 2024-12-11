@@ -1,0 +1,131 @@
+.student-profile {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #ECBA4B;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.student-profile h1 {
+  text-align: center;
+  color: #000000;
+  margin-bottom: 20px;
+}
+
+.loading,
+.error,
+.no-data {
+  text-align: center;
+  font-size: 18px;
+  margin: 20px 0;
+}
+
+.error {
+  color: #e53e3e;
+}
+
+.student-details {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: #ECBA4B;
+}
+
+.student-details th,
+.student-details td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+.student-details th {
+  background-color: #ffe4c4;
+  color: #333;
+  font-weight: bold;
+}
+
+.student-details tr:nth-child(even) {
+  background-color: #fff7eb;
+}
+
+.student-details tr:hover {
+  background-color: #fde2c4;
+}
+
+.student-profile .mantine-Button-root {
+  display: block;
+  margin: 20px auto;
+}
+
+.button-container {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  z-index: 999;
+}
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #ECBA4B;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  z-index: 1000;
+  width: 80%;
+  max-width: 500px;
+}
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-content h2 {
+  margin-bottom: 20px;
+  color: #000000;
+}
+
+.modal-content input {
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.button-container button,
+.modal-buttons button,
+.back-button {
+  background-color: #f44336;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.button-container button:hover,
+.modal-buttons button:hover,
+.back-button:hover {
+  background-color: #d32f2f;
+}
