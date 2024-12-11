@@ -30,10 +30,16 @@ const registerStudent = async (
   return await axiosInstance.post<Student>("/students", student);
 };
 
+const getAllStudents = async () => {
+  const response = await axiosInstance.get("/students");
+  return response.data;
+}
+
 export default {
   getAllUsers,
   getUserProfile,
   getPendingStudentById,
   updateUser,
   registerStudent,
+  getAllStudents
 };

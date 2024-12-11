@@ -5,6 +5,7 @@ import PendingRegistrations from "./registration/pending-registrations";
 import UserList from "../components/userList";
 import UserProfile from "../components/userProfile";
 import StudentCourses from "./student/StudentCourses";
+import StudentList from "@/components/studentList.tsx";
 const pagesData: routerType[] = [
   {
     path: "",
@@ -25,6 +26,11 @@ const pagesData: routerType[] = [
     path: "users",
     element: <UserList />,
     title: "User List",
+  },
+  {
+    path: "students",
+    element: <StudentList/>,
+    title: "Student List",
   },
   {
     path: "profile/:userId",

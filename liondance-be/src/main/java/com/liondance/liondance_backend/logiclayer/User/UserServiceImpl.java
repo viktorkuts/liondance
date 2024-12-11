@@ -120,11 +120,10 @@ public class UserServiceImpl implements UserService {
                 .switchIfEmpty(Mono.error(new NotFoundException("Pending student not found with userId: " + userId)));
     }
 
-
-
-
-
-
-
+//    @Override
+//    public Flux<UserResponseModel> getAllStudents() {
+//        return userRepository.findUsersByRolesContaining(Role.STUDENT)
+//                .map(UserResponseModel::from);
+//    }
 
 }
