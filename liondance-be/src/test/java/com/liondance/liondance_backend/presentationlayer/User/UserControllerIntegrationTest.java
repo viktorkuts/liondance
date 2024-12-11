@@ -33,6 +33,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
 
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -459,9 +460,12 @@ class UserControllerIntegrationTest {
                     assertEquals(RegistrationStatus.INACTIVE, student.getRegistrationStatus());
                 });
 
-        StepVerifier.create(userRepository.findUserByUserId(student2.getUserId()))
-                .expectNextCount(0)
-                .verifyComplete();
+        await().untilAsserted(() -> {
+            StepVerifier.create(userRepository.findById(student2.getUserId()))
+                    .expectNextCount(0)
+                    .verifyComplete();
+        });
+
     }
 
 }

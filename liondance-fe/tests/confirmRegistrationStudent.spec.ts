@@ -15,7 +15,10 @@ test("upon approve remove from pending and add to users list", async ({
   await expect(page.getByText("Student DetailsFirst")).toBeVisible();
   await page.getByRole("button", { name: "Approve" }).click();
   await expect(page.getByRole("cell", { name: "John Pork" })).toHaveCount(0);
-  await page.getByRole("link", { name: "Admin" }).click();
+  await page.getByText("Admin").click();
+  await page.getByRole("link", { name: "Students" }).click();
+  await page.getByPlaceholder("Select statuses").click();
+  await page.getByRole("option", { name: "ACTIVE", exact: true }).click();
   await page.goto("http://localhost:5173/users");
   await page.waitForTimeout(1000);
   await expect(
@@ -36,8 +39,11 @@ test("upon deny delete student", async ({ page }) => {
   await page.getByRole("button", { name: "Deny" }).click();
   await expect(page.getByRole("cell", { name: "Hawk Tuah" })).toHaveCount(0);
   await page.waitForTimeout(1000);
-  await page.getByRole("link", { name: "Admin" }).click();
-  await page.waitForTimeout(100);
+  await page.getByText("Admin").click();
+  await page.getByRole("link", { name: "Students" }).click();
+  await page.getByPlaceholder("Select statuses").click();
+  await page.getByRole("option", { name: "INACTIVE", exact: true }).click();
+  await page.waitForTimeout(250);
   await expect(
     page.getByRole("cell", { name: "Hawk Doesounow Tuah" })
   ).toHaveCount(0);
