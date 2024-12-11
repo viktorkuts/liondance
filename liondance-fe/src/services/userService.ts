@@ -33,7 +33,22 @@ const registerStudent = async (
 const getAllStudents = async () => {
   const response = await axiosInstance.get("/students");
   return response.data;
-}
+};
+
+const getStudentsByStatuses = async (statuses: string[]): Promise<Student[]> => {
+  try {
+    const response = await axiosInstance.get<Student[]>('/students/status', {
+      params: { statuses },
+      paramsSerializer: params => {
+        return params.statuses.map((status: string) => `statuses=${status}`).join('&');
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching students by statuses:', error);
+    throw error;
+  }
+};
 
 export default {
   getAllUsers,
@@ -41,5 +56,6 @@ export default {
   getPendingStudentById,
   updateUser,
   registerStudent,
-  getAllStudents
+  getAllStudents,
+  getStudentsByStatuses
 };

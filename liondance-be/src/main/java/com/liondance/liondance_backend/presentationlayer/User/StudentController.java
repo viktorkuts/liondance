@@ -53,4 +53,6 @@ public class StudentController {
     public Flux<CourseResponseModel> getCoursesByStudentId(@PathVariable String studentId) {
         return courseService.getAllCoursesByStudentId(studentId);
     }
+
+
 }

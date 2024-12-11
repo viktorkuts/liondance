@@ -5,7 +5,7 @@ import PendingRegistrations from "./registration/pending-registrations";
 import UserList from "../components/userList";
 import UserProfile from "../components/userProfile";
 import StudentCourses from "./student/StudentCourses";
-import StudentList from "@/components/studentList.tsx";
+import StudentList from "../components/studentList.tsx";
 const pagesData: routerType[] = [
   {
     path: "",
