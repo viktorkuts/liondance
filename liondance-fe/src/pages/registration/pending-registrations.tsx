@@ -17,6 +17,7 @@ function PendingRegistrations() {
           "/students/status?statuses=PENDING"
         );
         setStudents(response.data);
+        console.log(response.data);
         setLoading(false);
       } catch (error) {
         setError("Failed to fetch pending registrations. " + error);
@@ -38,7 +39,12 @@ function PendingRegistrations() {
     }
   };
 
-  const closeOverlay = () => {
+  const closeOverlay = (refresh?: boolean) => {
+    if (refresh) {
+      setStudents(
+        students.filter((student) => student.userId !== selectedStudent?.userId)
+      );
+    }
     setSelectedStudent(null);
   };
 
