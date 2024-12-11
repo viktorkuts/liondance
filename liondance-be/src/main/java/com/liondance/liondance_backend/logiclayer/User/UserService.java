@@ -21,4 +21,7 @@ public interface UserService {
     Flux<UserResponseModel> getStudentsByRegistrationStatuses(List<RegistrationStatus> statuses);
     Mono<UserResponseModel> getPendingStudentById(String userId);
     Mono<UserResponseModel> getStudentById(String studentId);
+
+    Mono<UserResponseModel> AddNewUser(String role,Mono<UserRequestModel> userRequestModel);
+
 }

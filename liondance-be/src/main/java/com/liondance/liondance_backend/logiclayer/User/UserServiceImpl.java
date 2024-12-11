@@ -3,6 +3,10 @@ package com.liondance.liondance_backend.logiclayer.User;
 import com.liondance.liondance_backend.datalayer.Notification.NotificationType;
 import com.liondance.liondance_backend.datalayer.User.*;
 import com.liondance.liondance_backend.logiclayer.Notification.NotificationService;
+import com.liondance.liondance_backend.presentationlayer.User.StudentRequestModel;
+import com.liondance.liondance_backend.presentationlayer.User.StudentResponseModel;
+import com.liondance.liondance_backend.presentationlayer.User.UserRequestModel;
+import com.liondance.liondance_backend.presentationlayer.User.UserResponseModel;
 import com.liondance.liondance_backend.presentationlayer.User.*;
 import com.liondance.liondance_backend.utils.exceptions.EmailInUse;
 import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
@@ -177,6 +181,18 @@ public class UserServiceImpl implements UserService {
                 .switchIfEmpty(Mono.error(new NotFoundException("Pending student not found with userId: " + userId)));
     }
 
+    @Override
+    public Mono<UserResponseModel> AddNewUser(String role, Mono<UserRequestModel> userRequestModel) {
+        return userRequestModel
+                .map(UserRequestModel::from)
+                .map(user -> {
+                    user.setUserId(UUID.randomUUID().toString());
+                    user.setRoles(EnumSet.of(Role.valueOf(role)));
+                    return user;
+                })
+                .flatMap(userRepository::save)
+                .map(UserResponseModel::from);
+    }
     @Override
     public Mono<UserResponseModel> getStudentById(String studentId) {
         return userRepository.findByUserId(studentId)
