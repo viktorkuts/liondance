@@ -19,7 +19,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/students")
-//@CrossOrigin(origins = "http://localhost:5173", "http://localhost:8080")
+@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:8080"})
 public class StudentController {
     private final UserService userService;
     private final CourseService courseService;
