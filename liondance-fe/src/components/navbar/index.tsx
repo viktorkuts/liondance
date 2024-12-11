@@ -1,10 +1,16 @@
 import { Anchor, Image } from "@mantine/core";
-import React from "react";
+import React, { useState } from "react";
 import classes from "./navbar.module.css";
 import logo from "../../assets/logo.png";
 
 
 function Navbar() {
+  const [adminDropdownOpen, setAdminDropdownOpen] = useState(false);
+
+  const toggleAdminDropdown = () => {
+    setAdminDropdownOpen(!adminDropdownOpen);
+  };
+
   return (
     <div className={classes.navbar}>
       <a className={classes.mainSection} href="/">
@@ -33,9 +39,21 @@ function Navbar() {
         <Anchor href="/login" fw={1000} fz="h2">
           Login
         </Anchor>
-        <Anchor href="/users" fw={1000} fz="h2">
-          Admin
-        </Anchor>
+        <div className={classes.dropdown}>
+          <Anchor onClick={toggleAdminDropdown} fw={1000} fz="h2">
+            Admin
+          </Anchor>
+          {adminDropdownOpen && (
+           <div className={classes.dropdownContent}>
+             <Anchor href="/users" fw={1000} fz="h2">
+               Users
+             </Anchor>
+             <Anchor href="/students" fw={1000} fz="h2">
+               Students
+             </Anchor>
+           </div>
+          )}
+        </div>
         <Anchor href="/student-courses" fw={1000} fz={"h2"}>
           Courses
         </Anchor>

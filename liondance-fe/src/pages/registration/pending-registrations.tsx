@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../../utils/axiosInstance.ts";
-import { Student } from "@/models/Users";
+import { Student } from "@/models/Users.ts";
 import "./PendingRegistrations.css";
-import StudentDetailsOverlay from "@/components/StudentDetailsOverlay.tsx";
+import StudentDetailsOverlay from "../../components/StudentDetailsOverlay.tsx";
 
 function PendingRegistrations() {
   const [students, setStudents] = useState<Student[]>([]);

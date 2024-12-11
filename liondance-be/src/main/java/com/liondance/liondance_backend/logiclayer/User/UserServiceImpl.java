@@ -120,11 +120,14 @@ public class UserServiceImpl implements UserService {
                 .switchIfEmpty(Mono.error(new NotFoundException("Pending student not found with userId: " + userId)));
     }
 
-
-
-
-
-
+    @Override
+    public Mono<UserResponseModel> getStudentById(String studentId) {
+        return userRepository.findByUserId(studentId)
+                .filter(user -> user instanceof Student)
+                .cast(Student.class)
+                .map(StudentResponseModel::from)
+                .switchIfEmpty(Mono.error(new NotFoundException("Student not found with userId: " + studentId)));
+    }
 
 
 }
