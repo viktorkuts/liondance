@@ -8,6 +8,7 @@ import StudentCourses from "./student/StudentCourses";
 import AddNewUser from "./admin/AddNewUser";
 import StudentList from "../components/studentList";
 import StudentProfile from "../components/studentProfile";
+
 import BookEvent from "./event";
 
 const pagesData: routerType[] = [

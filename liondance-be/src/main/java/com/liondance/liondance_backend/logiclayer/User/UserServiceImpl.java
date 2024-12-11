@@ -182,6 +182,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Mono<UserResponseModel> getStudentById(String studentId) {
+        return userRepository.findByUserId(studentId)
+                .filter(user -> user instanceof Student)
+                .cast(Student.class)
+                .map(StudentResponseModel::from)
+                .switchIfEmpty(Mono.error(new NotFoundException("Student not found with userId: " + studentId)));
+    }
+
+
+    @Override
     public Mono<UserResponseModel> AddNewUser(String role, Mono<UserRequestModel> userRequestModel) {
         return userRequestModel
                 .map(UserRequestModel::from)
