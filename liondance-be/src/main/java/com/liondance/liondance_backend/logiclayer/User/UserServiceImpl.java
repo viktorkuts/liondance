@@ -227,48 +227,4 @@ public class UserServiceImpl implements UserService {
                 .map(StudentResponseModel::from)
                 .switchIfEmpty(Mono.error(new NotFoundException("Student not found with userId: " + studentId)));
     }
-
-
-    @Override
-    public Mono<UserResponseModel> AddNewUser(String role, Mono<UserRequestModel> userRequestModel) {
-        return userRequestModel
-                .map(UserRequestModel::from)
-                .map(user -> {
-                    user.setUserId(UUID.randomUUID().toString());
-                    user.setRoles(EnumSet.of(Role.valueOf(role)));
-                    return user;
-                })
-                .doOnNext(user -> {
-                    String message = new StringBuilder()
-                            .append("Welcome to Lion Dance, ")
-                            .append(user.getFirstName())
-                            .append("!")
-                            .append("\nYou have been registered")
-                            .append("\n\nThank you for joining Lion Dance!")
-                            .toString();
-
-                    Boolean success = notificationService.sendMail(
-                            user.getEmail(),
-                            "Welcome to Lion Dance - Account Registration Confirmation",
-                            message,
-                            NotificationType.USER_REGISTRATION
-                    );
-
-                    if(!success){
-                        throw new MailSendException("Failed to send email to " + user.getEmail());
-                    }
-                })
-                .flatMap(userRepository::save)
-                .map(UserResponseModel::from);
-    }
-    @Override
-    public Mono<UserResponseModel> getStudentById(String studentId) {
-        return userRepository.findByUserId(studentId)
-                .filter(user -> user instanceof Student)
-                .cast(Student.class)
-                .map(StudentResponseModel::from)
-                .switchIfEmpty(Mono.error(new NotFoundException("Student not found with userId: " + studentId)));
-    }
-
-
 }
