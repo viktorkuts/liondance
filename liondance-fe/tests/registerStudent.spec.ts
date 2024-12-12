@@ -5,9 +5,7 @@ test("student can register form", async ({ page }) => {
   const randomLastName = Date.now().toString().slice(-4) + "lN";
   const randomEmail = Date.now().toString().slice(-4) + "bro@null.local";
   await page.goto("http://localhost:5173/");
-  await expect(
-    page.getByText("Welcome!ReviewsContactCalendarBookingRegistrationPending")
-  ).toBeVisible();
+  await expect(page.getByText('ReviewsContactCalendarBook')).toBeVisible();
   await page.getByRole("link", { name: "Registration", exact: true }).click();
   await expect(
     page.getByText(

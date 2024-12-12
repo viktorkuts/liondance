@@ -1,5 +1,6 @@
 package com.liondance.liondance_backend.datalayer.User;
 
+import com.liondance.liondance_backend.datalayer.common.Address;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

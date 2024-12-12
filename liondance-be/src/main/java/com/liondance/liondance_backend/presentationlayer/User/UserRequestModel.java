@@ -1,6 +1,6 @@
 package com.liondance.liondance_backend.presentationlayer.User;
 
-import com.liondance.liondance_backend.datalayer.User.Address;
+import com.liondance.liondance_backend.datalayer.common.Address;
 import com.liondance.liondance_backend.datalayer.User.Gender;
 import jakarta.validation.constraints.*;
 import lombok.*;
