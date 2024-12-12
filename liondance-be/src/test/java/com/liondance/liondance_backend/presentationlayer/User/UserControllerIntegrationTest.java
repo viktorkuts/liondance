@@ -34,6 +34,7 @@ import java.util.UUID;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"spring.data.mongodb.port= 0"})
 @ActiveProfiles("test")
@@ -465,5 +466,62 @@ class UserControllerIntegrationTest {
         });
 
     }
+
+    @Test
+    void whenAddNewUserWithValidData_thenReturnUserResponseModel() {
+        UserRequestModel newUserRequest = UserRequestModel.builder()
+                .firstName("Alice")
+                .lastName("Smith")
+                .email("alice.smith@null.local")
+                .dob(LocalDate.parse("1995-01-01"))
+                .gender(Gender.FEMALE)
+                .address(Address.builder()
+                        .streetAddress("789 Elm St")
+                        .city("Toronto")
+                        .state("ON")
+                        .zip("M4B 1B3")
+                        .build())
+                .phone("123-456-7890")
+                .build();
+
+        client.post()
+                .uri("/api/v1/users?role=CLIENT")
+                .bodyValue(newUserRequest)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(UserResponseModel.class)
+                .value(response -> {
+                    assertNotNull(response.getUserId());
+                    assertEquals("Alice", response.getFirstName());
+                    assertEquals("Smith", response.getLastName());
+                    assertEquals("CLIENT", response.getRoles().iterator().next().name());
+                });
+    }
+
+    @Test
+    void whenAddNewUserWithInvalidEmail_thenThrowInvalidInputException() {
+        UserRequestModel newUserRequest = UserRequestModel.builder()
+                .firstName("Alice")
+                .lastName("Smith")
+                .email("invalid-email")
+                .dob(LocalDate.parse("1995-01-01"))
+                .gender(Gender.FEMALE)
+                .address(Address.builder()
+                        .streetAddress("789 Elm St")
+                        .city("Toronto")
+                        .state("ON")
+                        .zip("M4B 1B3")
+                        .build())
+                .phone("123-456-7890")
+                .build();
+
+        client.post()
+                .uri("/api/v1/users?role=CLIENT")
+                .bodyValue(newUserRequest)
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY)
+                .expectBody(InvalidInputException.class);
+    }
+
 
 }

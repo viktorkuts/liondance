@@ -17,16 +17,11 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplUnitTest {
     @Mock
@@ -151,5 +146,4 @@ class UserServiceImplUnitTest {
         Mockito.verify(userRepository, Mockito.times(1)).findUserByUserId(userId);
         Mockito.verify(userRepository, Mockito.times(1)).save(student1);
     }
-
 }
