@@ -15,6 +15,7 @@ import geoService from "@/services/geoService";
 import { Province } from "@/types/geo";
 import classes from "./booking.module.css";
 import { IMaskInput } from 'react-imask';
+import { InputBase } from '@mantine/core';
 import { EventType, Event, PaymentMethod } from "@/models/Event";
 import eventService from "@/services/eventService";
 
@@ -43,19 +44,26 @@ function BookEvent() {
     return `${hour > 12 ? hour - 12 : hour}:${minute} ${hour >= 12 ? "PM" : "AM"}`;
   });
 
-  const combineDateTime = (date: Date, time: string) => {
-    const [hoursMinutes, period] = time.split(" ");
-    const [hours, minutes] = hoursMinutes.split(":").map(Number);
-    const hour24 = period === "PM" && hours !== 12 ? hours + 12 : hours % 12;
+  const combineDateTime = (date: Date | null, time: string | null) => {
+    if (date && time) {
+      const [hoursMinutes, period] = time.split(" ");
+      const [hours, minutes] = hoursMinutes.split(":").map(Number);
+      const hour24 = period === "PM" && hours !== 12 ? hours + 12 : hours % 12;
   
-    const combinedDateTime = dayjs(date)
-      .hour(hour24)
-      .minute(minutes)
-      .second(0)
-      .toISOString();
+      const combinedDateTime = dayjs(date)
+        .hour(hour24)
+        .minute(minutes)
+        .second(0)
+        .toISOString();
   
-    form.setFieldValue("eventDateTime", combinedDateTime);
+      form.setFieldValue("eventDateTime", combinedDateTime);
+      form.clearFieldError("eventDateTime");
+    } else {
+      form.setFieldValue("eventDateTime", ""); // Clear if incomplete
+      form.setFieldError("eventDateTime", "Both date and time are required");
+    }
   };
+  
   
 
   useEffect(() => {
@@ -89,6 +97,16 @@ function BookEvent() {
       firstName: (value) => (value.length > 0 ? null : "Field is required"),
       lastName: (value) => (value.length > 0 ? null : "Field is required"),
       email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
+      phone: (value) =>
+        value && value.length > 0
+          ? /^\+1 \(\d{3}\) \d{3}-\d{4}$/.test(value)
+            ? null
+            : "Invalid phone number format"
+          : "Field is required",
+      eventDateTime: (value) =>
+        value && value.length > 0 ? null : "Both date and time are required",
+      eventType: (value) => (value.length > 0 ? null : "Field is required"),
+      paymentMethod: (value) => (value.length > 0 ? null : "Field is required"),
       address:
         (activeStep === 1 && {
           streetAddress: (value) =>
@@ -213,36 +231,31 @@ function BookEvent() {
             required
             {...form.getInputProps("email")}
           />
-          <div>
-            <label>Phone Number</label>
-            <IMaskInput
-              mask="+1 (000) 000-0000"
-              placeholder="+1 (123) 456-7890"
-              value={form.getValues().phone}
-              onAccept={(value: string) => form.setFieldValue("phone", value)}
-              style={{
-                padding: "8px",
-                width: "100%",
-                border: "1px solid #ced4da",
-                borderRadius: "4px",
-                fontSize: "14px",
-              }}
-              required
-            />
-          </div>
+          <InputBase
+            label="Phone Number"
+            placeholder="+1 (123) 456-7890"
+            component={IMaskInput}
+            mask="+1 (000) 000-0000"
+            {...form.getInputProps("phone", { withError: true })} // Use `withError` to show validation error
+            onAccept={(value: string) => {
+              form.setFieldValue("phone", value); // Set form value on accept
+              form.validateField("phone"); // Trigger validation immediately
+            }}
+            required
+          />
           <DateInput
             label="Event Date"
             placeholder="Pick a date"
+            minDate={dayjs().add(14, "day").toDate()} // Minimum 2 weeks from today
             value={selectedDate}
             onChange={(date) => {
               setSelectedDate(date);
-              if (date && selectedTime) {
-                combineDateTime(date, selectedTime);
-              }
+              combineDateTime(date, selectedTime); // Combine date and time
             }}
-            minDate={dayjs().add(14, "day").toDate()} // 2 weeks from today
+            error={form.errors.eventDateTime}
             required
           />
+
 
           <Select
             label="Event Time"
@@ -251,16 +264,14 @@ function BookEvent() {
             value={selectedTime}
             onChange={(time) => {
               setSelectedTime(time);
-              if (selectedDate && time) {
-                combineDateTime(selectedDate, time);
-              }
+              combineDateTime(selectedDate, time); // Combine date and time
             }}
+            error={form.errors.eventDateTime}
             required
           />
 
 
           <Select
-            mt="md"
             label="Event Type"
             placeholder="Wedding"
             data={Object.values(EventType)}
@@ -269,7 +280,6 @@ function BookEvent() {
             {...form.getInputProps("eventType")}
           />
           <Select
-            mt="md"
             label="Payment Method"
             placeholder="Cash"
             data={Object.values(PaymentMethod)}
@@ -293,7 +303,6 @@ function BookEvent() {
             {...form.getInputProps("address.streetAddress")}
           />
           <Select
-            mt="md"
             label="Province"
             placeholder="Quebec"
             comboboxProps={{ withinPortal: true }}
