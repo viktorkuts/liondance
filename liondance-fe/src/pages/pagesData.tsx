@@ -7,6 +7,7 @@ import UserProfile from "../components/userProfile";
 import StudentCourses from "./student/StudentCourses";
 import StudentList from "../components/studentList";
 import StudentProfile from "../components/studentProfile";
+import BookEvent from "./event";
 
 const pagesData: routerType[] = [
   {
@@ -18,6 +19,11 @@ const pagesData: routerType[] = [
     path: "registration",
     element: <Registration />,
     title: "registration",
+  },
+  {
+    path: "booking",
+    element: <BookEvent />,
+    title: "Book Event",
   },
   {
     path: "pending-registrations",

@@ -1,4 +1,4 @@
-package com.liondance.liondance_backend.datalayer.User;
+package com.liondance.liondance_backend.datalayer.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

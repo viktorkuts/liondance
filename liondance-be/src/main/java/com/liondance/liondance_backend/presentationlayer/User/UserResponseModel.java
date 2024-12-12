@@ -1,14 +1,13 @@
 package com.liondance.liondance_backend.presentationlayer.User;
 
 import com.liondance.liondance_backend.datalayer.User.*;
+import com.liondance.liondance_backend.datalayer.common.Address;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.beans.BeanUtils;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.util.EnumSet;
 

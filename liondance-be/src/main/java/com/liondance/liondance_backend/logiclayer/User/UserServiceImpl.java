@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService {
                     return student;
                 })
                 .doOnNext(user -> {
-                    String message = new StringBuilder()
+                    String  message = new StringBuilder()
                             .append("Welcome to Lion Dance, ")
                             .append(user.getFirstName())
                             .append("!")
