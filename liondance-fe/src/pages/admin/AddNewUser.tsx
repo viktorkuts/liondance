@@ -4,11 +4,12 @@ import {
   Button,
   Select,
   Group,
-  Notification
+  Notification,
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { useState } from "react";
 import axios from "axios";
+import "./AddUserForm.css";
 
 const AddNewUser = () => {
   const [success, setSuccess] = useState<string | null>(null);
@@ -66,111 +67,113 @@ const AddNewUser = () => {
       setError(null);
       form.reset();
     } catch (err) {
-      setError("Failed to create user. Please check the form for errors. "+err);
+      setError("Failed to create user. Please check the form for errors. " + err);
       setSuccess(null);
     }
   };
 
   return (
-    <div style={{ width: "50%", margin: "0 auto", marginTop: "2rem" }}>
-      <h1>Add New User</h1>
-      {success && (
-        <Notification
-          color="teal"
-          title="Success"
-          onClose={() => setSuccess(null)}
-          mt="md"
-        >
-          {success}
-        </Notification>
-      )}
-      {error && (
-        <Notification
-          color="red"
-          title="Error"
-          onClose={() => setError(null)}
-          mt="md"
-        >
-          {error}
-        </Notification>
-      )}
-      <form onSubmit={form.onSubmit(handleSubmit)}>
-        <TextInput
-          label="First Name"
-          placeholder="John"
-          {...form.getInputProps("firstName")}
-          required
-        />
-        <TextInput
-          label="Middle Name"
-          placeholder="M."
-          {...form.getInputProps("middleName")}
-        />
-        <TextInput
-          label="Last Name"
-          placeholder="Doe"
-          {...form.getInputProps("lastName")}
-          required
-        />
-        <Select
-          label="Gender"
-          placeholder="Select gender"
-          data={["MALE", "FEMALE", "OTHER"]}
-          {...form.getInputProps("gender")}
-          required
-        />
-        <DateInput
-          label="Date of Birth"
-          placeholder="YYYY-MM-DD"
-          {...form.getInputProps("dob")}
-          required
-        />
-        <TextInput
-          label="Email"
-          placeholder="example@example.com"
-          {...form.getInputProps("email")}
-          required
-        />
-        <TextInput
-          label="Phone"
-          placeholder="555-555-5555"
-          {...form.getInputProps("phone")}
-        />
-        <TextInput
-          label="Street Address"
-          placeholder="123 Main St"
-          {...form.getInputProps("address.streetAddress")}
-          required
-        />
-        <TextInput
-          label="City"
-          placeholder="City"
-          {...form.getInputProps("address.city")}
-          required
-        />
-        <TextInput
-          label="State"
-          placeholder="State/Province"
-          {...form.getInputProps("address.state")}
-          required
-        />
-        <TextInput
-          label="Postal Code"
-          placeholder="12345"
-          {...form.getInputProps("address.zip")}
-          required
-        />
-        <Select
-          label="Role"
-          placeholder="Select role"
-          data={["STAFF", "CLIENT", "ADMIN"]}
-          {...form.getInputProps("role")}
-          required
-        />
-        <Group position="right" mt="md">
-          <Button type="submit">Submit</Button>
-        </Group>
-      </form>
+    <div className="add-new-user-container">
+      <div className="add-new-user-form">
+        <h1>Add New User</h1>
+        {success && (
+          <Notification
+            color="teal"
+            title="Success"
+            onClose={() => setSuccess(null)}
+            mt="md"
+          >
+            {success}
+          </Notification>
+        )}
+        {error && (
+          <Notification
+            color="red"
+            title="Error"
+            onClose={() => setError(null)}
+            mt="md"
+          >
+            {error}
+          </Notification>
+        )}
+        <form onSubmit={form.onSubmit(handleSubmit)}>
+          <TextInput
+            label="First Name"
+            placeholder="John"
+            {...form.getInputProps("firstName")}
+            required
+          />
+          <TextInput
+            label="Middle Name"
+            placeholder="M."
+            {...form.getInputProps("middleName")}
+          />
+          <TextInput
+            label="Last Name"
+            placeholder="Doe"
+            {...form.getInputProps("lastName")}
+            required
+          />
+          <Select
+            label="Gender"
+            placeholder="Select gender"
+            data={["MALE", "FEMALE", "OTHER"]}
+            {...form.getInputProps("gender")}
+            required
+          />
+          <DateInput
+            label="Date of Birth"
+            placeholder="YYYY-MM-DD"
+            {...form.getInputProps("dob")}
+            required
+          />
+          <TextInput
+            label="Email"
+            placeholder="example@example.com"
+            {...form.getInputProps("email")}
+            required
+          />
+          <TextInput
+            label="Phone"
+            placeholder="555-555-5555"
+            {...form.getInputProps("phone")}
+          />
+          <TextInput
+            label="Street Address"
+            placeholder="123 Main St"
+            {...form.getInputProps("address.streetAddress")}
+            required
+          />
+          <TextInput
+            label="City"
+            placeholder="City"
+            {...form.getInputProps("address.city")}
+            required
+          />
+          <TextInput
+            label="State"
+            placeholder="State/Province"
+            {...form.getInputProps("address.state")}
+            required
+          />
+          <TextInput
+            label="Postal Code"
+            placeholder="12345"
+            {...form.getInputProps("address.zip")}
+            required
+          />
+          <Select
+            label="Role"
+            placeholder="Select role"
+            data={["STAFF", "CLIENT", "ADMIN"]}
+            {...form.getInputProps("role")}
+            required
+          />
+          <Group position="right" mt="md">
+            <Button type="submit">Submit</Button>
+          </Group>
+        </form>
+      </div>
     </div>
   );
 };
