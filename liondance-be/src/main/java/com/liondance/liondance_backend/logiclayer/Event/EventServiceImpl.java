@@ -33,7 +33,13 @@ public class EventServiceImpl implements EventService {
     @Override
     public Mono<EventResponseModel> bookEvent(Mono<EventRequestModel> eventRequestModel) {
         return eventRequestModel
-                .map(EventRequestModel::toEntity)
+                .switchIfEmpty(Mono.error(new IllegalArgumentException("EventRequestModel cannot be null or empty")))
+                .flatMap(request -> {
+                    if (request.getEmail() == null || request.getEmail().isEmpty()) {
+                        return Mono.error(new IllegalArgumentException("Email is required"));
+                    }
+                    return Mono.just(request);
+                })                .map(EventRequestModel::toEntity)
                 .map(event -> {
                     event.setId(UUID.randomUUID().toString());
                     event.setEventStatus(PENDING);
