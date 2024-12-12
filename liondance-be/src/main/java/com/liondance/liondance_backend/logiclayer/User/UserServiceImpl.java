@@ -3,6 +3,8 @@ package com.liondance.liondance_backend.logiclayer.User;
 import com.liondance.liondance_backend.datalayer.Notification.NotificationType;
 import com.liondance.liondance_backend.datalayer.User.*;
 import com.liondance.liondance_backend.logiclayer.Notification.NotificationService;
+import com.liondance.liondance_backend.presentationlayer.User.*;
+import com.liondance.liondance_backend.utils.exceptions.EmailInUse;
 import com.liondance.liondance_backend.presentationlayer.User.StudentRequestModel;
 import com.liondance.liondance_backend.presentationlayer.User.StudentResponseModel;
 import com.liondance.liondance_backend.presentationlayer.User.UserRequestModel;
