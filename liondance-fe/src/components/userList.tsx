@@ -20,6 +20,9 @@ const UserList: React.FC = () => {
  return (
   <div className="user-list">
    <Title order={1}>User List</Title>
+      <Link to={`/add-new-user`}>
+       <Button className="view-profile-button" variant="outline">Add New User</Button>
+      </Link>
    {loading ? (
     <div className="custom-loader"></div>
    ) : users.length === 0 ? (
