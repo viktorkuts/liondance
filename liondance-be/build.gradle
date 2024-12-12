@@ -40,6 +40,7 @@ dependencies {
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
 	testImplementation "de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring3x:${flapdoodle}"
+	testImplementation "org.awaitility:awaitility"
 }
 
 jacocoTestReport {

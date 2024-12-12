@@ -1,5 +1,8 @@
 import React from "react";
 import "./StudentDetailsOverlay.css";
+import { Button } from "@mantine/core";
+import userService from "@/services/userService";
+import { RegistrationStatus } from "@/models/Users";
 
 interface StudentDetailsOverlayProps {
   student: {
@@ -20,7 +23,7 @@ interface StudentDetailsOverlayProps {
       zip: string;
     };
   };
-  onClose: () => void;
+  onClose: (refresh?: boolean) => void;
 }
 
 const formatDate = (isoDate: string): string => {
@@ -37,6 +40,15 @@ const StudentDetailsOverlay: React.FC<StudentDetailsOverlayProps> = ({
   student,
   onClose,
 }) => {
+  const submitRegistrationStatus = async (isApproved: boolean) => {
+    userService.updateRegistrationStatus(student.userId, {
+      registrationStatus: isApproved
+        ? RegistrationStatus.ACTIVE
+        : RegistrationStatus.INACTIVE,
+    });
+    onClose(true);
+  };
+
   return (
     <div className="overlay">
       <div className="overlay-content">
@@ -114,7 +126,16 @@ const StudentDetailsOverlay: React.FC<StudentDetailsOverlayProps> = ({
 
         {/* Bottom Right Close Button */}
         <div className="close-button-container">
-          <button className="close-button" onClick={onClose}>
+          <Button
+            variant="default"
+            onClick={() => submitRegistrationStatus(false)}
+          >
+            Deny
+          </Button>
+          <Button onClick={() => submitRegistrationStatus(true)}>
+            Approve
+          </Button>
+          <button className="close-button" onClick={() => onClose(false)}>
             Close
           </button>
         </div>

@@ -24,6 +24,10 @@ export enum RegistrationStatus {
   INACTIVE = "INACTIVE",
 }
 
+export interface RegistrationStatusModel {
+  registrationStatus: RegistrationStatus;
+}
+
 export interface User {
   userId?: string;
   firstName: string;

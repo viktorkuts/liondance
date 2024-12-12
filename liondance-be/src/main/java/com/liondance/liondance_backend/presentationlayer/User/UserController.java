@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/api/v1/users")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:8080"})
 public class UserController {
     private final UserService userService;
 
@@ -29,7 +29,7 @@ public class UserController {
                 .switchIfEmpty(Mono.error(new NotFoundException("User not found with id: " + userId)));
     }
     @PutMapping("{userId}")
-    public Mono<UserResponseModel> updateUser(@PathVariable String userId, @RequestBody UserResponseModel userResponseModel) {
-        return userService.updateUser(userId, userResponseModel);
+    public Mono<UserResponseModel> updateUser(@PathVariable String userId, @RequestBody UserRequestModel userRequestModel) {
+        return userService.updateUser(userId, userRequestModel);
     }
 }

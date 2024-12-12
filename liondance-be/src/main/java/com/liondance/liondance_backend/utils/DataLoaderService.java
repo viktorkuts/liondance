@@ -144,7 +144,7 @@ public class DataLoaderService implements CommandLineRunner {
         );
         students.add(
                 Student.builder()
-                        .userId("b69b0c3c-2462-42a1-832d-1a22ke857cba")
+                        .userId("b69b0c3c-2462-42a1-832d-1a29ke857cbf")
                         .joinDate(Instant.now())
                         .registrationStatus(RegistrationStatus.PENDING)
                         .firstName("Lilliam")
