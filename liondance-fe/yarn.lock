@@ -62,6 +62,7 @@
   dependencies:
     regenerator-runtime "^0.14.0"
 
+"@esbuild/win32-x64@0.21.5":
 "@babel/template@^7.25.9":
   version "7.25.9"
   resolved "https://registry.npmjs.org/@babel/template/-/template-7.25.9.tgz"
@@ -586,12 +587,12 @@
   resolved "https://registry.npmjs.org/@pkgr/core/-/core-0.1.1.tgz"
   integrity sha512-cq8o4cWH0ibXh9VGi5P20Tu9XF/0fFXl9EUinr9QfTM7a7p0oTA4iJRCQWppXR1Pg8dSM0UCItCkPwsk9qWWYA==
 
-"@playwright/test@^1.49.0":
-  version "1.49.0"
-  resolved "https://registry.npmjs.org/@playwright/test/-/test-1.49.0.tgz"
-  integrity sha512-DMulbwQURa8rNIQrf94+jPJQ4FmOVdpE5ZppRNvWVjvhC+6sOeo28r8MgIpQRYouXRtt/FCCXU7zn20jnHR4Qw==
+"@playwright/test@^1.49.1":
+  version "1.49.1"
+  resolved "https://registry.npmjs.org/@playwright/test/-/test-1.49.1.tgz"
+  integrity sha512-Ky+BVzPz8pL6PQxHqNRW1k3mIyv933LML7HktS8uik0bUXNCdPhoS/kLihiO1tMf/egaJb4IutXd7UywvXEW+g==
   dependencies:
-    playwright "1.49.0"
+    playwright "1.49.1"
 
 "@popperjs/core@^2.11.8", "@popperjs/core@^2.9.0":
   version "2.11.8"
@@ -603,6 +604,15 @@
   resolved "https://registry.npmjs.org/@remirror/core-constants/-/core-constants-3.0.0.tgz"
   integrity sha512-42aWfPrimMfDKDi4YegyS7x+/0tlzaqwPQCULLanv3DMIlu96KTJR0fM5isWX2UViOqlGnX6YFgqWepcX+XMNg==
 
+"@rollup/rollup-win32-x64-msvc@4.27.4":
+  version "4.27.4"
+  resolved "https://registry.npmjs.org/@rollup/rollup-win32-x64-msvc/-/rollup-win32-x64-msvc-4.27.4.tgz"
+  integrity sha512-3j4jx1TppORdTAoBJRd+/wJRGCPC0ETWkXOecJ6PPZLj6SptXkrXcNqdj0oclbKML6FkQltdz7bBA3rUSirZug==
+
+"@swc/core-win32-x64-msvc@1.9.3":
+  version "1.9.3"
+  resolved "https://registry.npmjs.org/@swc/core-win32-x64-msvc/-/core-win32-x64-msvc-1.9.3.tgz"
+  integrity sha512-3YJJLQ5suIEHEKc1GHtqVq475guiyqisKSoUnoaRtxkDaW5g1yvPt9IoSLOe2mRs7+FFhGGU693RsBUSwOXSdQ==
 "@rollup/rollup-darwin-arm64@4.27.4":
   version "4.27.4"
   resolved "https://registry.npmjs.org/@rollup/rollup-darwin-arm64/-/rollup-darwin-arm64-4.27.4.tgz"
@@ -935,6 +945,7 @@
   dependencies:
     "@types/react" "*"
 
+"@types/react@*", "@types/react@^16.8.0 || ^17.0.0 || ^18.0.0", "@types/react@^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0", "@types/react@^16.9.0 || ^17.0.0 || ^18.0.0", "@types/react@^18.3.12":
 "@types/react-transition-group@^4.4.11":
   version "4.4.12"
   resolved "https://registry.npmjs.org/@types/react-transition-group/-/react-transition-group-4.4.12.tgz"
@@ -1296,6 +1307,7 @@ d3-timer@^3.0.1:
   resolved "https://registry.npmjs.org/d3-timer/-/d3-timer-3.0.1.tgz"
   integrity sha512-ndfJ/JxxMd3nw31uyKoY2naivF+r29V+Lc0svZxe1JvvIRmi8hUsrMvdOwgS1o6uBHmiz91geQ0ylPP0aj1VUA==
 
+dayjs@^1.11.13, dayjs@>=1.0.0:
 dayjs@^1.10.7, dayjs@^1.11.13, dayjs@^1.8.17, dayjs@>=1.0.0:
   version "1.11.13"
   resolved "https://registry.npmjs.org/dayjs/-/dayjs-1.11.13.tgz"
@@ -2043,17 +2055,17 @@ picomatch@^2.3.1:
   resolved "https://registry.npmjs.org/picomatch/-/picomatch-2.3.1.tgz"
   integrity sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==
 
-playwright-core@1.49.0:
-  version "1.49.0"
-  resolved "https://registry.npmjs.org/playwright-core/-/playwright-core-1.49.0.tgz"
-  integrity sha512-R+3KKTQF3npy5GTiKH/T+kdhoJfJojjHESR1YEWhYuEKRVfVaxH3+4+GvXE5xyCngCxhxnykk0Vlah9v8fs3jA==
+playwright-core@1.49.1:
+  version "1.49.1"
+  resolved "https://registry.npmjs.org/playwright-core/-/playwright-core-1.49.1.tgz"
+  integrity sha512-BzmpVcs4kE2CH15rWfzpjzVGhWERJfmnXmniSyKeRZUs9Ws65m+RGIi7mjJK/euCegfn3i7jvqWeWyHe9y3Vgg==
 
-playwright@1.49.0:
-  version "1.49.0"
-  resolved "https://registry.npmjs.org/playwright/-/playwright-1.49.0.tgz"
-  integrity sha512-eKpmys0UFDnfNb3vfsf8Vx2LEOtflgRebl0Im2eQQnYMA4Aqd+Zw8bEOB+7ZKvN76901mRnqdsiOGKxzVTbi7A==
+playwright@1.49.1:
+  version "1.49.1"
+  resolved "https://registry.npmjs.org/playwright/-/playwright-1.49.1.tgz"
+  integrity sha512-VYL8zLoNTBxVOrJBbDuRgDWa3i+mfQgDTrL8Ah9QXZ7ax4Dsj0MSq5bYgytRnDVVe+njoKnfsYkH3HzqVj5UZA==
   dependencies:
-    playwright-core "1.49.0"
+    playwright-core "1.49.1"
   optionalDependencies:
     fsevents "2.3.2"
 
@@ -2449,7 +2461,9 @@ react-transition-group@^4.4.5, react-transition-group@4.4.5:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
 
+"react@^0.14 || ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0", "react@^16.8.0 || ^17.0.1 || ^18.0.0", "react@^17.0.0 || ^18.0.0 || ^19.0.0", react@^18.3.1, "react@^18.x || ^19.x", "react@>= 16.8 || 18.0.0", react@>=16.6.0, react@>=16.8.0, react@>=16.8.6, react@>=18:
 "react@^0.14 || ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0", "react@^16.8.0 || ^17.0.1 || ^18.0.0", "react@^17.0.0 || ^18.0.0 || ^19.0.0", react@^18.3.1, "react@^18.x || ^19.x", "react@>= 16.8 || 18.0.0", react@>=0.14.0, react@>=16.6.0, react@>=16.8.0, react@>=16.8.6, react@>=18:
+
   version "18.3.1"
   resolved "https://registry.npmjs.org/react/-/react-18.3.1.tgz"
   integrity sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==
@@ -2583,7 +2597,6 @@ strip-json-comments@^3.1.1:
   version "3.1.1"
   resolved "https://registry.npmjs.org/strip-json-comments/-/strip-json-comments-3.1.1.tgz"
   integrity sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==
-
 stylis@4.2.0:
   version "4.2.0"
   resolved "https://registry.npmjs.org/stylis/-/stylis-4.2.0.tgz"
