@@ -527,6 +527,67 @@ class UserControllerIntegrationTest {
 
     }
 
+    @Test
+    void whenUpdateStudentDetails_thenUpdateStudent() {
+        StudentRequestModel rq = StudentRequestModel.builder()
+                .firstName("UpdatedFirstName")
+                .lastName("UpdatedLastName")
+                .email("updated.email@null.local")
+                .dob(LocalDate.parse("1995-01-01"))
+                .address(Address.builder()
+                        .streetAddress("456 Updated St")
+                        .city("UpdatedCity")
+                        .state("QC")
+                        .zip("H0H 0H0")
+                        .build())
+                .gender(Gender.FEMALE)
+                .build();
+
+        client.put()
+                .uri("/api/v1/students/{studentId}", student1.getUserId())
+                .bodyValue(rq)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(StudentResponseModel.class)
+                .value(student -> {
+                    assertEquals(student1.getUserId(), student.getUserId());
+                    assertEquals("UpdatedFirstName", student.getFirstName());
+                    assertEquals("UpdatedLastName", student.getLastName());
+                    assertEquals("updated.email@null.local", student.getEmail());
+                    assertEquals(LocalDate.parse("1995-01-01"), student.getDob());
+                    assertEquals(Gender.FEMALE, student.getGender());
+                    assertEquals("456 Updated St", student.getAddress().getStreetAddress());
+                    assertEquals("UpdatedCity", student.getAddress().getCity());
+                    assertEquals("QC", student.getAddress().getState());
+                    assertEquals("H0H 0H0", student.getAddress().getZip());
+                });
+    }
+
+    @Test
+    void whenUpdateStudentDetailsWithInvalidId_thenThrowNotFoundException() {
+        String userId = UUID.randomUUID().toString();
+        StudentRequestModel rq = StudentRequestModel.builder()
+                .firstName("UpdatedFirstName")
+                .lastName("UpdatedLastName")
+                .email("updated.email@null.local")
+                .dob(LocalDate.parse("1995-01-01"))
+                .address(Address.builder()
+                        .streetAddress("456 Updated St")
+                        .city("UpdatedCity")
+                        .state("QC")
+                        .zip("H0H 0H0")
+                        .build())
+                .gender(Gender.FEMALE)
+                .build();
+
+        client.put()
+                .uri("/api/v1/students/{studentId}", userId)
+                .bodyValue(rq)
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody()
+                .jsonPath("$.message").isEqualTo("Student not found with userId: " + userId);
+    }
 
 
 }

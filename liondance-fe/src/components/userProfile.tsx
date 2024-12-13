@@ -4,6 +4,7 @@ import { Button, Title, Text, Loader } from "@mantine/core";
 import userService from "../services/userService";
 import { User } from "../models/Users";
 import "./userProfile.css";
+import "./modalAnimation.css";
 
 const UserProfile: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
