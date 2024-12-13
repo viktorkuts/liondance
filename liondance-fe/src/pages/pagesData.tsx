@@ -59,7 +59,7 @@ const pagesData: routerType[] = [
   },
   {
     path:"add-new-user",
-    element: <AddNewUser/>,
+    element: <AddNewUser />,
     title:"Add Users"
   },
 ];
