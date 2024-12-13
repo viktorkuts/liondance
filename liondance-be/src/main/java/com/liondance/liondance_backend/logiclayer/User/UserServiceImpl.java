@@ -27,6 +27,7 @@ import java.time.Instant;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -230,6 +231,30 @@ public class UserServiceImpl implements UserService {
                 .map(user -> {
                     user.setRoles(EnumSet.copyOf(role.getRoles()));
                     return user;
+                })
+                .doOnNext(user -> {
+                    String rolesFormatted = role.getRoles().stream()
+                            .map(Enum::name)
+                            .collect(Collectors.joining(", "));
+
+                    String message = new StringBuilder()
+                            .append(user.getFirstName())
+                            .append(", Your role has changed.")
+                            .append("\nYour account now has the following roles: ")
+                            .append(rolesFormatted)
+                            .append("\n\nContact the Admin if this doesn't seem right.")
+                            .toString();
+
+                    Boolean success = notificationService.sendMail(
+                            user.getEmail(),
+                            "Lion Dance Account Role Changes",
+                            message,
+                            NotificationType.AUTHORIZATION
+                    );
+
+                    if(!success){
+                        throw new MailSendException("Failed to send email to " + user.getEmail());
+                    }
                 })
                 .flatMap(userRepository::save)
                 .map(UserResponseModel::from);
