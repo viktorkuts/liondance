@@ -384,5 +384,4 @@ class UserControllerIntegrationTest {
                         exception.getMessage()
                 ));
     }
-
 }
