@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.List;
 
 public interface UserRepository extends ReactiveMongoRepository<User, String> {
-
+    Mono<User> findUserByEmail(String email);
     Mono<User> findUserByUserId (String userId);
     Flux<User> findUsersByRolesContaining(Role role);
     @Query("{ 'registrationStatus': { $in: ?0 }, 'roles': { $elemMatch: { $eq: 'STUDENT' } } }")

@@ -4,7 +4,10 @@ import com.liondance.liondance_backend.datalayer.Course.Course;
 import com.liondance.liondance_backend.datalayer.Course.CourseRepository;
 import com.liondance.liondance_backend.datalayer.Event.Event;
 import com.liondance.liondance_backend.datalayer.Event.EventRepository;
+import com.liondance.liondance_backend.datalayer.Event.EventType;
+import com.liondance.liondance_backend.datalayer.Event.PaymentMethod;
 import com.liondance.liondance_backend.datalayer.User.*;
+import com.liondance.liondance_backend.datalayer.common.Address;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
@@ -30,11 +33,25 @@ public class DataLoaderService implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         ArrayList<Event> events = new ArrayList<>();
-        events.add(Event.builder().name("Event 1").build());
-        events.add(Event.builder().name("Event 2").build());
-        events.add(Event.builder().name("Event 3").build());
-        events.add(Event.builder().name("Event 4").build());
-        events.add(Event.builder().name("Event 5").build());
+        events.add(
+                Event.builder()
+                        .id("1")
+                        .firstName("Sarah")
+                        .lastName("Smith")
+                        .email("Sarah.Smith@myfunnywebsite.org")
+                        .phone("1234567890")
+                        .address(Address.builder()
+                                .streetAddress("1234 Main St")
+                                .zip("H1H 1H1")
+                                .state("QC")
+                                .city("Montreal")
+                                .build())
+                        .eventDateTime(LocalDateTime.now())
+                        .eventType(EventType.BIRTHDAY)
+                        .paymentMethod(PaymentMethod.CASH)
+                        .specialRequest("No special requests")
+                        .build()
+        );
 
         ArrayList<User> students = new ArrayList<>();
         students.add(
@@ -144,7 +161,7 @@ public class DataLoaderService implements CommandLineRunner {
         );
         students.add(
                 Student.builder()
-                        .userId("b69b0c3c-2462-42a1-832d-1a22ke857cba")
+                        .userId("b69b0c3c-2462-42a1-832d-1a29ke857cbf")
                         .joinDate(Instant.now())
                         .registrationStatus(RegistrationStatus.PENDING)
                         .firstName("Lilliam")

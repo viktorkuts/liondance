@@ -1,0 +1,30 @@
+.add-new-user-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+  
+  .add-new-user-form {
+    width: 50%;
+    background-color: #ecba4b; 
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .add-new-user-form h1 {
+    text-align: center;
+    color: #333; 
+    margin-bottom: 1rem;
+  }
+  
+  .add-new-user-form form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem; 
+  }
+  
+  .add-new-user-form button {
+    margin-top: 1rem;
+  }
+  
