@@ -6,11 +6,10 @@ test.use({
   
 test('can view specific student registration', async ({ page }) => {
     await page.goto('http://localhost:5173/');
-    await expect(page.getByText('Welcome!ReviewsContactCalendarBookingRegistrationPending RegistrationsLoginAdmin')).toBeVisible();
-    await expect(page.getByText('ReviewsContactCalendarBookingRegistrationPending RegistrationsLoginAdmin')).toBeVisible();
+    await expect(page.getByText('ReviewsContactCalendarBook')).toBeVisible();
     await expect(page.getByRole('link', { name: 'Pending Registrations' })).toBeVisible();
     await page.getByRole('link', { name: 'Pending Registrations' }).click();
-    await expect(page.getByText('Welcome!ReviewsContactCalendarBookingRegistrationPending RegistrationsLoginAdmin')).toBeVisible();
+    await expect(page.getByText('ReviewsContactCalendarBook')).toBeVisible();
     await expect(page.getByText('Pending RegistrationsNameEmailGenderDate of BirthNikolaos Michaloliakosnikolaos')).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Pending Registrations' })).toBeVisible();
     await expect(page.getByRole('cell', { name: 'Name' })).toBeVisible();

@@ -6,9 +6,11 @@ test.use({
 
 test('can edit specific user details', async ({ page }) => {
  await page.goto('http://localhost:5173/');
- await expect(page.getByText('ReviewsContactCalendarBookingRegistrationPending RegistrationsLoginAdmin')).toBeVisible();
- await expect(page.getByRole('link', { name: 'Admin' })).toBeVisible();
- await page.getByRole('link', { name: 'Admin' }).click();
+ await expect(page.getByText('ReviewsContactCalendarBook')).toBeVisible();
+ await expect(page.getByText('Admin')).toBeVisible();
+ await page.getByText('Admin').click();
+ await expect(page.getByText('Users')).toBeVisible();
+ await page.getByText('Users').click();
  await expect(page.getByText('User ListNameEmailGenderDate')).toBeVisible();
  await expect(page.getByRole('heading', { name: 'User List' })).toBeVisible();
  await expect(page.getByRole('cell', { name: 'Name' })).toBeVisible();
