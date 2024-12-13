@@ -2,11 +2,15 @@ package com.liondance.liondance_backend.presentationlayer.User;
 
 import com.liondance.liondance_backend.datalayer.common.Address;
 import com.liondance.liondance_backend.datalayer.User.Gender;
+import com.liondance.liondance_backend.datalayer.User.User;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.springframework.beans.BeanUtils;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Data
 @SuperBuilder(toBuilder = true)
@@ -33,4 +37,12 @@ public class UserRequestModel {
     private Address address;
 
     private String phone;
+
+    public static User from(UserRequestModel userRequestModel){
+     User user = new User();
+
+        BeanUtils.copyProperties(userRequestModel,user);
+        user.setUserId(UUID.randomUUID().toString());
+        return user;
+    }
 }

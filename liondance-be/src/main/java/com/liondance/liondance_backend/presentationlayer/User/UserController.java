@@ -2,6 +2,7 @@ package com.liondance.liondance_backend.presentationlayer.User;
 
 import com.liondance.liondance_backend.logiclayer.User.UserService;
 import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,5 +32,11 @@ public class UserController {
     @PutMapping("{userId}")
     public Mono<UserResponseModel> updateUser(@PathVariable String userId, @RequestBody UserRequestModel userRequestModel) {
         return userService.updateUser(userId, userRequestModel);
+    }
+
+    @PostMapping()
+    public Mono<UserResponseModel> AddNewUser(@Valid @RequestBody Mono<UserRequestModel> userRequestModel, @RequestParam String role) {
+        role.toUpperCase();
+        return userService.AddNewUser(role, userRequestModel);
     }
 }
