@@ -188,7 +188,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Mono<UserResponseModel> AddNewUser(String role, Mono<UserRequestModel> userRequestModel) {
+    public Mono<UserResponseModel> addNewUser(String role, Mono<UserRequestModel> userRequestModel) {
         return userRequestModel
                 .map(UserRequestModel::from)
                 .map(user -> {
@@ -219,6 +219,22 @@ public class UserServiceImpl implements UserService {
                 .flatMap(userRepository::save)
                 .map(UserResponseModel::from);
     }
+
+    @Override
+    public Mono<UserResponseModel> updateUserRole(String userId, UserRolePatchRequestModel role) {
+        if (role.getRoles() == null || role.getRoles().isEmpty()) {
+            return Mono.error(new IllegalArgumentException("Roles cannot be null or empty"));
+        }
+        return userRepository.findUserByUserId(userId)
+                .switchIfEmpty(Mono.error(new NotFoundException("User with userId: " + userId + " not found")))
+                .map(user -> {
+                    user.setRoles(EnumSet.copyOf(role.getRoles()));
+                    return user;
+                })
+                .flatMap(userRepository::save)
+                .map(UserResponseModel::from);
+    }
+
     @Override
     public Mono<UserResponseModel> getStudentById(String studentId) {
         return userRepository.findByUserId(studentId)
