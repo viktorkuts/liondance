@@ -169,7 +169,7 @@ class UserServiceImplUnitTest {
         Mono<UserResponseModel> result = userService.getStudentById(studentId);
         StepVerifier.create(result)
                 .expectErrorMatches(throwable -> throwable instanceof NotFoundException &&
-                        throwable.getMessage().equals("Student not found with userId: " + studentId))
+                        throwable.getMessage().equals("Student not found with studentId: " + studentId))
                 .verify();
         Mockito.verify(userRepository, Mockito.times(1))
                 .findByUserId(studentId);
