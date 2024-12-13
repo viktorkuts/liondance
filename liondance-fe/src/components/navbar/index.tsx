@@ -2,7 +2,7 @@ import { Anchor, Image } from "@mantine/core";
 import { useState } from "react";
 import classes from "./navbar.module.css";
 import logo from "../../assets/logo.png";
-
+import { useAuth0 } from "@auth0/auth0-react";
 
 function Navbar() {
   const [adminDropdownOpen, setAdminDropdownOpen] = useState(false);
@@ -10,6 +10,8 @@ function Navbar() {
   const toggleAdminDropdown = () => {
     setAdminDropdownOpen(!adminDropdownOpen);
   };
+
+  const { loginWithRedirect } = useAuth0();
 
   return (
     <div className={classes.navbar}>
@@ -42,7 +44,13 @@ function Navbar() {
         <Anchor href="/pending-registrations" fw={1000} fz="h2">
           Pending Registrations
         </Anchor>
-        <Anchor href="/login" fw={1000} fz="h2">
+        <Anchor
+          onClick={() => {
+            loginWithRedirect();
+          }}
+          fw={1000}
+          fz="h2"
+        >
           Login
         </Anchor>
         <div className={classes.dropdown}>

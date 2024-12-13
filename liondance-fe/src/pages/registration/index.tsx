@@ -15,9 +15,10 @@ import { Calendar } from "react-feather";
 import geoService from "@/services/geoService";
 import { Province } from "@/types/geo";
 import { Student } from "@/models/Users";
-import userService from "@/services/userService";
+import { useUserService } from "@/services/userService";
 
 function Registration() {
+  const userService = useUserService();
   const [emailData, setEmailData] = useState<string[]>([]);
   const [emailDataLoading, setEmailDataLoading] = useState<boolean>(false);
   const [emailParentData, setEmailParentData] = useState<string[]>([]);

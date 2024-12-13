@@ -21,4 +21,5 @@ public interface UserRepository extends ReactiveMongoRepository<User, String> {
     Flux<Student> findStudentsByRegistrationStatuses(List<RegistrationStatus> statuses);
     Mono<User> findByUserId(String userId);
     Mono<User> findUserByAssociatedId(String subId);
+    Mono<User> findUserByAssociatedId(String subId);
 }

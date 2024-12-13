@@ -12,7 +12,7 @@ import {
   MultiSelect,
   Notification,
 } from "@mantine/core";
-import userService from "../services/userService";
+import { useUserService } from "../services/userService";
 import geoService from "@/services/geoService";
 import { Address, User } from "@/models/Users.ts";
 import "./userProfile.css";
@@ -33,6 +33,7 @@ interface UserResponseModel {
 }
 
 const UserProfile: React.FC = () => {
+  const userService = useUserService();
   const { userId } = useParams<{ userId: string }>();
   const [user, setUser] = useState<UserResponseModel | null>(null);
   const [error, setError] = useState<string | null>(null);

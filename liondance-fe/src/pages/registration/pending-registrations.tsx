@@ -1,12 +1,13 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 import { useEffect, useState } from "react";
-import axiosInstance from "../../utils/axiosInstance.ts";
+import { useAxiosInstance } from "../../utils/axiosInstance.ts";
 import { Student } from "@/models/Users.ts";
 import "./PendingRegistrations.css";
 import StudentDetailsOverlay from "../../components/StudentDetailsOverlay.tsx";
 
 function PendingRegistrations() {
+  const axiosInstance = useAxiosInstance();
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");

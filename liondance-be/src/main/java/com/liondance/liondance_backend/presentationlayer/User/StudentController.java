@@ -10,6 +10,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -29,8 +37,9 @@ public class StudentController {
         this.courseService = courseService;
     }
 
+    @PreAuthorize("hasAuthority('STUDENT')")
     @GetMapping
-    public Flux<UserResponseModel> getAllStudents() {
+    public Flux<UserResponseModel> getAllStudents(@AuthenticationPrincipal JwtAuthenticationToken jwt) {
         return userService.getAllUsers(Role.STUDENT);
     }
 

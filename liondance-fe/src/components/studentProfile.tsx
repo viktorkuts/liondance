@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Loader, Button, Autocomplete, Select, TextInput } from "@mantine/core";
-import userService from "../services/userService";
+import { useUserService } from "../services/userService";
 import geoService from "@/services/geoService";
 import { Address, Student } from "@/models/Users.ts";
 import "./studentProfile.css";
@@ -24,6 +24,7 @@ interface StudentResponseModel {
 }
 
 const StudentProfile: React.FC = () => {
+  const userService = useUserService();
   const { studentId } = useParams<{ studentId: string }>();
   const [student, setStudent] = useState<StudentResponseModel | null>(null);
   const [error, setError] = useState<string | null>(null);
