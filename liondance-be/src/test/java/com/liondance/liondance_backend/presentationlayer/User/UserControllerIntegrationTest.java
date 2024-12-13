@@ -351,4 +351,38 @@ class UserControllerIntegrationTest {
                 .value(exception -> assertEquals("User with userId: " + userId + " not found", exception.getMessage()));
     }
 
+    @Test
+    void whenGetStudentByIdWithValidId_thenReturnStudentResponseModel() {
+        String studentId = "7876ea26-3f76-4e50-870f-5e5dad6d63d1";
+        client.get()
+                .uri("/api/v1/students/{studentId}", studentId)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(UserResponseModel.class)
+                .value(student -> {
+                    assertEquals(studentId, student.getUserId());
+                    assertEquals(student1.getFirstName(), student.getFirstName());
+                    assertEquals(student1.getLastName(), student.getLastName());
+                    assertEquals(student1.getEmail(), student.getEmail());
+                    assertEquals(student1.getDob(), student.getDob());
+                    assertEquals(student1.getGender(), student.getGender());
+                    assertEquals(student1.getRoles(), student.getRoles());
+                    assertEquals(student1.getAddress(), student.getAddress());
+                });
+    }
+
+    @Test
+    void whenGetStudentByIdWithInvalidId_thenThrowNotFoundException() {
+        String invalidStudentId = "7876ea26-3f76-4e50-870f-5e5dad6d63da";
+        client.get()
+                .uri("/api/v1/students/{studentId}", invalidStudentId)
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody(NotFoundException.class)
+                .value(exception -> assertEquals(
+                        "Student not found with studentId: " + invalidStudentId,
+                        exception.getMessage()
+                ));
+    }
+
 }

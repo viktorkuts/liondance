@@ -1,6 +1,7 @@
 package com.liondance.liondance_backend.logiclayer.User;
 
 import com.liondance.liondance_backend.datalayer.User.*;
+import com.liondance.liondance_backend.presentationlayer.User.StudentResponseModel;
 import com.liondance.liondance_backend.presentationlayer.User.UserResponseModel;
 import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -145,6 +146,33 @@ class UserServiceImplUnitTest {
                 .verifyComplete();
         Mockito.verify(userRepository, Mockito.times(1)).findUserByUserId(userId);
         Mockito.verify(userRepository, Mockito.times(1)).save(student1);
+    }
+
+    @Test
+    void whenGetStudentById_thenReturnStudent() {
+        String studentId = "7876ea26-3f76-4e50-870f-5e5dad6d63d1";
+        Mockito.when(userRepository.findByUserId(studentId))
+                .thenReturn(Mono.just(student1));
+        Mono<UserResponseModel> result = userService.getStudentById(studentId);
+        StepVerifier.create(result)
+                .expectNext(StudentResponseModel.from(student1))
+                .verifyComplete();
+        Mockito.verify(userRepository, Mockito.times(1))
+                .findByUserId(studentId);
+    }
+
+    @Test
+    void whenGetStudentById_thenThrowNotFoundException() {
+        String studentId = "7876ea26-3f76-4e50-870f-5e5dad6d63d1a";
+        Mockito.when(userRepository.findByUserId(studentId))
+                .thenReturn(Mono.empty());
+        Mono<UserResponseModel> result = userService.getStudentById(studentId);
+        StepVerifier.create(result)
+                .expectErrorMatches(throwable -> throwable instanceof NotFoundException &&
+                        throwable.getMessage().equals("Student not found with userId: " + studentId))
+                .verify();
+        Mockito.verify(userRepository, Mockito.times(1))
+                .findByUserId(studentId);
     }
 
 }
