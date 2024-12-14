@@ -7,8 +7,8 @@ import { Gender, RegistrationStatus, Student, Address } from "@/models/Users.ts"
 import './studentProfile.css';
 import { useForm } from "@mantine/form";
 import { Province } from "@/types/geo";
-import {Calendar} from "react-feather";
-import {DateInput} from "@mantine/dates";
+import { Calendar } from "react-feather";
+import { DateInput } from "@mantine/dates";
 
 interface StudentResponseModel {
     userId: string;
@@ -38,7 +38,7 @@ const StudentProfile: React.FC = () => {
     const [provinces, setProvinces] = useState<Province[]>(geoService.provincesCache);
     const [cityData, setCityData] = useState<string[]>([]);
     const [cityDataLoading, setCityDataLoading] = useState<boolean>(false);
-    const [selectedProvince, setSelectedProvince] = useState<string>(student?.address?.state ?? "");
+    const [selectedProvince, setSelectedProvince] = useState<string>("");
 
     useEffect(() => {
         const fetchStudent = async () => {
@@ -124,6 +124,7 @@ const StudentProfile: React.FC = () => {
             // @ts-ignore
             dob: (value) => (value instanceof Date && value <= new Date() ? null : "Invalid date of birth"),
             email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email format"),
+            phone: (value) => (/^\d{3}-\d{3}-\d{4}$/.test(value) ? null : "Invalid phone number format"),
             address: {
                 streetAddress: (value) => (value.length > 0 ? null : "Field is required"),
                 state: (value) => (value.length > 0 ? null : "Field is required"),
@@ -148,26 +149,32 @@ const StudentProfile: React.FC = () => {
         fetchCities();
     });
 
-    const handleSubmit = async () => {
-        const values = form.getValues();
-        const newStudent: Student = {
-            firstName: values.firstName,
-            middleName: values.middleName,
-            lastName: values.lastName,
-            gender: values.gender as Gender,
-            dob: values.dob,
-            email: values.email,
-            phone: values.phone,
-            address: values.address,
-            parentFirstName: values.parentFirstName,
-            parentMiddleName: values.parentMiddleName,
-            parentLastName: values.parentLastName,
-            parentEmail: values.parentEmail,
-            parentPhone: values.parentPhone,
-        };
+    const handleSubmit = async (event: React.FormEvent) => {
+        event.preventDefault();
+        const isValid = form.validate();
+        if (!isValid.hasErrors) {
+            const values = form.values;
+            const newStudent: Student = {
+                firstName: values.firstName,
+                middleName: values.middleName,
+                lastName: values.lastName,
+                gender: values.gender as Gender,
+                dob: values.dob,
+                email: values.email,
+                phone: values.phone,
+                address: values.address,
+                parentFirstName: values.parentFirstName,
+                parentMiddleName: values.parentMiddleName,
+                parentLastName: values.parentLastName,
+                parentEmail: values.parentEmail,
+                parentPhone: values.parentPhone,
+            };
 
-        if (student?.userId) {
-            userService.updateStudent(student.userId, newStudent);
+            if (student?.userId) {
+                await userService.updateStudent(student.userId, newStudent);
+                setModalOpened(false);
+                window.location.reload();
+            }
         }
     };
 
@@ -190,11 +197,21 @@ const StudentProfile: React.FC = () => {
              <p><strong>Phone:</strong> {student.phone}</p>
              <p><strong>Address:</strong> {student.address.streetAddress}, {student.address.city}, {student.address.state} {student.address.zip}</p>
          </div>
-         <button onClick={() => navigate('/students')} className="back-button">Back to Student List</button>
-         <Button onClick={() => setModalOpened(true)} className="edit-button">Edit Student</Button>
-         <Modal opened={modalOpened} onClose={() => setModalOpened(false)} title="Edit Student Profile">
-             <div>
-                 <h1>Update Student Information</h1>
+
+         <div className="modal-buttons">
+             <Button onClick={() => navigate('/students')} className="back-button">Back to Student List</Button>
+             <Button onClick={() => setModalOpened(true)} className="edit-button">Edit Student</Button>
+         </div>
+         <Modal
+          opened={modalOpened}
+          onClose={() => setModalOpened(false)}
+          // eslint-disable-next-line
+          // @ts-ignore
+          classNames={{ modal: 'custom-modal' }}
+         >
+             <div className="custom-modal">
+                 <form onSubmit={handleSubmit} className="modal-content">
+                 <h1>Edit Student Profile</h1>
                  <TextInput
                   label="First Name"
                   placeholder="John"
@@ -235,6 +252,7 @@ const StudentProfile: React.FC = () => {
                  <TextInput
                   label="Phone Number"
                   placeholder="514-123-1234"
+                  required
                   {...form.getInputProps("phone")}
                  />
                  <TextInput
@@ -269,9 +287,12 @@ const StudentProfile: React.FC = () => {
                   required
                   {...form.getInputProps("address.zip")}
                  />
-                 <Button onClick={async () => { await handleSubmit(); setModalOpened(false); window.location.reload(); }}>Update Student</Button>
-                 <Button onClick={() => setModalOpened(false)}>Cancel</Button>
-             </div>
+                 <div className="modal-buttons">
+                     <Button type="submit">Update Student</Button>
+                     <Button onClick={() => setModalOpened(false)}>Cancel</Button>
+                 </div>
+             </form>
+         </div>
          </Modal>
      </div>
     );

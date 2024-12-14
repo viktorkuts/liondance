@@ -7,6 +7,33 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.custom-modal {
+  background-color: var(--mantine-color-lionGold-1);
+  background-size: cover;
+  background-repeat: repeat-y;
+  background-attachment: fixed;
+  background-position: center;
+}
+
+.custom-input {
+  background-color: #fff;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.modal-content .mantine-Input-input {
+  background-color: #ECBA4B !important;
+  border-color: #000000;
+}
+
+.modal-content .mantine-Select-input {
+  background-color: #ECBA4B !important;
+}
+
+.modal-content .mantine-Autocomplete-input {
+  background-color: #ECBA4B !important;
+}
+
 .student-profile h1 {
   text-align: center;
   color: #000000;
@@ -104,7 +131,9 @@
   color: #000000;
 }
 
-.modal-content input {
+.modal-content input,
+.modal-content select,
+.modal-content .mantine-DateInput-root {
   margin-bottom: 10px;
   padding: 10px;
   border: 1px solid #ccc;
@@ -118,7 +147,8 @@
 
 .button-container button,
 .modal-buttons button,
-.back-button {
+.back-button,
+.edit-button {
   background-color: #f44336;
   color: white;
   padding: 10px 20px;
@@ -131,6 +161,7 @@
 
 .button-container button:hover,
 .modal-buttons button:hover,
-.back-button:hover {
+.back-button:hover,
+.edit-button:hover {
   background-color: #d32f2f;
 }
