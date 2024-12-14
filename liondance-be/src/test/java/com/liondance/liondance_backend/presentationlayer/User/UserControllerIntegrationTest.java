@@ -416,7 +416,7 @@ class UserControllerIntegrationTest {
 
     @Test
     void whenUpdateStudentDetailsWithInvalidId_thenThrowNotFoundException() {
-        String userId = UUID.randomUUID().toString();
+        String userId = "invalid-user-id";
         StudentRequestModel rq = StudentRequestModel.builder()
                 .firstName("UpdatedFirstName")
                 .lastName("UpdatedLastName")
