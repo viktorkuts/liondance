@@ -206,6 +206,7 @@ class UserServiceImplUnitTest {
                 .verify();
         Mockito.verify(userRepository, Mockito.times(1)).findByUserId(studentId);
         Mockito.verify(userRepository, Mockito.times(0)).save(Mockito.any(Student.class));
+    }
 
     @Test
     void whenGetStudentById_thenReturnStudent() {
