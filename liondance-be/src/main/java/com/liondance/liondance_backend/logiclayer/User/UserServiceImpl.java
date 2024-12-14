@@ -225,7 +225,7 @@ public class UserServiceImpl implements UserService {
                 .filter(user -> user instanceof Student)
                 .cast(Student.class)
                 .map(StudentResponseModel::from)
-                .switchIfEmpty(Mono.error(new NotFoundException("Student not found with userId: " + studentId)));
+                .switchIfEmpty(Mono.error(new NotFoundException("Student not found with studentId: " + studentId)));
     }
 
     @Override
