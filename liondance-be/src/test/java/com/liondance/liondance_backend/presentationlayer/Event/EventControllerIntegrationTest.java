@@ -185,4 +185,55 @@ class EventControllerIntegrationTest {
                 .expectStatus().isEqualTo(422);
     }
 
+    @Test
+    void whenUpdateEventStatus_thenReturnEventResponseModel() {
+        Event event = eventRepository.findAll().blockFirst();
+        String eventId = event.getId();
+
+        webTestClient.patch()
+                .uri("/api/v1/events/" + eventId + "/status")
+                .header("Content-Type", "application/json")
+                .bodyValue("{\"eventStatus\": \"CONFIRMED\"}")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(EventResponseModel.class);
+    }
+
+    @Test
+    void whenUpdateEventStatus_IncorrectEndpoint_thenReturn404() {
+        Event event = eventRepository.findAll().blockFirst();
+        String eventId = event.getId();
+
+        webTestClient.patch()
+                .uri("/api/v1/event/" + eventId + "/status")
+                .header("Content-Type", "application/json")
+                .bodyValue("{\"eventStatus\": \"CONFIRMED\"}")
+                .exchange()
+                .expectStatus().isNotFound();
+    }
+
+
+    @Test
+    void whenGetEventById_thenReturnEventResponseModel() {
+        Event event = eventRepository.findAll().blockFirst();
+        String eventId = event.getId();
+
+        webTestClient.get()
+                .uri("/api/v1/events/" + eventId)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(EventResponseModel.class);
+    }
+
+    @Test
+    void whenGetEventById_IncorrectEndpoint_thenReturn404() {
+        Event event = eventRepository.findAll().blockFirst();
+        String eventId = event.getId();
+
+        webTestClient.get()
+                .uri("/api/v1/event/" + eventId)
+                .exchange()
+                .expectStatus().isNotFound();
+    }
+
 }

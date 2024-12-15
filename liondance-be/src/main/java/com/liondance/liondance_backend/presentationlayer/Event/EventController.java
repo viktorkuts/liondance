@@ -1,5 +1,6 @@
 package com.liondance.liondance_backend.presentationlayer.Event;
 
+import com.liondance.liondance_backend.datalayer.Event.EventStatus;
 import com.liondance.liondance_backend.logiclayer.Event.EventService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -8,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/events")
@@ -29,4 +32,19 @@ public class EventController {
         return eventService.bookEvent(eventRequestModel)
                 .map(eventResponseModel -> ResponseEntity.status(HttpStatus.CREATED).body(eventResponseModel));
     }
+
+    @PatchMapping("/{eventId}/status")
+    public Mono<ResponseEntity<EventResponseModel>> updateEventStatus(@PathVariable String eventId, @RequestBody Mono<Map<String, String>> requestBody) {
+        return requestBody
+                .map(body -> EventStatus.valueOf(body.get("eventStatus")))
+                .flatMap(status -> eventService.updateEventStatus(eventId, Mono.just(status)))
+                .map(eventResponseModel -> ResponseEntity.ok().body(eventResponseModel));
+    }
+
+    @GetMapping("/{eventId}")
+    public Mono<ResponseEntity<EventResponseModel>> getEventById(@PathVariable String eventId) {
+        return eventService.getEventById(eventId)
+                .map(eventResponseModel -> ResponseEntity.ok().body(eventResponseModel));
+    }
+
 }
