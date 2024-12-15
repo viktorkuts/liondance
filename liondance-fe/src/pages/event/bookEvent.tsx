@@ -39,7 +39,7 @@ function BookEvent() {
   };
 
   const timeOptions = Array.from({ length: 18 }, (_, index) => {
-    const hour = 12 + Math.floor(index / 2); // Hours: 12 to 20 (8 PM)
+    const hour = 12 + Math.floor(index / 2);
     const minute = index % 2 === 0 ? "00" : "30";
     return `${hour > 12 ? hour - 12 : hour}:${minute} ${hour >= 12 ? "PM" : "AM"}`;
   });
@@ -59,7 +59,7 @@ function BookEvent() {
       form.setFieldValue("eventDateTime", combinedDateTime);
       form.clearFieldError("eventDateTime");
     } else {
-      form.setFieldValue("eventDateTime", ""); // Clear if incomplete
+      form.setFieldValue("eventDateTime", ""); 
       form.setFieldError("eventDateTime", "Both date and time are required");
     }
   };
@@ -236,7 +236,7 @@ function BookEvent() {
             placeholder="+1 (123) 456-7890"
             component={IMaskInput}
             mask="+1 (000) 000-0000"
-            {...form.getInputProps("phone", { withError: true })} // Use `withError` to show validation error
+            {...form.getInputProps("phone", { withError: true })} 
             onAccept={(value: string) => {
               form.setFieldValue("phone", value); // Set form value on accept
               form.validateField("phone"); // Trigger validation immediately
