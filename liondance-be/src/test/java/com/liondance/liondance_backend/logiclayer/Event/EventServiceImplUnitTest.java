@@ -219,4 +219,44 @@ class EventServiceImplUnitTest {
                 .verifyComplete();
     }
 
+    @Test
+    void whenUpdateEventStatus_Successful_thenReturnEventResponse() {
+        Mockito.when(eventRepository.findById(anyString()))
+                .thenReturn(Mono.just(event1));
+        Mockito.when(eventRepository.save(any(Event.class)))
+                .thenReturn(Mono.just(event1));
+
+        StepVerifier.create(eventService.updateEventStatus("1", Mono.just(PENDING)))
+                .expectNextMatches(eventResponseModel -> {
+                    Event event = Event.builder().build();
+                    BeanUtils.copyProperties(eventResponseModel, event);
+                    return event.equals(event1);
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void whenUpdateEventStatus_EventNotFound_thenThrowIllegalArgumentException() {
+        Mockito.when(eventRepository.findById(anyString()))
+                .thenReturn(Mono.empty());
+
+        StepVerifier.create(eventService.updateEventStatus("1", Mono.just(PENDING)))
+                .expectError(IllegalArgumentException.class)
+                .verify();
+    }
+
+    @Test
+    void whenGetEventById_Successful_thenReturnEventResponse() {
+        Mockito.when(eventRepository.findById(anyString()))
+                .thenReturn(Mono.just(event1));
+
+        StepVerifier.create(eventService.getEventById("1"))
+                .expectNextMatches(eventResponseModel -> {
+                    Event event = Event.builder().build();
+                    BeanUtils.copyProperties(eventResponseModel, event);
+                    return event.equals(event1);
+                })
+                .verifyComplete();
+    }
+
 }

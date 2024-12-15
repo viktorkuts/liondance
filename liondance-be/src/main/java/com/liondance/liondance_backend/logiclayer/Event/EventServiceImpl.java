@@ -1,6 +1,7 @@
 package com.liondance.liondance_backend.logiclayer.Event;
 
 import com.liondance.liondance_backend.datalayer.Event.EventRepository;
+import com.liondance.liondance_backend.datalayer.Event.EventStatus;
 import com.liondance.liondance_backend.datalayer.Notification.NotificationType;
 import com.liondance.liondance_backend.logiclayer.Notification.NotificationService;
 import com.liondance.liondance_backend.presentationlayer.Event.EventRequestModel;
@@ -68,6 +69,25 @@ public class EventServiceImpl implements EventService {
 
                 })
                 .flatMap(eventRepository::save)
+                .map(EventResponseModel::from);
+    }
+
+    @Override
+    public Mono<EventResponseModel> updateEventStatus(String eventId, Mono<EventStatus> eventStatus) {
+        return eventRepository.findById(eventId)
+                .switchIfEmpty(Mono.error(new IllegalArgumentException("Event not found")))
+                .zipWith(eventStatus)
+                .map(tuple -> {
+                    tuple.getT1().setEventStatus(tuple.getT2());
+                    return tuple.getT1();
+                })
+                .flatMap(eventRepository::save)
+                .map(EventResponseModel::from);
+    }
+
+    @Override
+    public Mono<EventResponseModel> getEventById(String eventId) {
+        return eventRepository.findById(eventId)
                 .map(EventResponseModel::from);
     }
 }
