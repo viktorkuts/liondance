@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Modal, Button, Select } from "@mantine/core";
 import axiosInstance from "@/utils/axiosInstance";
 import { Event, EventStatus } from "@/models/Event";
+import '@/components/studentProfile.css';
 
 interface UpdateEventStatusProps {
  event: Event;
@@ -21,7 +22,7 @@ const UpdateEventStatus: React.FC<UpdateEventStatusProps> = ({ event, onClose, o
    onUpdate(response.data);
    onClose();
   } catch (error) {
-   setError("Failed to update event status. " + error);
+   setError("Failed to update event status, please provide a valid choice.");
   } finally {
    setLoading(false);
   }
