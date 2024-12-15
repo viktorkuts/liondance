@@ -1,171 +1,274 @@
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { Button, Title, Text, Loader } from "@mantine/core";
-import userService from "../services/userService";
-import { User } from "../models/Users";
-import "./userProfile.css";
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Loader, Modal, Button, Autocomplete, Select, TextInput } from '@mantine/core';
+import userService from '../services/userService';
+import geoService from '@/services/geoService';
+import { Gender, Address, User } from "@/models/Users.ts";
+import './userProfile.css';
+import { useForm } from "@mantine/form";
+import { Province } from "@/types/geo";
+import { Calendar } from "react-feather";
+import { DateInput } from "@mantine/dates";
+
+interface UserResponseModel {
+  userId: string;
+  firstName: string;
+  middleName?: string;
+  lastName: string;
+  gender: Gender;
+  dob: string;
+  email: string;
+  phone?: string;
+  address: Address;
+}
 
 const UserProfile: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
+  const [user, setUser] = useState<UserResponseModel | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [modalOpened, setModalOpened] = useState(false);
   const navigate = useNavigate();
-  const [user, setUser] = useState<User | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [updatedUser, setUpdatedUser] = useState<User | null>(null);
+  const [provinces, setProvinces] = useState<Province[]>(geoService.provincesCache);
+  const [cityData, setCityData] = useState<string[]>([]);
+  const [cityDataLoading, setCityDataLoading] = useState<boolean>(false);
+  const [selectedProvince, setSelectedProvince] = useState<string>("");
 
   useEffect(() => {
-    if (userId) {
-      userService.getUserProfile(userId).then((data) => {
+    const fetchUser = async () => {
+      try {
+        const data = await userService.getUserProfile(userId!);
         setUser(data);
-        setUpdatedUser(data);
-      });
-    }
+        form.setValues({
+          firstName: data.firstName,
+          middleName: data.middleName,
+          lastName: data.lastName,
+          gender: data.gender,
+          // eslint-disable-next-line
+          // @ts-ignore
+          dob: new Date(data.dob),
+          email: data.email,
+          phone: data.phone,
+          address: {
+            streetAddress: data.address.streetAddress,
+            city: data.address.city,
+            state: data.address.state,
+            zip: data.address.zip,
+          },
+        });
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : String(err));
+      }
+    };
+
+    fetchUser();
   }, [userId]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setUpdatedUser((prevState) => ({
-      ...prevState!,
-      [name]: value,
-    }));
-  };
+  useEffect(() => {
+    const loadProvinces = async () => {
+      const fetchedProvinces = await geoService.provinces();
+      setProvinces(fetchedProvinces);
+    };
+    loadProvinces();
+  }, []);
 
-  const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setUpdatedUser((prevState) => ({
-      ...prevState!,
+  const provincesFormatted = () => provinces.map((val) => val.name);
+
+  const form = useForm({
+    initialValues: {
+      firstName: "",
+      middleName: "",
+      lastName: "",
+      gender: "",
+      dob: "",
+      email: "",
+      phone: "",
       address: {
-        ...prevState!.address,
-        [name]: value,
+        streetAddress: "",
+        city: "",
+        state: "",
+        zip: "",
       },
-    }));
-  };
+    },
+    validate: {
+      firstName: (value) => (value.length <= 50 ? null : "First name too long"),
+      lastName: (value) => (value.length <= 50 ? null : "Last name too long"),
+      gender: (value) => (["MALE", "FEMALE", "OTHER"].includes(value) ? null : "Invalid gender"),
+      // eslint-disable-next-line
+      // @ts-ignore
+      dob: (value) => (value instanceof Date && value <= new Date() ? null : "Invalid date"),
+      email: (value) => (/^\S+@\S+\.\S+$/.test(value) && value.length <= 100 ? null : "Invalid email"),
+      phone: (value) => (/^\d{3}-\d{3}-\d{4}$/.test(value) ? null : "Invalid phone number"),
+      address: {
+        streetAddress: (value) => (value.length <= 100 ? null : "Street address too long"),
+        city: (value) => (value.length <= 50 ? null : "City name too long"),
+        state: (value) => (provincesFormatted().includes(value) ? null : "Invalid province"),
+        zip: (value) => /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/.test(value) ? null : "Invalid postal code",
+      },
+    },
 
-  const handleUpdateUser = async () => {
-    if (!updatedUser || !userId) return;
-    try {
-      await userService.updateUser(userId, updatedUser);
-      setIsEditing(false);
-      setUser(updatedUser);
-    } catch (error) {
-      console.error("Error updating user:", error);
+  });
+
+  useEffect(() => {
+    const value = form.values.address.state;
+    const province = provinces.find((provinceObj) => provinceObj.name === value);
+    setSelectedProvince(province ? province.code : "");
+  }, [form.values.address.state, provinces]);
+
+  useEffect(() => {
+    const fetchCities = async () => {
+      if (form.values.address.city) {
+        setCityDataLoading(true);
+        const results = await geoService.getCities(form.values.address.city, selectedProvince);
+        setCityData(results.map((city) => city.name));
+        setCityDataLoading(false);
+      }
+    };
+
+    fetchCities();
+  }, [form.values.address.city, selectedProvince]);
+
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const isValid = form.validate();
+    if (!isValid.hasErrors) {
+      const values = form.values;
+      const newUser: User = {
+        firstName: values.firstName,
+        middleName: values.middleName,
+        lastName: values.lastName,
+        gender: values.gender as Gender,
+        dob: values.dob,
+        email: values.email,
+        phone: values.phone,
+        address: values.address,
+      };
+
+      if (user?.userId) {
+        await userService.updateStudent(user.userId, newUser);
+        setModalOpened(false);
+        window.location.reload();
+      }
     }
   };
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   if (!user) {
     return <Loader />;
   }
 
   return (
-    <div className="user-profile">
-      <Title order={1}>
-        {user.firstName} {user.middleName} {user.lastName}
-      </Title>
-      <Text size="lg">Gender: {user.gender}</Text>
-      <Text size="lg">Date of Birth: {user.dob}</Text>
-      <Text size="lg">Email: {user.email}</Text>
-      {user.phone && <Text size="lg">Phone: {user.phone}</Text>}
-      <Text size="lg">
-        Address: {user.address.streetAddress}, {user.address.city},{" "}
-        {user.address.state}, {user.address.zip}
-      </Text>
-      <div className="button-container">
-        <Button variant="outline" onClick={() => setIsEditing(!isEditing)}>
-          {isEditing ? "Cancel" : "Edit Profile"}
-        </Button>
-        <Button variant="outline" onClick={() => navigate("/users")}>
-          Back to User List
-        </Button>
-      </div>
-      {isEditing && (
-        <>
-          <div className="modal-overlay"></div>
-          <div className="modal">
-            <div className="modal-content">
-              <h2>Update User</h2>
-              <input
-                type="text"
-                name="firstName"
-                value={updatedUser!.firstName}
-                onChange={handleChange}
-                placeholder="First Name"
-              />
-              <input
-                type="text"
-                name="middleName"
-                value={updatedUser!.middleName}
-                onChange={handleChange}
-                placeholder="Middle Name"
-              />
-              <input
-                type="text"
-                name="lastName"
-                value={updatedUser!.lastName}
-                onChange={handleChange}
-                placeholder="Last Name"
-              />
-              <input
-                type="email"
-                name="email"
-                value={updatedUser!.email}
-                onChange={handleChange}
-                placeholder="Email"
-              />
-              <input
-                type="date"
-                name="dob"
-                value={updatedUser!.dob}
-                onChange={handleChange}
-                placeholder="Date of Birth"
-              />
-              <input
-                type="text"
-                name="gender"
-                value={updatedUser!.gender}
-                onChange={handleChange}
-                placeholder="Gender"
-              />
-              <input
-                type="text"
-                name="phone"
-                value={updatedUser!.phone}
-                onChange={handleChange}
-                placeholder="Phone"
-              />
-              <input
-                type="text"
-                name="streetAddress"
-                value={updatedUser!.address.streetAddress}
-                onChange={handleAddressChange}
-                placeholder="Street Address"
-              />
-              <input
-                type="text"
-                name="city"
-                value={updatedUser!.address.city}
-                onChange={handleAddressChange}
-                placeholder="City"
-              />
-              <input
-                type="text"
-                name="state"
-                value={updatedUser!.address.state}
-                onChange={handleAddressChange}
-                placeholder="State"
-              />
-              <input
-                type="text"
-                name="zip"
-                value={updatedUser!.address.zip}
-                onChange={handleAddressChange}
-                placeholder="Zip"
-              />
-              <button onClick={handleUpdateUser}>Confirm</button>
-              <button onClick={() => setIsEditing(false)}>Cancel</button>
-            </div>
-          </div>
-        </>
-      )}
-    </div>
+   <div className="user-profile">
+     <h1>User Profile</h1>
+     <div className="user-details">
+       <p><strong>Name:</strong> {user.firstName} {user.middleName} {user.lastName}</p>
+       <p><strong>Gender:</strong> {user.gender}</p>
+       <p><strong>Date of Birth:</strong> {user.dob}</p>
+       <p><strong>Email:</strong> {user.email}</p>
+       <p><strong>Phone:</strong> {user.phone}</p>
+       <p><strong>Address:</strong> {user.address.streetAddress}, {user.address.city}, {user.address.state} {user.address.zip}</p>
+     </div>
+
+     <div className="modal-buttons">
+       <Button onClick={() => navigate('/users')} className="back-button">Back to User List</Button>
+       <Button onClick={() => setModalOpened(true)} className="edit-button">Edit User</Button>
+     </div>
+     <Modal
+      opened={modalOpened}
+      onClose={() => setModalOpened(false)}
+      // eslint-disable-next-line
+      // @ts-ignore
+      classNames={{ modal: 'custom-modal' }}
+     >
+       <div className="custom-modal">
+         <form onSubmit={handleSubmit} className="modal-content">
+           <h1>Edit User Profile</h1>
+           <TextInput
+            label="First Name"
+            placeholder="John"
+            required
+            {...form.getInputProps("firstName")}
+           />
+           <TextInput
+            label="Middle Name"
+            placeholder="Z."
+            {...form.getInputProps("middleName")}
+           />
+           <TextInput
+            label="Last Name"
+            placeholder="Pork"
+            required
+            {...form.getInputProps("lastName")}
+           />
+           <Select
+            label="Gender"
+            required
+            data={["MALE", "FEMALE", "OTHER"]}
+            {...form.getInputProps("gender")}
+           />
+           <DateInput
+            rightSection={<Calendar />}
+            label="Date of Birth"
+            placeholder="January 1, 2000"
+            required
+            maxDate={new Date()}
+            {...form.getInputProps("dob")}
+           />
+           <TextInput
+            label="Email"
+            placeholder="john.doe@example.com"
+            required
+            {...form.getInputProps("email")}
+           />
+           <TextInput
+            label="Phone Number"
+            placeholder="123-123-1234"
+            required
+            {...form.getInputProps("phone")}
+           />
+           <TextInput
+            label="Street Address"
+            placeholder="123 Main Street"
+            required
+            {...form.getInputProps("address.streetAddress")}
+           />
+           <Select
+            mt="md"
+            label="Province"
+            placeholder="Quebec"
+            comboboxProps={{ withinPortal: true }}
+            data={provincesFormatted()}
+            key={form.key("address.state")}
+            required
+            {...form.getInputProps("address.state")}
+           />
+           <Autocomplete
+            label="City"
+            rightSection={cityDataLoading ? <Loader size={12} /> : null}
+            data={cityData}
+            placeholder="Montreal"
+            key={form.key("address.city")}
+            limit={10}
+            required
+            {...form.getInputProps("address.city")}
+           />
+           <TextInput
+            label="Postal Code"
+            placeholder="H1H 1H1"
+            required
+            {...form.getInputProps("address.zip")}
+           />
+           <div className="modal-buttons">
+             <Button type="submit">Update User</Button>
+             <Button onClick={() => setModalOpened(false)}>Cancel</Button>
+           </div>
+         </form>
+       </div>
+     </Modal>
+   </div>
   );
 };
 

@@ -227,4 +227,30 @@ public class UserServiceImpl implements UserService {
                 .map(StudentResponseModel::from)
                 .switchIfEmpty(Mono.error(new NotFoundException("Student not found with studentId: " + studentId)));
     }
+
+    @Override
+    public Mono<UserResponseModel> updateStudent(String studentId, StudentRequestModel studentRequestModel) {
+        return userRepository.findByUserId(studentId)
+                .filter(user -> user instanceof Student)
+                .switchIfEmpty(Mono.error(new NotFoundException("Student not found with userId: " + studentId)))
+                .cast(Student.class)
+                .map(student -> {
+                    student.setFirstName(studentRequestModel.getFirstName());
+                    student.setMiddleName(studentRequestModel.getMiddleName());
+                    student.setLastName(studentRequestModel.getLastName());
+                    student.setGender(studentRequestModel.getGender());
+                    student.setDob(studentRequestModel.getDob());
+                    student.setEmail(studentRequestModel.getEmail());
+                    student.setPhone(studentRequestModel.getPhone());
+                    student.setAddress(studentRequestModel.getAddress());
+                    student.setParentFirstName(studentRequestModel.getParentFirstName());
+                    student.setParentMiddleName(studentRequestModel.getParentMiddleName());
+                    student.setParentLastName(studentRequestModel.getParentLastName());
+                    student.setParentEmail(studentRequestModel.getParentEmail());
+                    student.setParentPhone(studentRequestModel.getParentPhone());
+                    return student;
+                })
+                .flatMap(userRepository::save)
+                .map(UserResponseModel::from);
+    }
 }

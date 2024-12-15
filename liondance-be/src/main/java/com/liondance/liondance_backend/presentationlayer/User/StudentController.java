@@ -66,5 +66,10 @@ public class StudentController {
         return userService.getStudentById(studentId);
     }
 
+    @PutMapping("/{studentId}")
+    public Mono<UserResponseModel> updateStudent(@PathVariable String studentId, @RequestBody StudentRequestModel studentRequestModel) {
+        return userService.updateStudent(studentId, studentRequestModel);
+    }
+
 
 }
