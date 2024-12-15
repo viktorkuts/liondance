@@ -238,19 +238,19 @@ function BookEvent() {
             mask="+1 (000) 000-0000"
             {...form.getInputProps("phone", { withError: true })} 
             onAccept={(value: string) => {
-              form.setFieldValue("phone", value); // Set form value on accept
-              form.validateField("phone"); // Trigger validation immediately
+              form.setFieldValue("phone", value); 
+              form.validateField("phone"); 
             }}
             required
           />
           <DateInput
             label="Event Date"
             placeholder="Pick a date"
-            minDate={dayjs().add(14, "day").toDate()} // Minimum 2 weeks from today
+            minDate={dayjs().add(14, "day").toDate()} 
             value={selectedDate}
             onChange={(date) => {
               setSelectedDate(date);
-              combineDateTime(date, selectedTime); // Combine date and time
+              combineDateTime(date, selectedTime);
             }}
             error={form.errors.eventDateTime}
             required
@@ -264,7 +264,7 @@ function BookEvent() {
             value={selectedTime}
             onChange={(time) => {
               setSelectedTime(time);
-              combineDateTime(selectedDate, time); // Combine date and time
+              combineDateTime(selectedDate, time); 
             }}
             error={form.errors.eventDateTime}
             required
