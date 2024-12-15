@@ -28,7 +28,7 @@ export enum EventStatus {
 }
 
 export interface Event {
-    eventId? : string;
+    id? : string;
     firstName: string;
     middleName?: string;
     lastName: string;
@@ -39,5 +39,5 @@ export interface Event {
     eventType: EventType;
     paymentMethod: PaymentMethod;
     specialRequest?: string;
-    eventStatus?: EventStatus;
+    eventStatus: EventStatus;
 }

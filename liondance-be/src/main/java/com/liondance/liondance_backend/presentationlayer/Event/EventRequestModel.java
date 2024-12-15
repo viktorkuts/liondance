@@ -1,6 +1,7 @@
 package com.liondance.liondance_backend.presentationlayer.Event;
 
 import com.liondance.liondance_backend.datalayer.Event.Event;
+import com.liondance.liondance_backend.datalayer.Event.EventStatus;
 import com.liondance.liondance_backend.datalayer.Event.EventType;
 import com.liondance.liondance_backend.datalayer.Event.PaymentMethod;
 import com.liondance.liondance_backend.datalayer.common.Address;
@@ -44,6 +45,7 @@ public class EventRequestModel {
     @NotNull(message = "paymentMethod is required")
     private PaymentMethod paymentMethod;
     private String specialRequest;
+    private EventStatus eventStatus;
 
     public static Event toEntity(EventRequestModel eventRequestModel) {
         Event newEvent = new Event();
