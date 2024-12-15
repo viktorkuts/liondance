@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../../utils/axiosInstance.ts";
 import { Event } from "@/models/Event.ts";
-import "./booking.module.css";
+import "./eventsList.css";
 
 function GetAllEvents() {
   const [events, setEvents] = useState<Event[]>([]);
@@ -13,7 +13,6 @@ function GetAllEvents() {
       try {
         const response = await axiosInstance.get<{ data: Event[] }>("/events");
 
-        // Access the nested `data` property
         if (response.data && Array.isArray(response.data)) {
           setEvents(response.data);
         } else {
@@ -47,31 +46,30 @@ function GetAllEvents() {
               <th>Name</th>
               <th>Email</th>
               <th>Phone</th>
-              <th>Street Address</th>
-              <th>City</th>
-              <th>State</th>
-              <th>Zip</th>
-              <th>Event Date Time</th>
+              <th>Location</th>
+              <th>Event Date & Time</th>
               <th>Event Type</th>
-              <th>Payment Method</th>
               <th>Special Request</th>
               <th>Event Status</th>
             </tr>
           </thead>
           <tbody>
             {events.map((event) => (
-              <tr key={event.id}>
-                <td>{event.firstName} {event.middleName ?? ""}</td>
+              <tr key={event.eventId}>
+                <td>{event.firstName} {event.lastName}</td>
                 <td>{event.email}</td>
                 <td>{event.phone}</td>
-                <td>{event.address?.streetAddress ?? "N/A"}</td>
-                <td>{event.address?.city ?? "N/A"}</td>
-                <td>{event.address?.state ?? "N/A"}</td>
-                <td>{event.address?.zip ?? "N/A"}</td>
+                <td>
+                {event.address?.streetAddress ?? "N/A"}
+                {event.address?.city ? `, ${event.address.city}` : ""}
+                </td>
                 <td>{new Date(event.eventDateTime).toLocaleString()}</td>
                 <td>{event.eventType}</td>
-                <td>{event.paymentMethod}</td>
-                <td>{event.specialRequest ?? "N/A"}</td>
+                <td>
+                {event.specialRequest && event.specialRequest.trim()
+                    ? event.specialRequest
+                    : "No special requests"}
+                </td>
                 <td>{event.eventStatus ?? "N/A"}</td>
               </tr>
             ))}

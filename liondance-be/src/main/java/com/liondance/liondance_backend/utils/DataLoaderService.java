@@ -2,10 +2,7 @@ package com.liondance.liondance_backend.utils;
 
 import com.liondance.liondance_backend.datalayer.Course.Course;
 import com.liondance.liondance_backend.datalayer.Course.CourseRepository;
-import com.liondance.liondance_backend.datalayer.Event.Event;
-import com.liondance.liondance_backend.datalayer.Event.EventRepository;
-import com.liondance.liondance_backend.datalayer.Event.EventType;
-import com.liondance.liondance_backend.datalayer.Event.PaymentMethod;
+import com.liondance.liondance_backend.datalayer.Event.*;
 import com.liondance.liondance_backend.datalayer.User.*;
 import com.liondance.liondance_backend.datalayer.common.Address;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,10 +33,10 @@ public class DataLoaderService implements CommandLineRunner {
         events.add(
                 Event.builder()
                         .id("1")
-                        .firstName("Sarah")
-                        .lastName("Smith")
-                        .email("Sarah.Smith@myfunnywebsite.org")
-                        .phone("1234567890")
+                        .firstName("Rio")
+                        .lastName("Da Yung OG")
+                        .email("rioodayungog@michigan.com")
+                        .phone("5163847569")
                         .address(Address.builder()
                                 .streetAddress("1234 Main St")
                                 .zip("H1H 1H1")
@@ -47,9 +44,10 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Montreal")
                                 .build())
                         .eventDateTime(LocalDateTime.now())
-                        .eventType(EventType.BIRTHDAY)
+                        .eventType(EventType.OTHER)
                         .paymentMethod(PaymentMethod.CASH)
-                        .specialRequest("No special requests")
+                        .specialRequest("I just got out of jail")
+                        .eventStatus(EventStatus.PENDING)
                         .build()
         );
         events.add(
@@ -68,7 +66,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .eventDateTime(LocalDateTime.now())
                         .eventType(EventType.WEDDING)
                         .paymentMethod(PaymentMethod.CREDIT)
-                        .specialRequest("No special requests")
+                        .eventStatus(EventStatus.PENDING)
                         .build()
         );
         events.add(
@@ -88,6 +86,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .eventType(EventType.BIRTHDAY)
                         .paymentMethod(PaymentMethod.CASH)
                         .specialRequest("Aint no party like a Diddy party")
+                        .eventStatus(EventStatus.PENDING)
                         .build()
         );
         events.add(
@@ -104,9 +103,10 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Chiraq")
                                 .build())
                         .eventDateTime(LocalDateTime.now())
-                        .eventType(EventType.BIRTHDAY)
+                        .eventType(EventType.FESTIVAL)
                         .paymentMethod(PaymentMethod.CASH)
                         .specialRequest("bring lean")
+                        .eventStatus(EventStatus.CANCELLED)
                         .build()
         );
         events.add(
@@ -123,9 +123,9 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Montreal")
                                 .build())
                         .eventDateTime(LocalDateTime.now())
-                        .eventType(EventType.BIRTHDAY)
+                        .eventType(EventType.WEDDING)
                         .paymentMethod(PaymentMethod.CASH)
-                        .specialRequest("No special requests")
+                        .eventStatus(EventStatus.CONFIRMED)
                         .build()
         );
         events.add(
@@ -144,7 +144,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .eventDateTime(LocalDateTime.now())
                         .eventType(EventType.BIRTHDAY)
                         .paymentMethod(PaymentMethod.CASH)
-                        .specialRequest("No special requests")
+                        .eventStatus(EventStatus.CONFIRMED)
                         .build()
         );
         events.add(
@@ -161,9 +161,9 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Montreal")
                                 .build())
                         .eventDateTime(LocalDateTime.now())
-                        .eventType(EventType.BIRTHDAY)
+                        .eventType(EventType.OTHER)
                         .paymentMethod(PaymentMethod.CASH)
-                        .specialRequest("No special requests")
+                        .eventStatus(EventStatus.CANCELLED)
                         .build()
         );
         events.add(
@@ -180,9 +180,10 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Montreal")
                                 .build())
                         .eventDateTime(LocalDateTime.now())
-                        .eventType(EventType.BIRTHDAY)
+                        .eventType(EventType.OTHER)
                         .paymentMethod(PaymentMethod.CASH)
                         .specialRequest("No special requests")
+                        .eventStatus(EventStatus.PENDING)
                         .build()
         );
         events.add(
@@ -199,9 +200,10 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Montreal")
                                 .build())
                         .eventDateTime(LocalDateTime.now())
-                        .eventType(EventType.BIRTHDAY)
-                        .paymentMethod(PaymentMethod.CASH)
+                        .eventType(EventType.FESTIVAL)
+                        .paymentMethod(PaymentMethod.CREDIT)
                         .specialRequest("No special requests")
+                        .eventStatus(EventStatus.PENDING)
                         .build()
         );
         events.add(
@@ -218,9 +220,10 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Montreal")
                                 .build())
                         .eventDateTime(LocalDateTime.now())
-                        .eventType(EventType.BIRTHDAY)
+                        .eventType(EventType.OTHER)
                         .paymentMethod(PaymentMethod.CASH)
                         .specialRequest("i have chair")
+                        .eventStatus(EventStatus.PENDING)
                         .build()
         );
 
