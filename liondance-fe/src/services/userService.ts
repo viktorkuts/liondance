@@ -66,6 +66,13 @@ const updateRegistrationStatus = async (
   );
 };
 
+const updateStudent = async (
+  studentId: string,
+  student: Student
+): Promise<AxiosResponse<Student>> => {
+  return await axiosInstance.put<Student>(`/students/${studentId}`, student);
+}
+
 export default {
   getAllUsers,
   getUserProfile,
@@ -76,4 +83,5 @@ export default {
   getAllStudents,
   getStudentsByStatuses,
   updateRegistrationStatus,
+  updateStudent
 };

@@ -16,12 +16,14 @@ public interface UserService {
     Flux<UserResponseModel> getAllUsers(Role role);
     Mono<UserResponseModel> getUserByUserId(String userId);
     Mono<UserResponseModel> updateUser(String userId, UserRequestModel userRequestModel);
+    Mono<UserResponseModel> AddNewUser(String role,Mono<UserRequestModel> userRequestModel);
+
     Mono<UserResponseModel> updateStudentRegistrationStatus(String userId, RegistrationStatusPatchRequestModel registrationStatus);
     Mono<UserResponseModel> registerStudent(Mono<StudentRequestModel> studentRequestModel);
     Flux<UserResponseModel> getStudentsByRegistrationStatuses(List<RegistrationStatus> statuses);
     Mono<UserResponseModel> getPendingStudentById(String userId);
     Mono<UserResponseModel> getStudentById(String studentId);
+    Mono<UserResponseModel> updateStudent(String studentId, StudentRequestModel studentRequestModel);
 
-    Mono<UserResponseModel> AddNewUser(String role,Mono<UserRequestModel> userRequestModel);
 
 }
