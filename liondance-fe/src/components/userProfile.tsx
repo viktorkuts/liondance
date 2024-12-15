@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Loader, Modal, Button, Autocomplete, Select, TextInput } from '@mantine/core';
+import { Loader, Button, Autocomplete, Select, TextInput } from '@mantine/core';
 import userService from '../services/userService';
 import geoService from '@/services/geoService';
 import { Gender, Address, User } from "@/models/Users.ts";
@@ -26,11 +26,11 @@ const UserProfile: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
   const [user, setUser] = useState<UserResponseModel | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [modalOpened, setModalOpened] = useState(false);
   const navigate = useNavigate();
   const [provinces, setProvinces] = useState<Province[]>(geoService.provincesCache);
   const [cityData, setCityData] = useState<string[]>([]);
   const [cityDataLoading, setCityDataLoading] = useState<boolean>(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [selectedProvince, setSelectedProvince] = useState<string>("");
 
   useEffect(() => {
@@ -105,7 +105,6 @@ const UserProfile: React.FC = () => {
         zip: (value) => /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/.test(value) ? null : "Invalid postal code",
       },
     },
-
   });
 
   useEffect(() => {
@@ -127,7 +126,6 @@ const UserProfile: React.FC = () => {
     fetchCities();
   }, [form.values.address.city, selectedProvince]);
 
-
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const isValid = form.validate();
@@ -138,7 +136,7 @@ const UserProfile: React.FC = () => {
         middleName: values.middleName,
         lastName: values.lastName,
         gender: values.gender as Gender,
-        dob: values.dob,
+        dob: new Date(values.dob).toISOString().split('T')[0],
         email: values.email,
         phone: values.phone,
         address: values.address,
@@ -146,96 +144,75 @@ const UserProfile: React.FC = () => {
 
       if (user?.userId) {
         await userService.updateStudent(user.userId, newUser);
-        setModalOpened(false);
+        setIsEditing(false);
         window.location.reload();
       }
     }
   };
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div className="error">Error: {error}</div>;
   }
 
   if (!user) {
-    return <Loader />;
+    return <Loader className="loading" />;
   }
 
   return (
-   <div className="user-profile">
-     <h1>User Profile</h1>
-     <div className="user-details">
-       <p><strong>Name:</strong> {user.firstName} {user.middleName} {user.lastName}</p>
-       <p><strong>Gender:</strong> {user.gender}</p>
-       <p><strong>Date of Birth:</strong> {user.dob}</p>
-       <p><strong>Email:</strong> {user.email}</p>
-       <p><strong>Phone:</strong> {user.phone}</p>
-       <p><strong>Address:</strong> {user.address.streetAddress}, {user.address.city}, {user.address.state} {user.address.zip}</p>
-     </div>
-
-     <div className="modal-buttons">
-       <Button onClick={() => navigate('/users')} className="back-button">Back to User List</Button>
-       <Button onClick={() => setModalOpened(true)} className="edit-button">Edit User</Button>
-     </div>
-     <Modal
-      opened={modalOpened}
-      onClose={() => setModalOpened(false)}
-      // eslint-disable-next-line
-      // @ts-ignore
-      classNames={{ modal: 'custom-modal' }}
-     >
-       <div className="custom-modal">
-         <form onSubmit={handleSubmit} className="modal-content">
-           <h1>Edit User Profile</h1>
-           <TextInput
+    <div className="user-profile">
+      <h1>User Profile</h1>
+      {isEditing ? (
+        <form onSubmit={handleSubmit} className="form-container">
+          <TextInput
             label="First Name"
             placeholder="John"
             required
             {...form.getInputProps("firstName")}
-           />
-           <TextInput
+          />
+          <TextInput
             label="Middle Name"
             placeholder="Z."
             {...form.getInputProps("middleName")}
-           />
-           <TextInput
+          />
+          <TextInput
             label="Last Name"
             placeholder="Pork"
             required
             {...form.getInputProps("lastName")}
-           />
-           <Select
+          />
+          <Select
             label="Gender"
             required
             data={["MALE", "FEMALE", "OTHER"]}
             {...form.getInputProps("gender")}
-           />
-           <DateInput
+          />
+          <DateInput
             rightSection={<Calendar />}
             label="Date of Birth"
             placeholder="January 1, 2000"
             required
             maxDate={new Date()}
             {...form.getInputProps("dob")}
-           />
-           <TextInput
+          />
+          <TextInput
             label="Email"
             placeholder="john.doe@example.com"
             required
             {...form.getInputProps("email")}
-           />
-           <TextInput
+          />
+          <TextInput
             label="Phone Number"
             placeholder="123-123-1234"
             required
             {...form.getInputProps("phone")}
-           />
-           <TextInput
+          />
+          <TextInput
             label="Street Address"
             placeholder="123 Main Street"
             required
             {...form.getInputProps("address.streetAddress")}
-           />
-           <Select
+          />
+          <Select
             mt="md"
             label="Province"
             placeholder="Quebec"
@@ -244,8 +221,8 @@ const UserProfile: React.FC = () => {
             key={form.key("address.state")}
             required
             {...form.getInputProps("address.state")}
-           />
-           <Autocomplete
+          />
+          <Autocomplete
             label="City"
             rightSection={cityDataLoading ? <Loader size={12} /> : null}
             data={cityData}
@@ -254,21 +231,33 @@ const UserProfile: React.FC = () => {
             limit={10}
             required
             {...form.getInputProps("address.city")}
-           />
-           <TextInput
+          />
+          <TextInput
             label="Postal Code"
             placeholder="H1H 1H1"
             required
             {...form.getInputProps("address.zip")}
-           />
-           <div className="modal-buttons">
-             <Button type="submit">Update User</Button>
-             <Button onClick={() => setModalOpened(false)}>Cancel</Button>
-           </div>
-         </form>
-       </div>
-     </Modal>
-   </div>
+          />
+          <div className="button-container">
+            <Button type="submit">Update User</Button>
+            <Button onClick={() => setIsEditing(false)}>Cancel</Button>
+          </div>
+        </form>
+      ) : (
+        <div className="user-details">
+          <p><strong>Name:</strong> {user.firstName} {user.middleName} {user.lastName}</p>
+          <p><strong>Gender:</strong> {user.gender}</p>
+          <p><strong>Date of Birth:</strong> {user.dob}</p>
+          <p><strong>Email:</strong> {user.email}</p>
+          <p><strong>Phone:</strong> {user.phone}</p>
+          <p><strong>Address:</strong> {user.address.streetAddress}, {user.address.city}, {user.address.state} {user.address.zip}</p>
+          <div className="button-container">
+            <Button onClick={() => navigate('/users')} className="back-button">Back to User List</Button>
+            <Button onClick={() => setIsEditing(true)} className="edit-button">Edit User</Button>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
