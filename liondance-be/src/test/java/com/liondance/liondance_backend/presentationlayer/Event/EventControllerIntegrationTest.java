@@ -212,6 +212,59 @@ class EventControllerIntegrationTest {
                 .expectStatus().isNotFound();
     }
 
+    @Test
+    void whenUpdateEventStatus_withValidStatus_thenReturnEventResponseModel() {
+        Event event = eventRepository.findAll().blockFirst();
+        String eventId = event.getId();
+
+        webTestClient.patch()
+                .uri("/api/v1/events/" + eventId + "/status")
+                .header("Content-Type", "application/json")
+                .bodyValue("{\"eventStatus\": \"CONFIRMED\"}")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(EventResponseModel.class);
+    }
+
+    @Test
+    void whenUpdateEventStatus_withNullStatus_thenReturnServerError() {
+        Event event = eventRepository.findAll().blockFirst();
+        String eventId = event.getId();
+
+        webTestClient.patch()
+                .uri("/api/v1/events/" + eventId + "/status")
+                .header("Content-Type", "application/json")
+                .bodyValue("{\"eventStatus\": null}")
+                .exchange()
+                .expectStatus().is5xxServerError();
+    }
+
+    @Test
+    void whenUpdateEventStatus_withEmptyStatus_thenReturnServerError() {
+        Event event = eventRepository.findAll().blockFirst();
+        String eventId = event.getId();
+
+        webTestClient.patch()
+                .uri("/api/v1/events/" + eventId + "/status")
+                .header("Content-Type", "application/json")
+                .bodyValue("{\"eventStatus\": \"\"}")
+                .exchange()
+                .expectStatus().is5xxServerError();
+    }
+
+    @Test
+    void whenUpdateEventStatus_withInvalidStatus_thenReturnServerError() {
+        Event event = eventRepository.findAll().blockFirst();
+        String eventId = event.getId();
+
+        webTestClient.patch()
+                .uri("/api/v1/events/" + eventId + "/status")
+                .header("Content-Type", "application/json")
+                .bodyValue("{\"eventStatus\": \"INVALID_STATUS\"}")
+                .exchange()
+                .expectStatus().is5xxServerError();
+    }
+
 
     @Test
     void whenGetEventById_thenReturnEventResponseModel() {

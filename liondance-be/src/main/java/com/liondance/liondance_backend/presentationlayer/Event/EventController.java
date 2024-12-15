@@ -39,18 +39,14 @@ public class EventController {
     public Mono<ResponseEntity<EventResponseModel>> updateEventStatus(@PathVariable String eventId, @RequestBody Mono<Map<String, String>> requestBody) {
         return requestBody
                 .flatMap(body -> {
-                    logger.info("Received request body: {}", body);
                     String status = body.get("eventStatus");
-                    logger.info("Extracted status: {}", status);
                     if (status == null || status.isEmpty()) {
-                        logger.error("Status is null or empty");
                         return Mono.error(new IllegalArgumentException("Status cannot be null or empty"));
                     }
                     EventStatus eventStatus;
                     try {
                         eventStatus = EventStatus.valueOf(status.toUpperCase());
                     } catch (IllegalArgumentException e) {
-                        logger.error("Invalid status value: {}", status, e);
                         return Mono.error(new IllegalArgumentException("Invalid status value: " + status));
                     }
                     return eventService.updateEventStatus(eventId, Mono.just(eventStatus));
