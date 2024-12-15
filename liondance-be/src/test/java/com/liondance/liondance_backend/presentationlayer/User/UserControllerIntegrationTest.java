@@ -142,6 +142,10 @@ class UserControllerIntegrationTest {
     }
 
 
+
+
+    // NEEDS FIXING
+
 //    @Test
 //    void whenRegisterStudent_thenReturnUserResponseModel() {
 //        StepVerifier.create(userRepository.findUsersByRolesContaining(Role.STUDENT))
