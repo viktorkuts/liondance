@@ -8,8 +8,9 @@ import StudentCourses from "./student/StudentCourses";
 import AddNewUser from "./admin/AddNewUser";
 import StudentList from "../components/studentList";
 import StudentProfile from "../components/studentProfile";
+import GetAllEvents from "./event/eventsList";
 
-import BookEvent from "./event";
+import BookEvent from "./event/bookEvent";
 
 const pagesData: routerType[] = [
   {
@@ -62,6 +63,11 @@ const pagesData: routerType[] = [
     element: <AddNewUser/>,
     title:"Add Users"
   },
+  {
+    path: "events",
+    element: <GetAllEvents />,
+    title: "Events",
+  }
 ];
 
 export default pagesData;
