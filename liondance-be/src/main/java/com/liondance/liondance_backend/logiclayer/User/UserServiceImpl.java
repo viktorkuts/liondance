@@ -27,6 +27,7 @@ import java.time.Instant;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -188,7 +189,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Mono<UserResponseModel> AddNewUser(String role, Mono<UserRequestModel> userRequestModel) {
+    public Mono<UserResponseModel> addNewUser(String role, Mono<UserRequestModel> userRequestModel) {
         return userRequestModel
                 .map(UserRequestModel::from)
                 .map(user -> {
@@ -219,6 +220,46 @@ public class UserServiceImpl implements UserService {
                 .flatMap(userRepository::save)
                 .map(UserResponseModel::from);
     }
+
+    @Override
+    public Mono<UserResponseModel> updateUserRole(String userId, UserRolePatchRequestModel role) {
+        if (role.getRoles() == null || role.getRoles().isEmpty()) {
+            return Mono.error(new IllegalArgumentException("Roles cannot be null or empty"));
+        }
+        return userRepository.findUserByUserId(userId)
+                .switchIfEmpty(Mono.error(new NotFoundException("User with userId: " + userId + " not found")))
+                .map(user -> {
+                    user.setRoles(EnumSet.copyOf(role.getRoles()));
+                    return user;
+                })
+                .doOnNext(user -> {
+                    String rolesFormatted = role.getRoles().stream()
+                            .map(Enum::name)
+                            .collect(Collectors.joining(", "));
+
+                    String message = new StringBuilder()
+                            .append(user.getFirstName())
+                            .append(", Your role has changed.")
+                            .append("\nYour account now has the following roles: ")
+                            .append(rolesFormatted)
+                            .append("\n\nContact the Admin if this doesn't seem right.")
+                            .toString();
+
+                    Boolean success = notificationService.sendMail(
+                            user.getEmail(),
+                            "Lion Dance Account Role Changes",
+                            message,
+                            NotificationType.AUTHORIZATION
+                    );
+
+                    if(!success){
+                        throw new MailSendException("Failed to send email to " + user.getEmail());
+                    }
+                })
+                .flatMap(userRepository::save)
+                .map(UserResponseModel::from);
+    }
+
     @Override
     public Mono<UserResponseModel> getStudentById(String studentId) {
         return userRepository.findByUserId(studentId)

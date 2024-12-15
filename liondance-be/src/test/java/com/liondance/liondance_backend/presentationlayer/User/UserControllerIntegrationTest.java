@@ -25,13 +25,10 @@ import reactor.test.StepVerifier;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"spring.data.mongodb.port= 0"})
 @ActiveProfiles("test")
@@ -146,7 +143,9 @@ class UserControllerIntegrationTest {
 
 
 
+
     // NEEDS FIXING
+
 //    @Test
 //    void whenRegisterStudent_thenReturnUserResponseModel() {
 //        StepVerifier.create(userRepository.findUsersByRolesContaining(Role.STUDENT))
@@ -441,5 +440,42 @@ class UserControllerIntegrationTest {
                 .expectBody()
                 .jsonPath("$.message").isEqualTo("Student not found with userId: " + userId);
     }
+    @Test
+    void whenUpdateUserRole_thenUserRoleIsUpdated() {
+        UserRolePatchRequestModel rolePatchRequest = UserRolePatchRequestModel.builder()
+                .roles(Collections.singletonList(Role.ADMIN))
+                .build();
 
+        client.patch()
+                .uri("/api/v1/users/" + user1.getUserId() + "/role")
+                .bodyValue(rolePatchRequest)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(UserResponseModel.class)
+                .value(response -> {
+                    assertEquals(user1.getUserId(), response.getUserId());
+                    assertTrue(response.getRoles().contains(Role.ADMIN));
+                });
+
+        StepVerifier.create(userRepository.findUserByUserId(user1.getUserId()))
+                .assertNext(user -> assertTrue(user.getRoles().contains(Role.ADMIN)))
+                .verifyComplete();
+    }
+
+    @Test
+    void whenUpdateUserRoleForNonExistentUser_thenReturnNotFound() {
+        UserRolePatchRequestModel rolePatchRequest = UserRolePatchRequestModel.builder()
+                .roles(Collections.singletonList(Role.ADMIN))
+                .build();
+
+        client.patch()
+                .uri("/api/v1/users/nonexistent-user-id/role")
+                .bodyValue(rolePatchRequest)
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody(String.class)
+                .value(errorMessage -> {
+                    assertTrue(errorMessage.contains("User with userId: nonexistent-user-id not found"));
+                });
+    }
 }
