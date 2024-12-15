@@ -19,9 +19,7 @@ public class EventController {
         this.eventService = eventService;
     }
 
-    @GetMapping(
-            produces = MediaType.TEXT_EVENT_STREAM_VALUE
-    )
+    @GetMapping(produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<EventResponseModel> getAllEvents() {
         return eventService.getAllEvents();
     }
