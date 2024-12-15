@@ -1,6 +1,6 @@
 // userService.ts
 import axiosInstance from "../utils/axiosInstance";
-import { Student, User, RegistrationStatusModel } from "@/models/Users.ts";
+import { Student, User, RegistrationStatusModel, Role } from "@/models/Users.ts";
 import { AxiosResponse } from "axios";
 
 const getAllUsers = async () => {
@@ -73,6 +73,13 @@ const updateStudent = async (
   return await axiosInstance.put<Student>(`/students/${studentId}`, student);
 }
 
+const updateUserRoles = async (
+  userId: string,
+  roles: Role[]
+): Promise<AxiosResponse<Role[]>> => {
+  return await axiosInstance.patch<Role[]>(`/users/${userId}/role`, { roles });
+};
+
 export default {
   getAllUsers,
   getUserProfile,
@@ -83,5 +90,6 @@ export default {
   getAllStudents,
   getStudentsByStatuses,
   updateRegistrationStatus,
-  updateStudent
+  updateStudent,
+  updateUserRoles
 };
