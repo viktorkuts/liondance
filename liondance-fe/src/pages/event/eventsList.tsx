@@ -1,21 +1,26 @@
 import React, { useEffect, useState } from "react";
-import eventService from "@/services/eventService";
-import { Event, EventStatus } from "@/models/Event.ts";
+import axiosInstance from "../../utils/axiosInstance.ts";
+import { Event } from "@/models/Event.ts";
 import "./eventsList.css";
+import UpdateEventStatus from "./updateEventStatus.tsx";
 
 function GetAllEvents() {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
-  const [showModal, setShowModal] = useState<boolean>(false);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
-  const [newStatus, setNewStatus] = useState<string>("");
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const events = await eventService.getAllEvents();
-        setEvents(events);
+        const response = await axiosInstance.get<{ data: Event[] }>("/events");
+        if (response.data && Array.isArray(response.data)) {
+          setEvents(response.data);
+        } else {
+          console.error("Unexpected response structure:", response);
+          setError("Failed to fetch events: Unexpected response format.");
+        }
         setLoading(false);
       } catch (error) {
         console.error("Error fetching events:", error);
@@ -23,47 +28,27 @@ function GetAllEvents() {
         setLoading(false);
       }
     };
-
     fetchEvents();
   }, []);
 
   const handleStatusClick = (event: Event) => {
-    console.log("Selected Event:", event);
     setSelectedEvent(event);
     setShowModal(true);
-  };
-
-  console.log("Current selectedEvent before status change:", selectedEvent);
-
-  const handleStatusChange = async () => {
-    console.log("Current selectedEvent before status change:", selectedEvent); // Debugging
-
-    // Ensure the id field is being used
-    if (!selectedEvent || !selectedEvent.id) {
-      console.error("Selected event or id is undefined");
-      setError("Unable to update status. No event selected.");
-      return;
-    }
-
-    try {
-      await eventService.updateEventStatus(selectedEvent.id, newStatus as EventStatus);
-      setEvents((prevEvents) =>
-       prevEvents.map((evt) =>
-        evt.id === selectedEvent.id
-         ? { ...evt, eventStatus: newStatus as EventStatus }
-         : evt
-       )
-      );
-      setShowModal(false);
-    } catch (error) {
-      console.error("Error updating event status:", error);
-      setError("Failed to update event status. " + error);
-    }
   };
 
   if (loading) return <div className="loading">Loading...</div>;
   if (error) return <div className="error">{error}</div>;
 
+  const handleModalClose = () => {
+    setShowModal(false);
+    setSelectedEvent(null);
+  };
+
+  const handleEventUpdate = (updatedEvent: Event) => {
+    setEvents((prevEvents) =>
+     prevEvents.map((event) => (event.id === updatedEvent.id ? updatedEvent : event))
+    );
+  };
   return (
    <div className="events-list">
      <h1>All Events</h1>
@@ -101,37 +86,25 @@ function GetAllEvents() {
               : "No special requests"}
            </td>
            <td>
-             <button onClick={() => handleStatusClick(event)}>{event.eventStatus ?? "N/A"}</button>
+             <button onClick={() => handleStatusClick(event)}>
+               {event.eventStatus ?? "N/A"}
+             </button>
            </td>
          </tr>
         ))}
         </tbody>
       </table>
      )}
-     {showModal && (
-      <div className="modal">
-        <div className="modal-content">
-          <h2>Change Event Status</h2>
-          <select value={newStatus} onChange={(e) => setNewStatus(e.target.value)}>
-            <option value="">Select Status</option>
-            <option value="Pending">Pending</option>
-            <option value="Confirmed">Confirmed</option>
-            <option value="Cancelled">Cancelled</option>
-          </select>
-          <button onClick={handleStatusChange}>Save</button>
-          <button
-           onClick={() => {
-             setShowModal(false);
-             setNewStatus("");
-           }}
-          >
-            Cancel
-          </button>
-        </div>
-      </div>
+     {selectedEvent && showModal && (
+      <UpdateEventStatus
+       event={selectedEvent}
+       onClose={handleModalClose}
+       onUpdate={handleEventUpdate}
+      />
      )}
    </div>
   );
+
 }
 
 export default GetAllEvents;

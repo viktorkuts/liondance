@@ -243,6 +243,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .eventType(EventType.BIRTHDAY)
                         .paymentMethod(PaymentMethod.CASH)
                         .specialRequest("No special requests")
+                        .eventStatus(EventStatus.PENDING)
                         .build()
         );
         events.add(
@@ -262,6 +263,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .eventType(EventType.BIRTHDAY)
                         .paymentMethod(PaymentMethod.CASH)
                         .specialRequest("No special requests")
+                        .eventStatus(EventStatus.PENDING)
                         .build()
         );
         events.add(
@@ -281,6 +283,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .eventType(EventType.WEDDING)
                         .paymentMethod(PaymentMethod.CREDIT)
                         .specialRequest("Vegetarian meal")
+                        .eventStatus(EventStatus.PENDING)
                         .build()
         );
         events.add(
@@ -300,6 +303,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .eventType(EventType.FESTIVAL)
                         .paymentMethod(PaymentMethod.PAYPAL)
                         .specialRequest("Projector needed")
+                        .eventStatus(EventStatus.PENDING)
                         .build()
         );
         events.add(
@@ -319,6 +323,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .eventType(EventType.FESTIVAL)
                         .paymentMethod(PaymentMethod.CASH)
                         .specialRequest("Whiteboard needed")
+                        .eventStatus(EventStatus.PENDING)
                         .build()
         );
         events.add(
@@ -338,6 +343,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .eventType(EventType.WEDDING)
                         .paymentMethod(PaymentMethod.CREDIT)
                         .specialRequest("Handouts needed")
+                        .eventStatus(EventStatus.PENDING)
                         .build()
         );
 

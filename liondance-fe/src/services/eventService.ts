@@ -11,11 +11,9 @@ const bookEvent = async (event: Event): Promise<AxiosResponse<Event>> => {
   return await axiosInstance.post<Event>("/events", event);
 };
 
-const updateEventStatus = async (
- eventId: string,
- status: EventStatus
-): Promise<AxiosResponse<Event>> => {
-  return await axiosInstance.put<Event>(`/events/${eventId}/status`, { status });
+const updateEventStatus = async (eventId: string, status: EventStatus): Promise<Event> => {
+  const response = await axiosInstance.patch<Event>(`/events/${eventId}/status`, { status });
+  return response.data;
 };
 
 const getEventById = async (eventId: string): Promise<Event> => {
