@@ -301,7 +301,7 @@ const UserProfile: React.FC = () => {
       <Modal opened={roleModalOpened} onClose={() => setRoleModalOpened(false)} title="Change Roles">
         <MultiSelect
           label="Select Roles"
-          data={['STAFF', 'CLIENT', 'ADMIN']}
+          data={['STAFF', 'CLIENT', 'ADMIN', 'STUDENT']}
           value={roles}
           onChange={setRoles}
         />
