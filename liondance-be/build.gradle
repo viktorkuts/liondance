@@ -33,6 +33,7 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	implementation "de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring3x:${flapdoodle}"
+	implementation "org.awaitility:awaitility"
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'io.projectreactor:reactor-test'
