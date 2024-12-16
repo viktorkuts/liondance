@@ -6,12 +6,15 @@ import com.liondance.liondance_backend.datalayer.User.*;
 import com.liondance.liondance_backend.datalayer.common.Address;
 import com.liondance.liondance_backend.logiclayer.User.UserService;
 import com.liondance.liondance_backend.presentationlayer.Course.CourseResponseModel;
+import com.liondance.liondance_backend.utils.exceptions.EmailInUse;
 import com.liondance.liondance_backend.utils.exceptions.InvalidInputException;
 import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
+import com.liondance.liondance_backend.utils.exceptions.StudentNotPending;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.reactivestreams.Publisher;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
@@ -27,6 +30,7 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -94,7 +98,7 @@ class UserControllerIntegrationTest {
             .userId("7876ea26-3f76-4e50-870f-5e5dad6d63d2")
             .firstName("John")
             .lastName("Doe")
-            .email("john.doe@null.local")
+            .email("john.doe-same-same-but-different@null.local")
             .dob(LocalDate.parse("2000-01-01"))
             .gender(Gender.MALE)
             .roles(EnumSet.of(Role.STUDENT))
@@ -141,43 +145,133 @@ class UserControllerIntegrationTest {
                 .hasSize(3);
     }
 
+    @Test
+    void whenRegisterStudent_thenReturnUserResponseModel() {
+        StepVerifier.create(userRepository.findUsersByRolesContaining(Role.STUDENT))
+                .expectNextCount(2)
+                .verifyComplete();
 
+        StudentRequestModel rq = StudentRequestModel.builder()
+                .firstName("Jane")
+                .lastName("Doe")
+                .email("jane.doe-ghost@null.local")
+                .dob(LocalDate.parse("1995-01-01"))
+                .address(Address.builder()
+                        .streetAddress("456 Main St")
+                        .city("Montreal")
+                        .state("QC")
+                        .zip("H0H 0H0")
+                        .build()
+                )
+                .gender(Gender.FEMALE)
+                .build();
 
+        client.post()
+                .uri("/api/v1/students")
+                .bodyValue(rq)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(UserResponseModel.class);
 
-    // NEEDS FIXING
+        StepVerifier.create(userRepository.findUsersByRolesContaining(Role.STUDENT))
+                .expectNextCount(3)
+                .verifyComplete();
+    }
 
-//    @Test
-//    void whenRegisterStudent_thenReturnUserResponseModel() {
-//        StepVerifier.create(userRepository.findUsersByRolesContaining(Role.STUDENT))
-//                .expectNextCount(2)
-//                .verifyComplete();
-//
-//        StudentRequestModel rq = StudentRequestModel.builder()
-//                .firstName("Jane")
-//                .lastName("Doe")
-//                .email("jane.doe@null.local")
-//                .dob(LocalDate.parse("1995-01-01"))
-//                .address(Address.builder()
-//                        .streetAddress("456 Main St")
-//                        .city("Montreal")
-//                        .state("QC")
-//                        .zip("H0H 0H0")
-//                        .build()
-//                )
-//                .gender(Gender.FEMALE)
-//                .build();
-//
-//        client.post()
-//                .uri("/api/v1/students")
-//                .bodyValue(rq)
-//                .exchange()
-//                .expectStatus().isCreated()
-//                .expectBody(UserResponseModel.class);
-//
-//        StepVerifier.create(userRepository.findUsersByRolesContaining(Role.STUDENT))
-//                .expectNextCount(3)
-//                .verifyComplete();
-//    }
+    @Test
+    void whenRegisterStudentWithExistingEmail_thenThrowEmailInUse(){
+        StudentRequestModel rq = new StudentRequestModel();
+        BeanUtils.copyProperties(student1, rq);
+        rq.setFirstName("JaneOther");
+        rq.setLastName("DoeOther");
+        client.post()
+                .uri("/api/v1/students")
+                .bodyValue(rq)
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY)
+                .expectBody(EmailInUse.class);
+    }
+    @Test
+    void whenUpdateStudentRegistrationStatus_thenUpdateRegistrationStatus(){
+        RegistrationStatusPatchRequestModel rq = RegistrationStatusPatchRequestModel.builder()
+                .registrationStatus(RegistrationStatus.ACTIVE)
+                .build();
+        client.patch()
+                .uri("/api/v1/students/7876ea26-3f76-4e50-870f-5e5dad6d63d2/registration-status")
+                .bodyValue(rq)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(StudentResponseModel.class)
+                .value(student -> {
+                    assertEquals("7876ea26-3f76-4e50-870f-5e5dad6d63d2", student.getUserId());
+                    assertEquals("John", student.getFirstName());
+                    assertEquals("Doe", student.getLastName());
+                    assertEquals(RegistrationStatus.ACTIVE, student.getRegistrationStatus());
+                });
+    }
+    @Test
+    void whenUpdateNotPendingStudentRegistrationStatus_thenThrowStudentNotPending(){
+        RegistrationStatusPatchRequestModel rq = RegistrationStatusPatchRequestModel.builder()
+                .registrationStatus(RegistrationStatus.ACTIVE)
+                .build();
+        client.patch()
+                .uri("/api/v1/students/7876ea26-3f76-4e50-870f-5e5dad6d63d1/registration-status")
+                .bodyValue(rq)
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.CONFLICT)
+                .expectBody(StudentNotPending.class);
+    }
+    @Test
+    void whenUpdateNonStudentRegistrationStatus_thenThrowNotFoundException(){
+        String studentId = user1.getUserId();
+        RegistrationStatusPatchRequestModel rq = RegistrationStatusPatchRequestModel.builder()
+                .registrationStatus(RegistrationStatus.ACTIVE)
+                .build();
+        client.patch()
+                .uri("/api/v1/students/{studentId}/registration-status", studentId)
+                .bodyValue(rq)
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody()
+                .jsonPath("$.message").isEqualTo("Student with userId: " + studentId + " not found");
+    }
+    @Test
+    void whenUpdateNotFoundStudentRegistrationStatus_thenThrowNotFoundException(){
+        String userId = UUID.randomUUID().toString();
+        RegistrationStatusPatchRequestModel rq = RegistrationStatusPatchRequestModel.builder()
+                .registrationStatus(RegistrationStatus.ACTIVE)
+                .build();
+        client.patch()
+                .uri("/api/v1/students/{studentId}/registration-status", userId)
+                .bodyValue(rq)
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody()
+                .jsonPath("$.message").isEqualTo("User with userId: " + userId + " not found");
+    }
+    @Test
+    void whenUpdateStudentToInactive_thenDeleteStudent(){
+        RegistrationStatusPatchRequestModel rq = RegistrationStatusPatchRequestModel.builder()
+                .registrationStatus(RegistrationStatus.INACTIVE)
+                .build();
+        client.patch()
+                .uri("/api/v1/students/{studentId}/registration-status", student2.getUserId())
+                .bodyValue(rq)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(StudentResponseModel.class)
+                .value(student -> {
+                    assertEquals(student2.getUserId(), student.getUserId());
+                    assertEquals(student2.getFirstName(), student.getFirstName());
+                    assertEquals(student2.getLastName(), student.getLastName());
+                    assertEquals(RegistrationStatus.INACTIVE, student.getRegistrationStatus());
+                });
+        await().untilAsserted(() -> {
+            StepVerifier.create(userRepository.findById(student2.getUserId()))
+                    .expectNextCount(0)
+                    .verifyComplete();
+        });
+    }
 
     @Test
     public void whenRegisterStudentWithInvalidEmail_thenThrowInvalidInputException() {
