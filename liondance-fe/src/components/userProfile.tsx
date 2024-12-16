@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Loader, Button, Autocomplete, Select, TextInput } from '@mantine/core';
+import { Loader, Button, Autocomplete, Select, TextInput, Modal, MultiSelect, Notification } from '@mantine/core';
 import userService from '../services/userService';
 import geoService from '@/services/geoService';
 import { Gender, Address, User } from "@/models/Users.ts";
@@ -32,6 +32,10 @@ const UserProfile: React.FC = () => {
   const [cityDataLoading, setCityDataLoading] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedProvince, setSelectedProvince] = useState<string>("");
+  const [roleModalOpened, setRoleModalOpened] = useState(false);
+  const [roles, setRoles] = useState<string[]>([]);
+  const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -158,6 +162,17 @@ const UserProfile: React.FC = () => {
     return <Loader className="loading" />;
   }
 
+  const handleRoleUpdate = async () => {
+    try {
+      await userService.updateUserRoles(userId!, roles);
+      setNotification({ type: 'success', message: 'Roles updated successfully.' });
+      setRoleModalOpened(false);
+    } catch {
+      setNotification({ type: 'error', message: 'Failed to update roles. Please try again.' });
+    }
+  };
+  
+
   return (
     <div className="user-profile">
       <h1>User Profile</h1>
@@ -254,7 +269,23 @@ const UserProfile: React.FC = () => {
           <div className="button-container">
             <Button onClick={() => navigate('/users')} className="back-button">Back to User List</Button>
             <Button onClick={() => setIsEditing(true)} className="edit-button">Edit User</Button>
+            <Button onClick={() => setRoleModalOpened(true)}>Change Roles</Button>
           </div>
+          <Modal opened={roleModalOpened} onClose={() => setRoleModalOpened(false)} title="Change Roles">
+            <MultiSelect
+              label="Select Roles"
+              data={['STAFF', 'CLIENT', 'ADMIN', 'STUDENT']}
+              value={roles}
+              onChange={setRoles}
+            />
+            <Button mt="md" onClick={handleRoleUpdate}>
+              Save Roles
+            </Button>
+          </Modal>
+          {notification && (
+            <Notification color={notification.type === 'success' ? 'teal' : 'red'}>{notification.message}</Notification>
+          )}
+
         </div>
       )}
     </div>
