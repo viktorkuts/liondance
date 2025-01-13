@@ -3,6 +3,9 @@ package com.liondance.liondance_backend.utils;
 import com.liondance.liondance_backend.datalayer.Course.Course;
 import com.liondance.liondance_backend.datalayer.Course.CourseRepository;
 import com.liondance.liondance_backend.datalayer.Event.*;
+import com.liondance.liondance_backend.datalayer.Promotion.Promotion;
+import com.liondance.liondance_backend.datalayer.Promotion.PromotionRepository;
+import com.liondance.liondance_backend.datalayer.Promotion.PromotionStatus;
 import com.liondance.liondance_backend.datalayer.User.*;
 import com.liondance.liondance_backend.datalayer.common.Address;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,9 @@ public class DataLoaderService implements CommandLineRunner {
 
     @Autowired
     CourseRepository courseRepository;
+
+    @Autowired
+    PromotionRepository promotionRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -1022,7 +1028,47 @@ public class DataLoaderService implements CommandLineRunner {
                         .roles(EnumSet.of(Role.CLIENT))
                         .build()
         );
-
+ArrayList<Promotion> promotions = new ArrayList<>();
+        promotions.add(
+                Promotion.builder()
+                        .promotionId("e876774d-ca7d-40cd-b828-cc007bff3b82")
+                        .promotionName("Summer Sale")
+                        .startDate(LocalDate.of(2025, 6, 1))
+                        .endDate(LocalDate.of(2025, 8, 31))
+                        .discountRate(0.20)
+                        .promotionStatus(PromotionStatus.INACTIVE)
+                        .build()
+        );
+        promotions.add(
+                Promotion.builder()
+                        .promotionId("c7ce931c-0455-43e5-8868-706a406cfb57")
+                        .promotionName("Back to School Sale")
+                        .startDate(LocalDate.of(2025, 9, 1))
+                        .endDate(LocalDate.of(2025, 9, 30))
+                        .discountRate(0.15)
+                        .promotionStatus(PromotionStatus.INACTIVE)
+                        .build()
+        );
+        promotions.add(
+                Promotion.builder()
+                        .promotionId("df428a05-9174-4189-aff8-d0d60bd5a530")
+                        .promotionName("Black Friday Sale")
+                        .startDate(LocalDate.of(2025, 11, 1))
+                        .endDate(LocalDate.of(2025, 11, 30))
+                        .discountRate(0.25)
+                        .promotionStatus(PromotionStatus.INACTIVE)
+                        .build()
+        );
+        promotions.add(
+                Promotion.builder()
+                        .promotionId("9e365149-bf68-497c-babe-e55cc6ac289c")
+                        .promotionName("Cyber Monday Sale")
+                        .startDate(LocalDate.of(2025, 12, 1))
+                        .endDate(LocalDate.of(2025, 12, 31))
+                        .discountRate(0.30)
+                        .promotionStatus(PromotionStatus.INACTIVE)
+                        .build()
+        );
 
         List<String> userIds = new ArrayList<>();
         userIds.add("a79b0c3c-2462-42a1-922d-1a20be857cba");
@@ -1040,5 +1086,6 @@ public class DataLoaderService implements CommandLineRunner {
         eventRepository.insert(events).subscribe();
         userRepository.insert(students).subscribe();
         courseRepository.insert(course).subscribe();
+        promotionRepository.insert(promotions).subscribe();
     }
 }
