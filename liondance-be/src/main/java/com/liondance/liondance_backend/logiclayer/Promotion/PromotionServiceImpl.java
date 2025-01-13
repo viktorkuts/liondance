@@ -2,6 +2,7 @@ package com.liondance.liondance_backend.logiclayer.Promotion;
 
 import com.liondance.liondance_backend.datalayer.Promotion.PromotionRepository;
 import com.liondance.liondance_backend.presentationlayer.Promotion.PromotionResponseModel;
+import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -22,6 +23,6 @@ public class PromotionServiceImpl implements PromotionService {
 
     @Override
     public Mono<PromotionResponseModel> getPromotionById(String promotionId) {
-        return promotionRepository.findByPromotionId(promotionId).map(PromotionResponseModel::from);
+        return promotionRepository.findByPromotionId(promotionId).map(PromotionResponseModel::from).switchIfEmpty(Mono.error( new NotFoundException("Promotion not found")));
     }
 }
