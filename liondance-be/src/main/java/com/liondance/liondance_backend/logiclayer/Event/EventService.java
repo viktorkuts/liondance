@@ -6,9 +6,12 @@ import com.liondance.liondance_backend.presentationlayer.Event.EventResponseMode
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
+
 public interface EventService {
     public Flux<EventResponseModel> getAllEvents();
     public Mono<EventResponseModel> bookEvent(Mono< EventRequestModel> eventRequestModel);
     public Mono<EventResponseModel> updateEventStatus(String eventId, Mono<EventStatus> eventStatus);
     public Mono<EventResponseModel> getEventById(String eventId);
+    public Mono<EventResponseModel> rescheduleEvent(String eventId, LocalDateTime eventDateTime);
 }

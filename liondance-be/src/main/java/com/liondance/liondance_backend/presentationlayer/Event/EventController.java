@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,6 +59,25 @@ public class EventController {
     @GetMapping("/{eventId}")
     public Mono<ResponseEntity<EventResponseModel>> getEventById(@PathVariable String eventId) {
         return eventService.getEventById(eventId)
+                .map(eventResponseModel -> ResponseEntity.ok().body(eventResponseModel));
+    }
+
+    @PatchMapping("/{eventId}/date")
+    public Mono<ResponseEntity<EventResponseModel>> rescheduleEvent(@PathVariable String eventId, @RequestBody Mono<Map<String, String>> requestBody) {
+        return requestBody
+                .flatMap(body -> {
+                    String date = body.get("eventDateTime");
+                    if (date == null || date.isEmpty()) {
+                        return Mono.error(new IllegalArgumentException("Date cannot be null or empty"));
+                    }
+                    LocalDateTime eventDateTime;
+                    try {
+                        eventDateTime = LocalDateTime.parse(date);
+                    } catch (IllegalArgumentException e) {
+                        return Mono.error(new IllegalArgumentException("Invalid date value: " + date));
+                    }
+                    return eventService.rescheduleEvent(eventId, eventDateTime);
+                })
                 .map(eventResponseModel -> ResponseEntity.ok().body(eventResponseModel));
     }
 }
