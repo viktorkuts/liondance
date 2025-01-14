@@ -3,6 +3,7 @@ import axiosInstance from "../../utils/axiosInstance.ts";
 import { Event } from "@/models/Event.ts";
 import "./eventsList.css";
 import UpdateEventStatus from "./updateEventStatus.tsx";
+import RescheduleEvent from "./rescheduleEvent.tsx";
 
 function GetAllEvents() {
   const [events, setEvents] = useState<Event[]>([]);
@@ -10,6 +11,7 @@ function GetAllEvents() {
   const [error, setError] = useState<string>("");
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [showRescheduleModal, setShowRescheduleModal] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -36,6 +38,11 @@ function GetAllEvents() {
     setShowModal(true);
   };
 
+  const handleRescheduleClick = (event: Event) => {
+    setSelectedEvent(event);
+    setShowRescheduleModal(true);
+  };
+
   if (loading) return <div className="loading">Loading...</div>;
   if (error) return <div className="error">{error}</div>;
 
@@ -44,13 +51,23 @@ function GetAllEvents() {
     setSelectedEvent(null);
   };
 
+  const handleRescheduleModalClose = () => {
+    setShowRescheduleModal(false);
+    setSelectedEvent(null);
+  };
+
   const handleEventUpdate = (updatedEvent: Event) => {
     setEvents((prevEvents) =>
      prevEvents.map((event) => (event.id === updatedEvent.id ? updatedEvent : event))
     );
   };
+  const handleReschedule = (updatedEvent: Event) => {
+    setEvents((prevEvents) =>
+      prevEvents.map((event) => (event.id === updatedEvent.id ? updatedEvent : event))
+    );
+  };
   return (
-   <div className="events-list">
+    <div className="events-list">
      <h1>All Events</h1>
      {events.length === 0 ? (
       <p className="no-data">No events found.</p>
@@ -66,6 +83,7 @@ function GetAllEvents() {
           <th>Event Type</th>
           <th>Special Request</th>
           <th>Event Status</th>
+          <th>Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -90,6 +108,11 @@ function GetAllEvents() {
                {event.eventStatus ?? "N/A"}
              </button>
            </td>
+           <td>
+             <button onClick={() => handleRescheduleClick(event)}>
+               Reschedule
+             </button>
+           </td>
          </tr>
         ))}
         </tbody>
@@ -100,6 +123,13 @@ function GetAllEvents() {
        event={selectedEvent}
        onClose={handleModalClose}
        onUpdate={handleEventUpdate}
+      />
+     )}
+     {selectedEvent && showRescheduleModal && (
+      <RescheduleEvent
+       event={selectedEvent}
+       onClose={handleRescheduleModalClose}
+       onReschedule={handleReschedule}
       />
      )}
    </div>

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -94,7 +95,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Mono<EventResponseModel> rescheduleEvent(String eventId, LocalDateTime eventDateTime) {
+    public Mono<EventResponseModel> rescheduleEvent(String eventId, Instant eventDateTime) {
         return eventRepository.findById(eventId)
                 .switchIfEmpty(Mono.error(new IllegalArgumentException("Event not found")))
                 .map(event -> {
