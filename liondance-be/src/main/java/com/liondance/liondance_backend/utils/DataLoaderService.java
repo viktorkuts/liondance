@@ -3,6 +3,9 @@ package com.liondance.liondance_backend.utils;
 import com.liondance.liondance_backend.datalayer.Course.Course;
 import com.liondance.liondance_backend.datalayer.Course.CourseRepository;
 import com.liondance.liondance_backend.datalayer.Event.*;
+import com.liondance.liondance_backend.datalayer.Promotion.Promotion;
+import com.liondance.liondance_backend.datalayer.Promotion.PromotionRepository;
+import com.liondance.liondance_backend.datalayer.Promotion.PromotionStatus;
 import com.liondance.liondance_backend.datalayer.User.*;
 import com.liondance.liondance_backend.datalayer.common.Address;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,9 @@ public class DataLoaderService implements CommandLineRunner {
 
     @Autowired
     CourseRepository courseRepository;
+
+    @Autowired
+    PromotionRepository promotionRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -1022,7 +1028,117 @@ public class DataLoaderService implements CommandLineRunner {
                         .roles(EnumSet.of(Role.CLIENT))
                         .build()
         );
-
+ArrayList<Promotion> promotions = new ArrayList<>();
+        promotions.add(
+                Promotion.builder()
+                        .promotionId("e876774d-ca7d-40cd-b828-cc007bff3b82")
+                        .promotionName("Summer Sale")
+                        .startDate(LocalDate.of(2025, 6, 1))
+                        .endDate(LocalDate.of(2025, 8, 31))
+                        .discountRate(0.20)
+                        .promotionStatus(PromotionStatus.INACTIVE)
+                        .build()
+        );
+        promotions.add(
+                Promotion.builder()
+                        .promotionId("c7ce931c-0455-43e5-8868-706a406cfb57")
+                        .promotionName("Back to School Sale")
+                        .startDate(LocalDate.of(2025, 9, 1))
+                        .endDate(LocalDate.of(2025, 9, 30))
+                        .discountRate(0.15)
+                        .promotionStatus(PromotionStatus.INACTIVE)
+                        .build()
+        );
+        promotions.add(
+                Promotion.builder()
+                        .promotionId("df428a05-9174-4189-aff8-d0d60bd5a530")
+                        .promotionName("Black Friday Sale")
+                        .startDate(LocalDate.of(2025, 11, 1))
+                        .endDate(LocalDate.of(2025, 11, 30))
+                        .discountRate(0.25)
+                        .promotionStatus(PromotionStatus.INACTIVE)
+                        .build()
+        );
+        promotions.add(
+                Promotion.builder()
+                        .promotionId("9e365149-bf68-497c-babe-e55cc6ac289c")
+                        .promotionName("Cyber Monday Sale")
+                        .startDate(LocalDate.of(2025, 12, 1))
+                        .endDate(LocalDate.of(2025, 12, 31))
+                        .discountRate(0.30)
+                        .promotionStatus(PromotionStatus.INACTIVE)
+                        .build()
+        );
+        promotions.add(
+                Promotion.builder()
+                        .promotionId("ea51f582-9508-425f-934d-984fcc3efe3f")
+                        .promotionName("Christmas Sale")
+                        .startDate(LocalDate.of(2025, 12, 1))
+                        .endDate(LocalDate.of(2025, 12, 31))
+                        .discountRate(0.35)
+                        .promotionStatus(PromotionStatus.INACTIVE)
+                        .build()
+        );
+        promotions.add(
+                Promotion.builder()
+                        .promotionId("481b4392-2aa9-4cf9-ae60-d538df0222d8")
+                        .promotionName("New Year Sale")
+                        .startDate(LocalDate.of(2026, 1, 1))
+                        .endDate(LocalDate.of(2026, 1, 31))
+                        .discountRate(0.20)
+                        .promotionStatus(PromotionStatus.INACTIVE)
+                        .build()
+        );
+        promotions.add(
+                Promotion.builder()
+                        .promotionId("9d96f753-f67d-4998-9dcc-fffb2e1fe64a")
+                        .promotionName("Valentine's Day Sale")
+                        .startDate(LocalDate.of(2026, 2, 1))
+                        .endDate(LocalDate.of(2026, 2, 28))
+                        .discountRate(0.15)
+                        .promotionStatus(PromotionStatus.INACTIVE)
+                        .build()
+        );
+        promotions.add(
+                Promotion.builder()
+                        .promotionId("d67ac8de-5465-4782-8c77-e184b2b99658")
+                        .promotionName("Spring Sale")
+                        .startDate(LocalDate.of(2026, 3, 1))
+                        .endDate(LocalDate.of(2026, 5, 31))
+                        .discountRate(0.20)
+                        .promotionStatus(PromotionStatus.INACTIVE)
+                        .build()
+        );
+        promotions.add(
+                Promotion.builder()
+                        .promotionId("1bd8d981-5b33-4a37-8cf1-7686687c7c13")
+                        .promotionName("Easter Sale")
+                        .startDate(LocalDate.of(2026, 4, 1))
+                        .endDate(LocalDate.of(2026, 4, 30))
+                        .discountRate(0.25)
+                        .promotionStatus(PromotionStatus.INACTIVE)
+                        .build()
+        );
+        promotions.add(
+                Promotion.builder()
+                        .promotionId("1b270296-10ab-41a3-b0b5-5c494507a4ee")
+                        .promotionName("Mother's Day Sale")
+                        .startDate(LocalDate.of(2026, 5, 1))
+                        .endDate(LocalDate.of(2026, 5, 31))
+                        .discountRate(0.15)
+                        .promotionStatus(PromotionStatus.INACTIVE)
+                        .build()
+        );
+        promotions.add(
+                Promotion.builder()
+                        .promotionId("6dd48251-fbae-459f-929b-694cf16a393f")
+                        .promotionName("Father's Day Sale")
+                        .startDate(LocalDate.of(2026, 6, 1))
+                        .endDate(LocalDate.of(2026, 6, 30))
+                        .discountRate(0.15)
+                        .promotionStatus(PromotionStatus.INACTIVE)
+                        .build()
+        );
 
         List<String> userIds = new ArrayList<>();
         userIds.add("a79b0c3c-2462-42a1-922d-1a20be857cba");
@@ -1040,5 +1156,6 @@ public class DataLoaderService implements CommandLineRunner {
         eventRepository.insert(events).subscribe();
         userRepository.insert(students).subscribe();
         courseRepository.insert(course).subscribe();
+        promotionRepository.insert(promotions).subscribe();
     }
 }

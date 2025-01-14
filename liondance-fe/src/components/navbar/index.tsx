@@ -54,6 +54,9 @@ function Navbar() {
               <Anchor href="/events" fw={1000} fz="h2">
                Events
               </Anchor>
+              <Anchor href="/promotions" fw={1000} fz="h2">
+              Promotions
+              </Anchor>
            </div>
           )}
         </div>

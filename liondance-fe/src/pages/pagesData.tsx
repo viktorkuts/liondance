@@ -11,6 +11,8 @@ import StudentProfile from "../components/studentProfile";
 import GetAllEvents from "./event/eventsList";
 
 import BookEvent from "./event/bookEvent";
+import PromotionsList from "./admin/promotionsList";
+import PromotionDetails from "./admin/promotionDetails";
 
 const pagesData: routerType[] = [
   {
@@ -67,6 +69,16 @@ const pagesData: routerType[] = [
     path: "events",
     element: <GetAllEvents />,
     title: "Events",
+  },
+  {
+    path: "promotions",
+    element: <PromotionsList/>,
+    title: "Promotions"
+  },
+  {
+    path:"promotions/:promotionId",
+    element: <PromotionDetails/>,
+    title: "Promotion Details"
   }
 ];
 
