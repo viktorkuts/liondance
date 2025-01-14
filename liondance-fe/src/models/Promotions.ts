@@ -1,7 +1,7 @@
 export interface Promotion{
-    promotionid: String
-    promotionName: String
-    discountRate: Number
+    promotionId: string
+    promotionName: string
+    discountRate: number
     startDate: Date
     endDate: Date
     promotionStatus: promotionStatus
