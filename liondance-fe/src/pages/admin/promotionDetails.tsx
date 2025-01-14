@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { Loader, Card } from '@mantine/core';
+import { useParams, Link } from 'react-router-dom';
+import { Loader, Card, Button } from '@mantine/core';
 import { getPromotionById } from '@/services/promotionService';
 import { Promotion } from '@/models/Promotions';
 import './promotions.css';
@@ -35,7 +35,7 @@ const PromotionDetails: React.FC = () => {
       {promotion && (
         <Card shadow="sm" p="lg" radius="md" withBorder>
           <h2>{promotion.promotionName}</h2>
-          <p><strong>Discount Rate:</strong> {promotion.discountRate}*100 %</p>
+          <p><strong>Discount Rate:</strong> {promotion.discountRate*100}%</p>
           <p>
             <strong>Start Date:</strong>{' '}
             {new Date(promotion.startDate).toLocaleDateString('en-CA')}
@@ -45,6 +45,8 @@ const PromotionDetails: React.FC = () => {
             {new Date(promotion.endDate).toLocaleDateString('en-CA')}
           </p>
           <p><strong>Status:</strong> {promotion.promotionStatus}</p>
+          <Button color='red' size='sm' radius='sm'> Edit </Button>
+          <Button color='yellow' size='sm' radius='sm'component={Link} to="/promotions" >Back</Button>
         </Card>
       )}
     </div>
