@@ -33,7 +33,7 @@ public class DataLoaderService implements CommandLineRunner {
         ArrayList<Event> events = new ArrayList<>();
         events.add(
                 Event.builder()
-                        .id("1")
+                        .id("0c384884-8982-45f3-b631-37badc516b7d")
                         .firstName("Rio")
                         .lastName("Da Yung OG")
                         .email("rioodayungog@michigan.com")
@@ -53,7 +53,7 @@ public class DataLoaderService implements CommandLineRunner {
         );
         events.add(
                 Event.builder()
-                        .id("2")
+                        .id("3285f5a9-b643-406e-83c9-890271e78bce")
                         .firstName("Joshua")
                         .lastName("Block")
                         .email("joshblock@billysio.org")
@@ -72,7 +72,7 @@ public class DataLoaderService implements CommandLineRunner {
         );
         events.add(
                 Event.builder()
-                        .id("3")
+                        .id("3285f5a9-b643-406e-83c9-890271e78bva")
                         .firstName("P.")
                         .lastName("Diddy")
                         .email("thediddler@diddy.org")
@@ -92,7 +92,7 @@ public class DataLoaderService implements CommandLineRunner {
         );
         events.add(
                 Event.builder()
-                        .id("4")
+                        .id("3285f5a9-b123-406e-83c9-890271e78bce")
                         .firstName("Chief")
                         .lastName("Keef")
                         .email("lovesosa@threehunna.com")
@@ -112,7 +112,7 @@ public class DataLoaderService implements CommandLineRunner {
         );
         events.add(
                 Event.builder()
-                        .id("5")
+                        .id("3285f5a9-b643-406e-83c9-732481e78bce")
                         .firstName("Neymar")
                         .lastName("Jr")
                         .email("neymar@cbf.br")
@@ -131,7 +131,7 @@ public class DataLoaderService implements CommandLineRunner {
         );
         events.add(
                 Event.builder()
-                        .id("6")
+                        .id("8547f5a9-b643-406e-83c9-890271e78bce")
                         .firstName("Trannos")
                         .lastName("O.")
                         .email("trannos@trannoios.gr")
@@ -150,7 +150,7 @@ public class DataLoaderService implements CommandLineRunner {
         );
         events.add(
                 Event.builder()
-                        .id("7")
+                        .id("75a74804-af57-49ce-a8c7-7211d7d0f9ee")
                         .firstName("Billy")
                         .lastName("Sio")
                         .email("billysio@icedout.org")
@@ -169,7 +169,7 @@ public class DataLoaderService implements CommandLineRunner {
         );
         events.add(
                 Event.builder()
-                        .id("8")
+                        .id("75a74804-af57-49ce-a8c7-7211d7d0f9dd")
                         .firstName("Thug")
                         .lastName("Slime")
                         .email("thugslime@worstrapperintheworld.org")
@@ -189,7 +189,7 @@ public class DataLoaderService implements CommandLineRunner {
         );
         events.add(
                 Event.builder()
-                        .id("9")
+                        .id("75a74804-af33-12ce-a8c7-7211d7d0f9ee")
                         .firstName("Dimitris")
                         .lastName("Mitropanos")
                         .email("roza@mitropanos.gr")
@@ -209,7 +209,7 @@ public class DataLoaderService implements CommandLineRunner {
         );
         events.add(
                 Event.builder()
-                        .id("10")
+                        .id("75a74804-af57-49ce-a8c7-1265d7d0f9ee")
                         .firstName("Borat")
                         .lastName("Sagdiyev")
                         .email("borat@kazakhstan.org")

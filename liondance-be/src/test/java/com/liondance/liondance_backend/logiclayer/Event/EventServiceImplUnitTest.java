@@ -8,7 +8,6 @@ import com.liondance.liondance_backend.datalayer.Notification.NotificationType;
 import com.liondance.liondance_backend.datalayer.common.Address;
 import com.liondance.liondance_backend.logiclayer.Notification.NotificationService;
 import com.liondance.liondance_backend.presentationlayer.Event.EventRequestModel;
-import com.liondance.liondance_backend.presentationlayer.Event.EventResponseModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,6 +21,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -58,7 +58,7 @@ class EventServiceImplUnitTest {
                                 "Quebec",
                                 "J2X 2J4")
                 )
-                .eventDateTime(LocalDate.now().atTime(LocalTime.NOON))
+                .eventDateTime(Instant.now())
                 .eventType(EventType.WEDDING)
                 .paymentMethod(PaymentMethod.CASH)
                 .specialRequest("Special request")
@@ -77,7 +77,7 @@ class EventServiceImplUnitTest {
                                 "Quebec",
                                 "J2X 2J4")
                 )
-                .eventDateTime(LocalDate.now().atTime(LocalTime.NOON))
+                .eventDateTime(Instant.now())
                 .eventType(EventType.WEDDING)
                 .paymentMethod(PaymentMethod.CASH)
                 .specialRequest("Special request")
@@ -257,6 +257,32 @@ class EventServiceImplUnitTest {
                     return event.equals(event1);
                 })
                 .verifyComplete();
+    }
+
+    @Test
+    void whenRescheduleEvent_Successful_thenReturnEventResponse() {
+        Mockito.when(eventRepository.findById(anyString()))
+                .thenReturn(Mono.just(event1));
+        Mockito.when(eventRepository.save(any(Event.class)))
+                .thenReturn(Mono.just(event1));
+
+        StepVerifier.create(eventService.rescheduleEvent("1", Instant.now()))
+                .expectNextMatches(eventResponseModel -> {
+                    Event event = Event.builder().build();
+                    BeanUtils.copyProperties(eventResponseModel, event);
+                    return event.equals(event1);
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void whenRescheduleEvent_EventNotFound_thenThrowIllegalArgumentException() {
+        Mockito.when(eventRepository.findById(anyString()))
+                .thenReturn(Mono.empty());
+
+        StepVerifier.create(eventService.rescheduleEvent("1", Instant.now()))
+                .expectError(IllegalArgumentException.class)
+                .verify();
     }
 
 }
