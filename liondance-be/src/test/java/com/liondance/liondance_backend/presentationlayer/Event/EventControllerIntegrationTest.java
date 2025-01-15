@@ -17,8 +17,11 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
+
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"spring.data.mongodb.port= 0"})
 @ActiveProfiles("test")
@@ -45,7 +48,7 @@ class EventControllerIntegrationTest {
                                 "Quebec",
                                 "J2X 2J4")
                 )
-                        .eventDateTime(LocalDate.now().atTime(LocalTime.NOON))
+                        .eventDateTime(Instant.now())
             .eventType(EventType.WEDDING)
                 .paymentMethod(PaymentMethod.CASH)
                 .specialRequest("Special request")
@@ -64,7 +67,7 @@ class EventControllerIntegrationTest {
                             "Quebec",
                             "J2X 2J4")
             )
-            .eventDateTime(LocalDate.now().atTime(LocalTime.NOON))
+            .eventDateTime(Instant.now())
             .eventType(EventType.WEDDING)
             .paymentMethod(PaymentMethod.CASH)
             .specialRequest("Special request")
@@ -91,7 +94,10 @@ class EventControllerIntegrationTest {
                 .expectStatus().isOk()
                 .expectBodyList(EventResponseModel.class)
                 .hasSize(2)
-                .contains(EventResponseModel.from(event1), EventResponseModel.from(event2));
+                .value(events -> {
+                    assertThat(events).usingElementComparatorIgnoringFields("eventDateTime")
+                            .contains(EventResponseModel.from(event1), EventResponseModel.from(event2));
+                });
     }
 
     @Test
@@ -285,6 +291,33 @@ class EventControllerIntegrationTest {
 
         webTestClient.get()
                 .uri("/api/v1/event/" + eventId)
+                .exchange()
+                .expectStatus().isNotFound();
+    }
+
+    @Test
+    void whenRescheduleEvent_thenReturnEventResponseModel() {
+        Event event = eventRepository.findAll().blockFirst();
+        String eventId = event.getId();
+
+        webTestClient.patch()
+                .uri("/api/v1/events/" + eventId + "/date")
+                .header("Content-Type", "application/json")
+                .bodyValue("{\"eventDateTime\": \"2021-12-31T23:59:59Z\"}")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(EventResponseModel.class);
+    }
+
+    @Test
+    void whenRescheduleEvent_IncorrectEndpoint_thenReturn404() {
+        Event event = eventRepository.findAll().blockFirst();
+        String eventId = event.getId();
+
+        webTestClient.patch()
+                .uri("/api/v1/event/" + eventId + "/date")
+                .header("Content-Type", "application/json")
+                .bodyValue("{\"eventDateTime\": \"2021-12-31T23:59:59Z\"}")
                 .exchange()
                 .expectStatus().isNotFound();
     }

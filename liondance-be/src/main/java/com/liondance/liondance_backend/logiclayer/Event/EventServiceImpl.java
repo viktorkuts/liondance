@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static com.liondance.liondance_backend.datalayer.Event.EventStatus.PENDING;
@@ -88,6 +91,18 @@ public class EventServiceImpl implements EventService {
     @Override
     public Mono<EventResponseModel> getEventById(String eventId) {
         return eventRepository.findById(eventId)
+                .map(EventResponseModel::from);
+    }
+
+    @Override
+    public Mono<EventResponseModel> rescheduleEvent(String eventId, Instant eventDateTime) {
+        return eventRepository.findById(eventId)
+                .switchIfEmpty(Mono.error(new IllegalArgumentException("Event not found")))
+                .map(event -> {
+                    event.setEventDateTime(eventDateTime);
+                    return event;
+                })
+                .flatMap(eventRepository::save)
                 .map(EventResponseModel::from);
     }
 }

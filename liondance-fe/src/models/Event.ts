@@ -35,7 +35,7 @@ export interface Event {
     email: string;
     phone: string;
     address: Address;
-    eventDateTime: string;
+    eventDateTime: Date;
     eventType: EventType;
     paymentMethod: PaymentMethod;
     specialRequest?: string;

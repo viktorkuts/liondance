@@ -16,14 +16,22 @@ const updateEventStatus = async (eventId: string, status: EventStatus): Promise<
   return response.data;
 };
 
+const rescheduleEvent = async (eventId: string, eventDateTime: Date): Promise<Event> => {
+  const response = await axiosInstance.patch<Event>(`/events/${eventId}/date`, { eventDateTime });
+  return response.data;
+};
+
 const getEventById = async (eventId: string): Promise<Event> => {
   const response = await axiosInstance.get<Event>(`/events/${eventId}`);
   return response.data;
 };
 
-export default {
+const eventService = {
   getAllEvents,
   bookEvent,
   updateEventStatus,
+  rescheduleEvent,
   getEventById
 };
+
+export default eventService;

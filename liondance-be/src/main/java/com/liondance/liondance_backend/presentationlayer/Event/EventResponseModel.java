@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.beans.BeanUtils;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Data
@@ -25,7 +26,7 @@ public class EventResponseModel {
     private String email;
     private String phone;
     private Address address;
-    private LocalDateTime eventDateTime;
+    private Instant eventDateTime;
     private EventType eventType;
     private PaymentMethod paymentMethod;
     private String specialRequest;
