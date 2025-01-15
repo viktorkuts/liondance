@@ -3,6 +3,8 @@ package com.liondance.liondance_backend.utils;
 import com.liondance.liondance_backend.datalayer.Course.Course;
 import com.liondance.liondance_backend.datalayer.Course.CourseRepository;
 import com.liondance.liondance_backend.datalayer.Event.*;
+import com.liondance.liondance_backend.datalayer.Feedback.Feedback;
+import com.liondance.liondance_backend.datalayer.Feedback.FeedbackRepository;
 import com.liondance.liondance_backend.datalayer.Promotion.Promotion;
 import com.liondance.liondance_backend.datalayer.Promotion.PromotionRepository;
 import com.liondance.liondance_backend.datalayer.Promotion.PromotionStatus;
@@ -33,6 +35,9 @@ public class DataLoaderService implements CommandLineRunner {
 
     @Autowired
     PromotionRepository promotionRepository;
+
+    @Autowired
+    FeedbackRepository feedbackRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -1141,6 +1146,98 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .build()
         );
 
+        ArrayList<Feedback> feedbacks = new ArrayList<>();
+        feedbacks.add(
+                Feedback.builder()
+                        .feedbackId("ebd15669-6912-435e-8481-9b9a5fdfdf19")
+                        .timestamp(Instant.now())
+                        .feedback("Great service!")
+                        .rating(5)
+                        .eventId("0c384884-8982-45f3-b631-37badc516b7d")
+                        .build()
+        );
+        feedbacks.add(
+                Feedback.builder()
+                        .feedbackId("09078adf-15b7-454d-acce-dc8b9d824430")
+                        .timestamp(Instant.now())
+                        .feedback("YAAAAAAAAAAAAY!")
+                        .rating(5)
+                        .eventId("3285f5a9-b643-406e-83c9-890271e78bce")
+                        .build()
+        );
+        feedbacks.add(
+                Feedback.builder()
+                        .feedbackId("27875e99-fa7a-48b6-846a-de697193631b")
+                        .timestamp(Instant.now())
+                        .feedback("Good performance!")
+                        .rating(5)
+                        .eventId("3285f5a9-b643-406e-83c9-890271e78bva")
+                        .build()
+        );
+        feedbacks.add(
+                Feedback.builder()
+                        .id("82f6ddc3-a103-42d5-84e4-09af3d48a103")
+                        .timestamp(Instant.now())
+                        .feedback("Big fan of the team and the performance!")
+                        .rating(5)
+                        .eventId("3285f5a9-b123-406e-83c9-890271e78bce")
+                        .build()
+        );
+        feedbacks.add(
+                Feedback.builder()
+                        .feedbackId("868dc46e-5f9f-48a9-a5aa-cb295621eaaf")
+                        .timestamp(Instant.now())
+                        .feedback("Yessir good job!")
+                        .rating(5)
+                        .eventId("3285f5a9-b643-406e-83c9-732481e78bce")
+                        .build()
+        );
+        feedbacks.add(
+                Feedback.builder()
+                        .feedbackId("b9d30a85-630d-4d00-9953-725656b8c08b")
+                        .timestamp(Instant.now())
+                        .feedback("Might as well book another event. I liked it!")
+                        .rating(5)
+                        .eventId("8547f5a9-b643-406e-83c9-890271e78bce")
+                        .build()
+        );
+        feedbacks.add(
+                Feedback.builder()
+                        .feedbackId("a60284e7-ea25-4a52-b62f-f6d57030c9a5")
+                        .timestamp(Instant.now())
+                        .feedback("Better than eating a burger!")
+                        .rating(5)
+                        .eventId("75a74804-af57-49ce-a8c7-7211d7d0f9ee")
+                        .build()
+        );
+        feedbacks.add(
+                Feedback.builder()
+                        .feedbackId("13043fa6-ca57-4ce7-b9c7-8b8e807a601b")
+                        .timestamp(Instant.now())
+                        .feedback("GREAAAAAAAAAAAAT!")
+                        .rating(5)
+                        .eventId("e3b07c6c6-dc48-489f-aa20-0d7d6fb12450")
+                        .build()
+        );
+        feedbacks.add(
+                Feedback.builder()
+                        .feedbackId("4ff89851-238b-4211-a3f9-0a203dbc76f5")
+                        .timestamp(Instant.now())
+                        .feedback("Will contact the team again. They are good!")
+                        .rating(5)
+                        .eventId("e4b07c6c6-dc48-489f-aa20-0d7d6fb12451")
+                        .build()
+        );
+        feedbacks.add(
+                Feedback.builder()
+                        .feedbackId("e4e02950-20ca-4010-87cb-8c20e3d3354b")
+                        .timestamp(Instant.now())
+                        .feedback("Bonne performance!")
+                        .rating(5)
+                        .eventId("e5b07c6c6-dc48-489f-aa20-0d7d6fb12874")
+                        .build()
+        );
+
         List<String> userIds = new ArrayList<>();
         userIds.add("a79b0c3c-2462-42a1-922d-1a20be857cba");
         Course course = Course.builder()
@@ -1158,5 +1255,6 @@ ArrayList<Promotion> promotions = new ArrayList<>();
         userRepository.insert(students).subscribe();
         courseRepository.insert(course).subscribe();
         promotionRepository.insert(promotions).subscribe();
+        feedbackRepository.insert(feedbacks).subscribe();
     }
 }

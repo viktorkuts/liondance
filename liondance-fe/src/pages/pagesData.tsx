@@ -13,6 +13,7 @@ import GetAllEvents from "./event/eventsList";
 import BookEvent from "./event/bookEvent";
 import PromotionsList from "./admin/promotionsList";
 import PromotionDetails from "./admin/promotionDetails";
+import FeedbackList from "./feedback/feedbackList";
 
 const pagesData: routerType[] = [
   {
@@ -79,6 +80,11 @@ const pagesData: routerType[] = [
     path:"promotions/:promotionId",
     element: <PromotionDetails/>,
     title: "Promotion Details"
+  },
+  {
+    path: "feedbacks/:eventId",
+    element: <FeedbackList eventId={":eventId"} />,
+    title: "Feedback List",
   }
 ];
 

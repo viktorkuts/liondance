@@ -4,8 +4,10 @@ import { Event } from "@/models/Event.ts";
 import "./eventsList.css";
 import UpdateEventStatus from "./updateEventStatus.tsx";
 import RescheduleEvent from "./rescheduleEvent.tsx";
+import { useNavigate } from "react-router-dom";
 
 function GetAllEvents() {
+  const navigate = useNavigate();
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
@@ -54,6 +56,10 @@ function GetAllEvents() {
   const handleRescheduleModalClose = () => {
     setShowRescheduleModal(false);
     setSelectedEvent(null);
+  };
+
+  const handleViewFeedback = (eventId: string) => {
+    navigate(`/feedbacks/${eventId}`);
   };
 
   const handleEventUpdate = (updatedEvent: Event) => {
@@ -111,6 +117,9 @@ function GetAllEvents() {
            <td>
              <button onClick={() => handleRescheduleClick(event)}>
                Reschedule
+             </button>
+             <button onClick={() => event.id && handleViewFeedback(event.id)} className="button_view_feedback">
+              View Feedback
              </button>
            </td>
          </tr>
