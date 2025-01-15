@@ -88,6 +88,7 @@ function GetAllEvents() {
           <th>Event Date & Time</th>
           <th>Event Type</th>
           <th>Special Request</th>
+          <th>Event Privacy</th>
           <th>Event Status</th>
           <th>Actions</th>
         </tr>
@@ -109,6 +110,7 @@ function GetAllEvents() {
               ? event.specialRequest
               : "No special requests"}
            </td>
+            <td>{event.eventPrivacy}</td>
            <td>
              <button onClick={() => handleStatusClick(event)}>
                {event.eventStatus ?? "N/A"}

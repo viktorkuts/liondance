@@ -1,9 +1,6 @@
 package com.liondance.liondance_backend.presentationlayer.Event;
 
-import com.liondance.liondance_backend.datalayer.Event.Event;
-import com.liondance.liondance_backend.datalayer.Event.EventStatus;
-import com.liondance.liondance_backend.datalayer.Event.EventType;
-import com.liondance.liondance_backend.datalayer.Event.PaymentMethod;
+import com.liondance.liondance_backend.datalayer.Event.*;
 import com.liondance.liondance_backend.datalayer.common.Address;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -46,6 +43,8 @@ public class EventRequestModel {
     private PaymentMethod paymentMethod;
     private String specialRequest;
     private EventStatus eventStatus;
+    @NotNull(message = "eventPrivacy is required")
+    private EventPrivacy eventPrivacy;
 
     public static Event toEntity(EventRequestModel eventRequestModel) {
         Event newEvent = new Event();

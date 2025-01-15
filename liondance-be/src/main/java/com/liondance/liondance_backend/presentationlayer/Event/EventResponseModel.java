@@ -1,9 +1,6 @@
 package com.liondance.liondance_backend.presentationlayer.Event;
 
-import com.liondance.liondance_backend.datalayer.Event.Event;
-import com.liondance.liondance_backend.datalayer.Event.EventStatus;
-import com.liondance.liondance_backend.datalayer.Event.EventType;
-import com.liondance.liondance_backend.datalayer.Event.PaymentMethod;
+import com.liondance.liondance_backend.datalayer.Event.*;
 import com.liondance.liondance_backend.datalayer.common.Address;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,6 +28,7 @@ public class EventResponseModel {
     private PaymentMethod paymentMethod;
     private String specialRequest;
     private EventStatus eventStatus;
+    private EventPrivacy eventPrivacy;
 
     public static EventResponseModel from(Event event) {
         EventResponseModel responseModel = new EventResponseModel();
