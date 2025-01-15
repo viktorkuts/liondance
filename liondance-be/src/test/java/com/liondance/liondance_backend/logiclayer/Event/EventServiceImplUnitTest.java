@@ -265,6 +265,8 @@ class EventServiceImplUnitTest {
                 .thenReturn(Mono.just(event1));
         Mockito.when(eventRepository.save(any(Event.class)))
                 .thenReturn(Mono.just(event1));
+        Mockito.when(notificationService.sendMail(anyString(), anyString(), anyString(), any(NotificationType.class)))
+                .thenReturn(true);
 
         StepVerifier.create(eventService.rescheduleEvent("1", Instant.now()))
                 .expectNextMatches(eventResponseModel -> {
