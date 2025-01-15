@@ -30,6 +30,9 @@ function Navbar() {
         <Anchor href="/booking" fw={1000} fz="h2">
           Book Event
         </Anchor>
+        <Anchor href="/events/email/:email" fw={1000} fz="h2">
+          Your Events
+        </Anchor>
         <Anchor href="/registration" fw={1000} fz="h2">
           Registration
         </Anchor>

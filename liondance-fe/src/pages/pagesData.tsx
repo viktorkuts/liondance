@@ -9,7 +9,7 @@ import AddNewUser from "./admin/AddNewUser";
 import StudentList from "../components/studentList";
 import StudentProfile from "../components/studentProfile";
 import GetAllEvents from "./event/eventsList";
-
+import GetEventsByEmail from "./event/clientEventPage";
 import BookEvent from "./event/bookEvent";
 import PromotionsList from "./admin/promotionsList";
 import PromotionDetails from "./admin/promotionDetails";
@@ -80,6 +80,12 @@ const pagesData: routerType[] = [
     path:"promotions/:promotionId",
     element: <PromotionDetails/>,
     title: "Promotion Details"
+  },
+  {
+
+    path: "events/email/:email",
+    element: <GetEventsByEmail email={"Sarah.Smith@myfunnywebsite.org"} />, //hardcoded until authentication is implemented
+    title: "Events by Email"
   },
   {
     path: "feedbacks/:eventId",

@@ -322,4 +322,26 @@ class EventControllerIntegrationTest {
                 .expectStatus().isNotFound();
     }
 
+    @Test
+    void whenGetEventByEmail_ReturnEvents(){
+        String email = "liondance@yopmail.com";
+
+        webTestClient.get()
+                .uri("/api/v1/events/email/" + email)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(EventResponseModel.class)
+                .hasSize(2);
+    }
+
+    @Test
+    void whenGetEventByInvalidEmail_ReturnNotFound() {
+        String email = "invalid";
+
+        webTestClient.get()
+                .uri("/api/v1/events/email/" + email)
+                .exchange()
+                .expectStatus().isNotFound();
+    }
+
 }

@@ -75,4 +75,8 @@ public class EventController {
                 })
                 .map(eventResponseModel -> ResponseEntity.ok().body(eventResponseModel));
     }
+    @GetMapping("/email/{email}")
+    Flux<EventResponseModel> getEventsByEmail(@PathVariable String email) {
+        return eventService.getEventsByEmail(email);
+    }
 }
