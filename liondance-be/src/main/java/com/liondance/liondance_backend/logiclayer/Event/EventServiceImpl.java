@@ -105,4 +105,9 @@ public class EventServiceImpl implements EventService {
                 .flatMap(eventRepository::save)
                 .map(EventResponseModel::from);
     }
+    @Override
+    public Flux<EventResponseModel> getEventsByEmail(String email) {
+       return eventRepository.findEventsByEmail(email)
+               .map(EventResponseModel::from);
+    }
 }
