@@ -16,7 +16,7 @@ import { Province } from "@/types/geo";
 import classes from "./booking.module.css";
 import { IMaskInput } from 'react-imask';
 import { InputBase } from '@mantine/core';
-import { EventType, Event, PaymentMethod } from "@/models/Event";
+import { EventType, Event, PaymentMethod, EventStatus } from "@/models/Event";
 import eventService from "@/services/eventService";
 
 function BookEvent() {
@@ -99,7 +99,7 @@ function BookEvent() {
       email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
       phone: (value) =>
         value && value.length > 0
-          ? /^\+1 \(\d{3}\) \d{3}-\d{4}$/.test(value)
+          ? /\(\d{3}\) \d{3}-\d{4}$/.test(value)
             ? null
             : "Invalid phone number format"
           : "Field is required",
@@ -185,10 +185,11 @@ function BookEvent() {
       email: values.email,
       phone: values.phone,
       address: values.address,
-      eventDateTime: values.eventDateTime,
+      eventDateTime: new Date(values.eventDateTime),
       eventType: values.eventType as EventType,
       paymentMethod: values.paymentMethod as PaymentMethod,
       specialRequest: values.specialRequest,
+      eventStatus: EventStatus.PENDING
     };
 
     const run = async () => {
@@ -233,9 +234,9 @@ function BookEvent() {
           />
           <InputBase
             label="Phone Number"
-            placeholder="+1 (123) 456-7890"
+            placeholder="(123) 456-7890"
             component={IMaskInput}
-            mask="+1 (000) 000-0000"
+            mask="(000) 000-0000"
             {...form.getInputProps("phone", { withError: true })} 
             onAccept={(value: string) => {
               form.setFieldValue("phone", value); 
