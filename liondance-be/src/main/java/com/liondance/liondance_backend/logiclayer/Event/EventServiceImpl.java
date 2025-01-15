@@ -15,6 +15,8 @@ import reactor.core.publisher.Mono;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 import static com.liondance.liondance_backend.datalayer.Event.EventStatus.PENDING;
@@ -102,6 +104,27 @@ public class EventServiceImpl implements EventService {
                 .map(event -> {
                     event.setEventDateTime(eventDateTime);
                     return event;
+                })
+                .flatMap(event -> {
+                    String message = new StringBuilder()
+                            .append("Your event has been rescheduled to ")
+                            .append(event.getEventDateTime().atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("MMMM dd, yyyy 'at' hh:mm a")))
+                            .append(".")
+                            .append("\n\nThank you for choosing the LVH Lion Dance Team!")
+                            .toString();
+
+                    Boolean success = notificationService.sendMail(
+                            event.getEmail(),
+                            "LVH Lion Dance Team - Event Rescheduled",
+                            message,
+                            NotificationType.EVENT_RESCHEDULE
+                    );
+
+                    if(!success){
+                        throw new MailSendException("Failed to send email to " + event.getEmail());
+                    }
+
+                    return Mono.just(event);
                 })
                 .flatMap(eventRepository::save)
                 .map(EventResponseModel::from);

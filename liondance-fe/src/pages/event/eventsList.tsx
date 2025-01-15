@@ -4,8 +4,10 @@ import { Event } from "@/models/Event.ts";
 import "./eventsList.css";
 import UpdateEventStatus from "./updateEventStatus.tsx";
 import RescheduleEvent from "./rescheduleEvent.tsx";
+import { useNavigate } from "react-router-dom";
 
 function GetAllEvents() {
+  const navigate = useNavigate();
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
@@ -56,6 +58,10 @@ function GetAllEvents() {
     setSelectedEvent(null);
   };
 
+  const handleViewFeedback = (eventId: string) => {
+    navigate(`/feedbacks/${eventId}`);
+  };
+
   const handleEventUpdate = (updatedEvent: Event) => {
     setEvents((prevEvents) =>
      prevEvents.map((event) => (event.id === updatedEvent.id ? updatedEvent : event))
@@ -96,7 +102,7 @@ function GetAllEvents() {
              {event.address?.streetAddress ?? "N/A"}
              {event.address?.city ? `, ${event.address.city}` : ""}
            </td>
-           <td>{new Date(event.eventDateTime).toLocaleString()}</td>
+               <td>{new Date(event.eventDateTime).toLocaleString("en-CA", { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}</td>
            <td>{event.eventType}</td>
            <td>
              {event.specialRequest && event.specialRequest.trim()
@@ -111,6 +117,9 @@ function GetAllEvents() {
            <td>
              <button onClick={() => handleRescheduleClick(event)}>
                Reschedule
+             </button>
+             <button onClick={() => event.id && handleViewFeedback(event.id)} className="button_view_feedback">
+              View Feedback
              </button>
            </td>
          </tr>

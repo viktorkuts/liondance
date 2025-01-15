@@ -13,6 +13,7 @@ import GetEventsByEmail from "./event/clientEventPage";
 import BookEvent from "./event/bookEvent";
 import PromotionsList from "./admin/promotionsList";
 import PromotionDetails from "./admin/promotionDetails";
+import FeedbackList from "./feedback/feedbackList";
 
 const pagesData: routerType[] = [
   {
@@ -81,9 +82,15 @@ const pagesData: routerType[] = [
     title: "Promotion Details"
   },
   {
+
     path: "events/email/:email",
     element: <GetEventsByEmail email={"Sarah.Smith@myfunnywebsite.org"} />, //hardcoded until authentication is implemented
     title: "Events by Email"
+  },
+  {
+    path: "feedbacks/:eventId",
+    element: <FeedbackList eventId={":eventId"} />,
+    title: "Feedback List",
   }
 ];
 
