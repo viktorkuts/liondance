@@ -8,6 +8,7 @@ import com.liondance.liondance_backend.datalayer.Notification.NotificationType;
 import com.liondance.liondance_backend.datalayer.common.Address;
 import com.liondance.liondance_backend.logiclayer.Notification.NotificationService;
 import com.liondance.liondance_backend.presentationlayer.Event.EventRequestModel;
+import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -284,5 +285,22 @@ class EventServiceImplUnitTest {
                 .expectError(IllegalArgumentException.class)
                 .verify();
     }
+    @Test
+    void whenGetEventsByEmail_thenReturnEvents() {
+        Mockito.when(eventRepository.findEventsByEmail("liondance@yopmail.com"))
+                .thenReturn(Flux.just(event1, event2));
 
+        StepVerifier.create(eventService.getEventsByEmail("liondance@yopmail.com"))
+                .expectNextCount(2)
+                .verifyComplete();
+    }
+    @Test
+    void whenGetEventsByInvalidEmail_thenReturnNotFound() {
+        Mockito.when(eventRepository.findEventsByEmail("invalid-email"))
+                .thenReturn(Flux.empty());
+
+        StepVerifier.create(eventService.getEventsByEmail("invalid-email"))
+                .expectError(NotFoundException.class)
+                .verify();
+    }
 }
