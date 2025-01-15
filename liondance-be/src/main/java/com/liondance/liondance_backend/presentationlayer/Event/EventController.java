@@ -79,4 +79,9 @@ public class EventController {
     Flux<EventResponseModel> getEventsByEmail(@PathVariable String email) {
         return eventService.getEventsByEmail(email);
     }
+
+    @PutMapping("/{eventId}")
+    public Mono<EventResponseModel> updateEventDetails(@PathVariable String eventId, @Valid @RequestBody EventRequestModel eventRequestModel) {
+        return eventService.updateEventDetails(eventId, eventRequestModel);
+    }
 }

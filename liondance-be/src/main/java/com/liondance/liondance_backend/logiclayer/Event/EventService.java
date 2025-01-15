@@ -16,4 +16,5 @@ public interface EventService {
     public Mono<EventResponseModel> getEventById(String eventId);
     public Mono<EventResponseModel> rescheduleEvent(String eventId, Instant eventDateTime);
     public Flux<EventResponseModel> getEventsByEmail(String email);
+    public Mono<EventResponseModel> updateEventDetails(String eventId, EventRequestModel eventRequestModel);
 }

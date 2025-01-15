@@ -305,4 +305,95 @@ class EventServiceImplUnitTest {
                 .expectError(NotFoundException.class)
                 .verify();
     }
+    @Test
+    void whenRescheduleEvent_FailedToSendEmail_thenThrowMailSendException() {
+        Mockito.when(eventRepository.findById(anyString()))
+                .thenReturn(Mono.just(event1));
+        Mockito.when(notificationService.sendMail(anyString(), anyString(), anyString(), any(NotificationType.class)))
+                .thenReturn(false);
+
+        StepVerifier.create(eventService.rescheduleEvent("1", Instant.now()))
+                .expectError(MailSendException.class)
+                .verify();
+    }
+
+    @Test
+    void whenUpdateEventDetails_Successful_thenReturnEventResponse() {
+        EventRequestModel requestModel = EventRequestModel.builder()
+                .firstName("Jane")
+                .lastName("Doe")
+                .email("liondance@yopmail.com")
+                .phone("1234567890")
+                .address(new Address("1234 Main St.", "Springfield", "Quebec", "J2X 2J4"))
+                .eventDateTime(LocalDate.now().atTime(LocalTime.NOON))
+                .eventType(EventType.WEDDING)
+                .paymentMethod(PaymentMethod.CASH)
+                .specialRequest("Special request")
+                .build();
+
+        Mockito.when(eventRepository.findById(anyString()))
+                .thenReturn(Mono.just(event1));
+        Mockito.when(eventRepository.save(any(Event.class)))
+                .thenReturn(Mono.just(event1));
+        Mockito.when(notificationService.sendMail(anyString(), anyString(), anyString(), any(NotificationType.class)))
+                .thenReturn(true);
+
+        StepVerifier.create(eventService.updateEventDetails("1", requestModel))
+                .expectNextMatches(eventResponseModel -> {
+                    Event event = Event.builder().build();
+                    BeanUtils.copyProperties(eventResponseModel, event);
+                    return event.equals(event1);
+                })
+                .verifyComplete();
+
+        verify(notificationService, times(1)).sendMail(anyString(), anyString(), anyString(), any(NotificationType.class));
+    }
+
+    @Test
+    void whenUpdateEventDetails_EventNotFound_thenThrowIllegalArgumentException() {
+        EventRequestModel requestModel = EventRequestModel.builder()
+                .firstName("Jane")
+                .lastName("Doe")
+                .email("liondance@yopmail.com")
+                .phone("1234567890")
+                .address(new Address("1234 Main St.", "Springfield", "Quebec", "J2X 2J4"))
+                .eventDateTime(LocalDate.now().atTime(LocalTime.NOON))
+                .eventType(EventType.WEDDING)
+                .paymentMethod(PaymentMethod.CASH)
+                .specialRequest("Special request")
+                .build();
+
+        Mockito.when(eventRepository.findById(anyString()))
+                .thenReturn(Mono.empty());
+
+        StepVerifier.create(eventService.updateEventDetails("1", requestModel))
+                .expectError(IllegalArgumentException.class)
+                .verify();
+    }
+
+    @Test
+    void whenUpdateEventDetails_FailedToSendEmail_thenThrowMailSendException() {
+        EventRequestModel requestModel = EventRequestModel.builder()
+                .firstName("Jane")
+                .lastName("Doe")
+                .email("liondance@yopmail.com")
+                .phone("1234567890")
+                .address(new Address("1234 Main St.", "Springfield", "Quebec", "J2X 2J4"))
+                .eventDateTime(LocalDate.now().atTime(LocalTime.NOON))
+                .eventType(EventType.WEDDING)
+                .paymentMethod(PaymentMethod.CASH)
+                .specialRequest("Special request")
+                .build();
+
+        Mockito.when(eventRepository.findById(anyString()))
+                .thenReturn(Mono.just(event1));
+        Mockito.when(notificationService.sendMail(anyString(), anyString(), anyString(), any(NotificationType.class)))
+                .thenReturn(false);
+
+        StepVerifier.create(eventService.updateEventDetails("1", requestModel))
+                .expectError(MailSendException.class)
+                .verify();
+
+        verify(notificationService, times(1)).sendMail(anyString(), anyString(), anyString(), any(NotificationType.class));
+    }
 }
