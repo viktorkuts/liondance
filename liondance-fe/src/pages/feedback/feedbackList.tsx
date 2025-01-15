@@ -50,7 +50,7 @@ const FeedbackList: React.FC<FeedbackListProps> = () => {
           <li key={feedback.feedbackId}>
             <p>Comment: {feedback.feedback}</p>
             <p>Rating: {feedback.rating}</p>
-            <p>Time: {new Date(feedback.timeStamp).toLocaleString()}</p>
+            <p>Time: {new Date(feedback.timestamp).toLocaleString()}</p>
           </li>
         ))}
       </ul>

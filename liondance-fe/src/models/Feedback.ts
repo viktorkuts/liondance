@@ -1,6 +1,6 @@
 export interface Feedback {
     feedbackId?: string;
-    timeStamp: string;
+    timestamp: Date;
     feedback: string;
     rating: number;
     eventId: string;
