@@ -11,10 +11,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
@@ -120,6 +117,45 @@ public class EventServiceImpl implements EventService {
                     );
 
                     if(!success){
+                        throw new MailSendException("Failed to send email to " + event.getEmail());
+                    }
+
+                    return Mono.just(event);
+                })
+                .flatMap(eventRepository::save)
+                .map(EventResponseModel::from);
+    }
+
+    @Override
+    public Mono<EventResponseModel> updateEventDetails(String eventId, EventRequestModel eventRequestModel) {
+        return eventRepository.findById(eventId)
+                .switchIfEmpty(Mono.error(new IllegalArgumentException("Event not found")))
+                .map(event -> {
+                    event.setFirstName(eventRequestModel.getFirstName());
+                    event.setLastName(eventRequestModel.getLastName());
+                    event.setEmail(eventRequestModel.getEmail());
+                    event.setPhone(eventRequestModel.getPhone());
+                    event.setAddress(eventRequestModel.getAddress());
+                    event.setEventDateTime(eventRequestModel.getEventDateTime().atZone(ZoneOffset.UTC).toInstant());
+                    event.setEventType(eventRequestModel.getEventType());
+                    event.setPaymentMethod(eventRequestModel.getPaymentMethod());
+                    event.setSpecialRequest(eventRequestModel.getSpecialRequest());
+                    return event;
+                })
+                .flatMap(event -> {
+                    String message = new StringBuilder()
+                            .append("Your event details have been updated. Go take a look!")
+                            .append("\n\nThank you for choosing the LVH Lion Dance Team!")
+                            .toString();
+
+                    Boolean success = notificationService.sendMail(
+                            event.getEmail(),
+                            "LVH Lion Dance Team - Event Details Updated",
+                            message,
+                            NotificationType.EVENT_UPDATE
+                    );
+
+                    if (!success) {
                         throw new MailSendException("Failed to send email to " + event.getEmail());
                     }
 

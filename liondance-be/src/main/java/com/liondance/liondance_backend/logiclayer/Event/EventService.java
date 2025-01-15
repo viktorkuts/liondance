@@ -15,4 +15,5 @@ public interface EventService {
     public Mono<EventResponseModel> updateEventStatus(String eventId, Mono<EventStatus> eventStatus);
     public Mono<EventResponseModel> getEventById(String eventId);
     public Mono<EventResponseModel> rescheduleEvent(String eventId, Instant eventDateTime);
+    public Mono<EventResponseModel> updateEventDetails(String eventId, EventRequestModel eventRequestModel);
 }
