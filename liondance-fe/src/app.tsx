@@ -1,5 +1,4 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import classes from "./app.module.css";
 import { BrowserRouter } from "react-router";
 import Router from "./pages/router";
 import "@mantine/core/styles.css";

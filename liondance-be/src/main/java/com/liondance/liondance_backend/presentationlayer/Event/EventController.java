@@ -80,4 +80,9 @@ public class EventController {
     public Mono<EventResponseModel> updateEventDetails(@PathVariable String eventId, @Valid @RequestBody EventRequestModel eventRequestModel) {
         return eventService.updateEventDetails(eventId, eventRequestModel);
     }
+  
+    @GetMapping("/email/{email}")
+    Flux<EventResponseModel> getEventsByEmail(@PathVariable String email) {
+        return eventService.getEventsByEmail(email);
+    }
 }
