@@ -6,6 +6,7 @@ import com.liondance.liondance_backend.datalayer.Notification.NotificationType;
 import com.liondance.liondance_backend.logiclayer.Notification.NotificationService;
 import com.liondance.liondance_backend.presentationlayer.Event.EventRequestModel;
 import com.liondance.liondance_backend.presentationlayer.Event.EventResponseModel;
+import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
 import org.springframework.mail.MailSendException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -163,5 +164,10 @@ public class EventServiceImpl implements EventService {
                 })
                 .flatMap(eventRepository::save)
                 .map(EventResponseModel::from);
+
+    @Override
+    public Flux<EventResponseModel> getEventsByEmail(String email) {
+       return eventRepository.findEventsByEmail(email)
+               .map(EventResponseModel::from).switchIfEmpty(Mono.error(new NotFoundException("No events found for email: " + email)));
     }
 }

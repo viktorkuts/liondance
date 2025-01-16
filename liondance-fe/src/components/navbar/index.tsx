@@ -1,5 +1,5 @@
 import { Anchor, Image } from "@mantine/core";
-import React, { useState } from "react";
+import { useState } from "react";
 import classes from "./navbar.module.css";
 import logo from "../../assets/logo.png";
 
@@ -29,6 +29,9 @@ function Navbar() {
         </Anchor>
         <Anchor href="/booking" fw={1000} fz="h2">
           Book Event
+        </Anchor>
+        <Anchor href="/events/email/:email" fw={1000} fz="h2">
+          Your Events
         </Anchor>
         <Anchor href="/registration" fw={1000} fz="h2">
           Registration
