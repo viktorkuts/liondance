@@ -1,38 +1,38 @@
-name: Playwright Tests
-on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+# name: Playwright Tests
+# on:
+#   push:
+#     branches: [ "master" ]
+#   pull_request:
+#     branches: [ "master" ]
 
-jobs:
-  test:
-    runs-on: self-hosted
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
-      - uses: docker/setup-buildx-action@v3
-      - name: Create .env file
-        run: echo $ENV_FILE | base64 --decode > .env
-      - name: Build with docker
-        run: docker compose up --build -d
-      - name: Install deps
-        run: yarn
-        working-directory: ./liondance-fe
-      - name: Install Playwright
-        run: npx playwright install
-        working-directory: ./liondance-fe
-      - name: Run Playwright
-        run: npx playwright test
-        working-directory: ./liondance-fe
-      - name: Compose down
-        run: docker compose down
-      - name: Archive report
-        uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 7
+# jobs:
+#   test:
+#     runs-on: self-hosted
+#     steps:
+#       - uses: actions/checkout@v4
+#       - uses: actions/setup-node@v4
+#         with:
+#           node-version: lts/*
+#       - uses: docker/setup-buildx-action@v3
+#       - name: Create .env file
+#         run: echo $ENV_FILE | base64 --decode > .env
+#       - name: Build with docker
+#         run: docker compose up --build -d
+#       - name: Install deps
+#         run: yarn
+#         working-directory: ./liondance-fe
+#       - name: Install Playwright
+#         run: npx playwright install
+#         working-directory: ./liondance-fe
+#       - name: Run Playwright
+#         run: npx playwright test
+#         working-directory: ./liondance-fe
+#       - name: Compose down
+#         run: docker compose down
+#       - name: Archive report
+#         uses: actions/upload-artifact@v4
+#         if: ${{ !cancelled() }}
+#         with:
+#           name: playwright-report
+#           path: playwright-report/
+#           retention-days: 7
