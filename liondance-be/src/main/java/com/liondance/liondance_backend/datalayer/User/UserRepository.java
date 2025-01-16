@@ -20,6 +20,5 @@ public interface UserRepository extends ReactiveMongoRepository<User, String> {
     @Query("{ 'registrationStatus': { $in: ?0 }, 'roles': { $elemMatch: { $eq: 'STUDENT' } } }")
     Flux<Student> findStudentsByRegistrationStatuses(List<RegistrationStatus> statuses);
     Mono<User> findByUserId(String userId);
-
-
+    Mono<User> findUserByAssociatedId(String subId);
 }
