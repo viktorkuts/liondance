@@ -26,8 +26,12 @@ const getEventById = async (eventId: string): Promise<Event> => {
   return response.data;
 };
 
+const updateEventDetails = async (eventId: string, event: Event): Promise<Event> => {
+  const response = await axiosInstance.put<Event>(`/events/${eventId}`, event);
+
 const getEventsByEmail = async (email: string): Promise<Event[]> => {
   const response = await axiosInstance.get<Event[]>(`/events/email/${email}`);
+
   return response.data;
 }
 
@@ -37,6 +41,7 @@ const eventService = {
   updateEventStatus,
   rescheduleEvent,
   getEventById,
+  updateEventDetails,
   getEventsByEmail
 };
 

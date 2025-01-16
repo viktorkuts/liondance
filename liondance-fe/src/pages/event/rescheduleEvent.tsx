@@ -39,6 +39,28 @@ const RescheduleEvent: React.FC<RescheduleEventStatusProps> = ({
     return null;
   };
 
+    const handleReschedule = async () => {
+        if (!selectedDate || !selectedTime) {
+            setError("Please select both a new date and time.");
+            return;
+        }
+        const newDateTime = combineDateTime(selectedDate, selectedTime);
+        if (newDateTime && dayjs(newDateTime).isBefore(dayjs())) {
+            setError("The new date and time cannot be before the current date and time.");
+            return;
+        }
+        setLoading(true);
+        try {
+            const response = await axiosInstance.patch<Event>(`/events/${event.id}/date`, { eventDateTime: newDateTime });
+            onReschedule(response.data);
+            onClose();
+        } catch {
+            setError("Failed to reschedule event, please try again.");
+        } finally {
+            setLoading(false);
+        }
+    };
+  
   const handleReschedule = async () => {
     if (!selectedDate || !selectedTime) {
       setError("Please select both a new date and time.");
@@ -65,6 +87,7 @@ const RescheduleEvent: React.FC<RescheduleEventStatusProps> = ({
       setLoading(false);
     }
   };
+
 
   return (
     <Modal opened={true} onClose={onClose} title="Reschedule Event">
