@@ -43,7 +43,7 @@ public class EventServiceImpl implements EventService {
                         return Mono.error(new IllegalArgumentException("Email is required"));
                     }
                     return Mono.just(request);
-                })                .map(EventRequestModel::toEntity)
+                }).map(EventRequestModel::toEntity)
                 .map(event -> {
                     event.setId(UUID.randomUUID().toString());
                     event.setEventStatus(PENDING);
@@ -66,7 +66,7 @@ public class EventServiceImpl implements EventService {
                             NotificationType.EVENT_BOOKING
                     );
 
-                    if(!success){
+                    if (!success) {
                         throw new MailSendException("Failed to send email to " + event.getEmail());
                     }
 
@@ -117,7 +117,7 @@ public class EventServiceImpl implements EventService {
                             NotificationType.EVENT_RESCHEDULE
                     );
 
-                    if(!success){
+                    if (!success) {
                         throw new MailSendException("Failed to send email to " + event.getEmail());
                     }
 
@@ -164,10 +164,10 @@ public class EventServiceImpl implements EventService {
                 })
                 .flatMap(eventRepository::save)
                 .map(EventResponseModel::from);
-
-    @Override
-    public Flux<EventResponseModel> getEventsByEmail(String email) {
-       return eventRepository.findEventsByEmail(email)
-               .map(EventResponseModel::from).switchIfEmpty(Mono.error(new NotFoundException("No events found for email: " + email)));
     }
-}
+        @Override
+        public Flux<EventResponseModel> getEventsByEmail (String email){
+            return eventRepository.findEventsByEmail(email)
+                    .map(EventResponseModel::from).switchIfEmpty(Mono.error(new NotFoundException("No events found for email: " + email)));
+        }
+    }
