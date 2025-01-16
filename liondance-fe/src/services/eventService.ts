@@ -26,12 +26,18 @@ const getEventById = async (eventId: string): Promise<Event> => {
   return response.data;
 };
 
+const updateEventDetails = async (eventId: string, event: Event): Promise<Event> => {
+  const response = await axiosInstance.put<Event>(`/events/${eventId}`, event);
+  return response.data;
+}
+
 const eventService = {
   getAllEvents,
   bookEvent,
   updateEventStatus,
   rescheduleEvent,
-  getEventById
+  getEventById,
+  updateEventDetails
 };
 
 export default eventService;
