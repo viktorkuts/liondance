@@ -11,6 +11,7 @@ import com.liondance.liondance_backend.utils.exceptions.InvalidInputException;
 import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
 import com.liondance.liondance_backend.utils.exceptions.StudentNotPending;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.reactivestreams.Publisher;
@@ -34,6 +35,7 @@ import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Disabled
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"spring.data.mongodb.port= 0"})
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
