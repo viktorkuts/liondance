@@ -294,4 +294,9 @@ public class UserServiceImpl implements UserService {
                 .flatMap(userRepository::save)
                 .map(UserResponseModel::from);
     }
+
+    @Override
+    public Mono<User> validate(String subId){
+        return userRepository.findUserByAssociatedId(subId);
+    }
 }
