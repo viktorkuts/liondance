@@ -9,7 +9,6 @@ const env = loadEnv("", "../", "");
 export default defineConfig({
   envDir: "../",
   plugins: [react()],
-  base: JSON.stringify(env.FRONTEND_URL) + "/",
   define: {
     "import.meta.env.OKTA_ISSUER": JSON.stringify(env.OKTA_ISSUER),
     "import.meta.env.OKTA_CLIENT_ID": JSON.stringify(env.OKTA_CLIENT_ID),
