@@ -16,6 +16,9 @@ export default defineConfig({
     "import.meta.env.OKTA_AUDIENCE": JSON.stringify(env.OKTA_AUDIENCE),
     "import.meta.env.BACKEND_URL": JSON.stringify(env.BACKEND_URL),
   },
+  server: {
+    port: Number.parseInt(JSON.stringify(env.FRONTEND_PORT))
+  },
   resolve: {
     alias: [
       {
