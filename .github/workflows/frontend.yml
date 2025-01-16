@@ -21,7 +21,14 @@ jobs:
           node-version: ${{ matrix.node-version }}
           # cache: yarn
           # cache-dependency-path: liondance-fe/yarn.lock
-          run: npm install yarn
+      - name: Install yarn
+        run: npm install -g yarn
+      - name: Reconfigure node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: yarn
+          cache-dependency-path: liondance-fe/yarn.lock
       - name: Install deps
         run: yarn
         working-directory: ./liondance-fe
