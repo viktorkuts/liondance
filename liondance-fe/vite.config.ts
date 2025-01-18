@@ -16,9 +16,9 @@ export default defineConfig({
     "import.meta.env.OKTA_AUDIENCE": JSON.stringify(env.OKTA_AUDIENCE),
     "import.meta.env.BACKEND_URL":
       env.COOLIFY_BRANCH && /\d+/.test(JSON.stringify(env.COOLIFY_BRANCH))
-        ? env.BACKEND_URL.replace(
+        ? JSON.stringify(env.BACKEND_URL).replace(
             "://",
-            `://${JSON.stringify(env.COOLIFY_BRANCH).match(/\d+/)[0]}.`
+            `://${JSON.stringify(env.COOLIFY_BRANCH).match(/\d+/)?.at(0)}`
           )
         : JSON.stringify(env.BACKEND_URL),
   },
