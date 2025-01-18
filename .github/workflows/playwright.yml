@@ -5,6 +5,7 @@ on:
 
 jobs:
   test:
+    environment: CI
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -34,7 +35,7 @@ jobs:
           backend="${BACKEND_URL/:\/\//://${{ github.event.number }}.}"
           echo $frontend
           echo $backend
-          timeout 300 bash -c '
+          timeout 180 bash -c '
             while [[ "$(curl -s /dev/null -w "%{http_code}" '$frontend')" != "200" ]] || [[ "$(curl -s /dev/null -w "%{http_code}" '$backend/test')" != "200" ]]; do
               sleep 5
             done
