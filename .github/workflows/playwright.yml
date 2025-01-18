@@ -23,14 +23,14 @@ jobs:
         run: yarn
         working-directory: ./liondance-fe
       - name: Install Playwright
-        run: npx playwright install
+        run: npx playwright install chromium
         working-directory: ./liondance-fe
       - name: Run Playwright
         run: npx playwright test
         working-directory: ./liondance-fe
         env:
           PR_NUMBER: ${{ github.event.number }}
-          BACKEND_URL: ${{ secrets.BACKEND_URL }}
+          FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
       - name: Archive report
         uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
