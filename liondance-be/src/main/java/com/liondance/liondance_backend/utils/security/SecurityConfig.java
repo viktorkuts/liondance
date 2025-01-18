@@ -135,6 +135,7 @@ public class SecurityConfig {
     public UrlBasedCorsConfigurationSource corsConfig(){
         CorsConfiguration config = new CorsConfiguration();
         config.addAllowedOrigin(frontend);
+//        config.addAllowedOriginPattern(frontend.replace("://", ));
         config.addAllowedOrigin(issuer.substring(0, issuer.length() - 1));
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
