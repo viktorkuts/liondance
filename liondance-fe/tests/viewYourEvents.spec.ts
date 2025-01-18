@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 test("view your events", async ({page,})=>{
-   await page.goto('http://localhost:5173/');
+   await page.goto(process.env.PR_NUMBER ? `${process.env.FRONTEND_URL.replace("://", `://${process.env.PR_NUMBER}`)}` : process.env.FRONTEND_URL);
    await expect(page.getByRole('link', { name: 'Your Events' })).toBeVisible();
    await page.getByRole('link', { name: 'Your Events' }).click();
    await expect(page.getByText('Your EventsPhoneLocationEvent')).toBeVisible();

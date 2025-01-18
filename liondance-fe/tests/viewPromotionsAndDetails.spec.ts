@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 test("view promotions and details", async ({page,})=>{
-  await page.goto('http://localhost:5173/');
+  await page.goto(process.env.PR_NUMBER ? `${process.env.FRONTEND_URL.replace("://", `://${process.env.PR_NUMBER}`)}` : process.env.FRONTEND_URL);
   await page.getByText('Admin').click();
   await page.getByRole('link', { name: 'Promotions' }).click();
   await expect(page.getByText('PromotionsSummer SaleDiscount')).toBeVisible();

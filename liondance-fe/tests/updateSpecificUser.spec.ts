@@ -5,7 +5,7 @@ test.use({
 });
 
 test('can edit specific user details', async ({ page }) => {
-  await page.goto('http://localhost:5173/');
+  await page.goto(process.env.PR_NUMBER ? `${process.env.FRONTEND_URL.replace("://", `://${process.env.PR_NUMBER}`)}` : process.env.FRONTEND_URL);
   await page.getByText('Admin').click();
   await page.getByRole('link', { name: 'Users' }).click();
   await expect(page.locator('tbody')).toContainText('Zippora Lemony Snickett');

@@ -5,7 +5,7 @@ test.use({
   });
 
   test('test', async ({ page }) => {
-    await page.goto('http://localhost:5173/');
+    await page.goto(process.env.PR_NUMBER ? `${process.env.FRONTEND_URL.replace("://", `://${process.env.PR_NUMBER}`)}` : process.env.FRONTEND_URL);
     await expect(page.getByText('ReviewsContactCalendarBook')).toBeVisible();
     await expect(page.getByText('Admin')).toBeVisible();
     await page.getByText('Admin').click();

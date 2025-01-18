@@ -5,7 +5,7 @@ test.use({
 });
 
 test('admin can view client feedback on event', async ({ page }) => {
-  await page.goto('http://localhost:5173/');
+  await page.goto(process.env.PR_NUMBER ? `${process.env.FRONTEND_URL.replace("://", `://${process.env.PR_NUMBER}`)}` : process.env.FRONTEND_URL);
   await page.getByText('Admin').click();
   await page.getByRole('link', { name: 'Events' }).click();
   await page.getByRole('row', { name: 'Rio Da Yung OG rioodayungog@' }).getByRole('button').nth(2).click();

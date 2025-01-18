@@ -3,7 +3,8 @@ import { test, expect } from "@playwright/test";
 test("register student", async ({
   page,
 }) => {
-await page.goto('http://localhost:5173/');await page.getByText('Admin').click();
+await page.goto(process.env.PR_NUMBER ? `${process.env.FRONTEND_URL.replace("://", `://${process.env.PR_NUMBER}`)}` : process.env.FRONTEND_URL);
+await page.getByText('Admin').click();
 await page.getByRole('link', { name: 'Users' }).click();
 await page.getByRole('row', { name: 'Sarah Jane Smith Sarah.Smith@' }).getByRole('button').click();
 await page.getByRole('button', { name: 'Change Roles' }).click();
