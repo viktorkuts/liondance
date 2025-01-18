@@ -14,13 +14,14 @@ export default defineConfig({
     "import.meta.env.OKTA_CLIENT_ID": JSON.stringify(env.OKTA_CLIENT_ID),
     "import.meta.env.OKTA_REDIRECT_URI": JSON.stringify(env.OKTA_REDIRECT_URI),
     "import.meta.env.OKTA_AUDIENCE": JSON.stringify(env.OKTA_AUDIENCE),
-    "import.meta.env.BACKEND_URL":
-      env.COOLIFY_BRANCH && JSON.stringify(env.COOLIFY_BRANCH).split("/").at(1)
-        ? JSON.stringify(env.BACKEND_URL).replace(
-            "://",
-            `://${JSON.stringify(env.COOLIFY_BRANCH).split("/").at(1)}`
-          )
-        : JSON.stringify(env.BACKEND_URL),
+    "import.meta.env.BACKEND_URL": JSON.stringify(env.COOLIFY_BRANCH)
+      .split("/")
+      .at(1)
+      ? JSON.stringify(env.BACKEND_URL).replace(
+          "://",
+          `://E${JSON.stringify(env.COOLIFY_BRANCH).split("/").at(1)}`
+        )
+      : JSON.stringify(env.BACKEND_URL),
   },
   server: {
     port: Number.parseInt(JSON.stringify(env.FRONTEND_PORT)),
