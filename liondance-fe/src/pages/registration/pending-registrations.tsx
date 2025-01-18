@@ -13,6 +13,7 @@ function PendingRegistrations() {
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
 
   useEffect(() => {
+    console.log(import.meta.env.BACKEND_URL);
     const fetchPendingStudents = async () => {
       try {
         const response = await axiosInstance.get<Student[]>(
