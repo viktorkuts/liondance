@@ -3,6 +3,7 @@ import { test, expect } from "@playwright/test";
 test("register student", async ({
   page,
 }) => {
+  console.error(process.env.PR_NUMBER ? `${process.env.FRONTEND_URL.replace("://", `://${process.env.PR_NUMBER}`)}` : process.env.FRONTEND_URL)
 await page.goto(process.env.PR_NUMBER ? `${process.env.FRONTEND_URL.replace("://", `://${process.env.PR_NUMBER}`)}` : process.env.FRONTEND_URL);
 await page.getByText('Admin').click();
 await page.getByRole('link', { name: 'Users' }).click();
