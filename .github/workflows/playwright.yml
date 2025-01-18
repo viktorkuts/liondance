@@ -25,6 +25,11 @@ jobs:
       - name: Install Playwright
         run: npx playwright install chromium
         working-directory: ./liondance-fe
+      - name: Wait for deployment
+        run: |
+          $frontend="${{ secrets.FRONTEND_URL }}/://${{ github.event.number }}."
+          $backend="${{ secrets.BACKEND_URL }}/://${{ github.event.number }}."
+          timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' $frontend" != "200" ]] || [[ "$(curl -s -o /dev/null -w ''%{http_code}'' $backend/test" != "200" ]]; do sleep 5; done' || false
       - name: Run Playwright
         run: npx playwright test
         working-directory: ./liondance-fe
