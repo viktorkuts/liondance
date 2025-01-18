@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
@@ -47,6 +48,8 @@ public class SecurityConfig {
     private String frontend;
     @Value("${spring.security.oauth2.client.registration.okta.client-id}")
     private String clientId;
+    @Autowired
+    private Environment env;
     private UserService userService;
     @Autowired
     private ReactiveClientRegistrationRepository clientRegistrationRepository;
@@ -133,10 +136,13 @@ public class SecurityConfig {
 
     @Bean
     public UrlBasedCorsConfigurationSource corsConfig(){
+        String deploymentBranch = env.getProperty("COOLIFY_BRANCH");
         CorsConfiguration config = new CorsConfiguration();
         config.addAllowedOrigin(frontend);
-//        config.addAllowedOriginPattern(frontend.replace("://", ));
         config.addAllowedOrigin(issuer.substring(0, issuer.length() - 1));
+        if(deploymentBranch != null && deploymentBranch.split("/")[1].matches("\\d+")){
+            config.addAllowedOrigin(frontend.replace("://", "://" + deploymentBranch.split("/")[1] + "."));
+        }
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         config.setAllowCredentials(true);
