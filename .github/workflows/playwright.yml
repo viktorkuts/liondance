@@ -29,8 +29,8 @@ jobs:
         run: npx playwright test
         working-directory: ./liondance-fe
         env:
-          - PR_NUMBER: ${{ github.event.number }}
-          - BACKEND_URL: ${{ secrets.BACKEND_URL }}
+          PR_NUMBER: ${{ github.event.number }}
+          BACKEND_URL: ${{ secrets.BACKEND_URL }}
       - name: Archive report
         uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
