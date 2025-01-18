@@ -8,7 +8,6 @@ on:
 
 jobs:
   liondance_be:
-    environment: CI
     runs-on: ubuntu-latest
     permissions:
       contents: write
