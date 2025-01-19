@@ -5,7 +5,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -23,7 +23,7 @@ jobs:
         run: yarn
         working-directory: ./liondance-fe
       - name: Install Playwright
-        run: npx playwright install chromium
+        run: npx playwright install chromium --with-deps
         working-directory: ./liondance-fe
       - name: Wait for deployment
         env:
