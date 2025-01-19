@@ -11,6 +11,7 @@ import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -29,6 +30,7 @@ import org.springframework.security.oauth2.server.resource.authentication.Reacti
 import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverterAdapter;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.logout.ServerLogoutSuccessHandler;
+import org.springframework.security.web.server.csrf.CookieServerCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
@@ -50,7 +52,7 @@ public class SecurityConfig {
     private String clientId;
     @Autowired
     private Environment env;
-    private UserService userService;
+    private final UserService userService;
     @Autowired
     private ReactiveClientRegistrationRepository clientRegistrationRepository;
 
@@ -64,6 +66,7 @@ public class SecurityConfig {
                 .authorizeExchange(ex -> ex.anyExchange()
                         .permitAll())
                 .cors(cors -> cors.configurationSource(corsConfig()))
+                .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .oauth2ResourceServer(server -> {
                     server.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()));
                 })

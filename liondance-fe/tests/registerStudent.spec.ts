@@ -4,8 +4,8 @@ test("student can register form", async ({ page }) => {
   const randomFirstName = Date.now().toString().slice(-4) + "fN";
   const randomLastName = Date.now().toString().slice(-4) + "lN";
   const randomEmail = Date.now().toString().slice(-4) + "bro@null.local";
-  await page.goto("http://localhost:5173/");
-  await expect(page.getByText('ReviewsContactCalendarBook')).toBeVisible();
+  await page.goto("/");
+  await expect(page.getByText("ReviewsContactCalendarBook")).toBeVisible();
   await page.getByRole("link", { name: "Registration", exact: true }).click();
   await expect(
     page.getByText(
@@ -17,7 +17,15 @@ test("student can register form", async ({ page }) => {
   await page.getByPlaceholder("Doe", { exact: true }).click();
   await page.getByPlaceholder("Doe", { exact: true }).fill(randomLastName);
   await page.getByPlaceholder("January 1,").click();
-  await page.getByLabel("2 December 2024", { exact: true }).click();
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const options: Intl.DateTimeFormatOptions = {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  };
+  const formattedDate = yesterday.toLocaleDateString("en-GB", options);
+  await page.getByLabel(formattedDate, { exact: true }).click();
   await page.getByPlaceholder("MALE").click();
   await page.getByRole("option", { name: "MALE", exact: true }).click();
   await page.getByRole("button", { name: "Next" }).click();
@@ -40,7 +48,7 @@ test("student can register form", async ({ page }) => {
   await page.getByRole("link", { name: "Back to Home" }).click();
   await page.waitForTimeout(1000);
   await page.getByRole("link", { name: "Pending Registrations" }).click();
-  await expect(page.url()).toBe("http://localhost:5173/pending-registrations");
+  await expect(page.url()).toMatch("/pending-registrations");
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   await expect(
     page.getByRole("cell", { name: `${randomFirstName} ${randomLastName}` })
