@@ -15,7 +15,7 @@ function GetAllEvents() {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showRescheduleModal, setShowRescheduleModal] = useState<boolean>(false);
-  const [showUpdateDetailsModal, setShowUpdateDetailsModal] = useState<boolean>(false); // State for UpdateEventDetails modal
+  const [showUpdateDetailsModal, setShowUpdateDetailsModal] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchEvents = async () => {
