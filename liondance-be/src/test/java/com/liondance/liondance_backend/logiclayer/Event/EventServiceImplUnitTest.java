@@ -170,7 +170,6 @@ class EventServiceImplUnitTest {
         verify(notificationService, times(1)).sendMail(anyString(), anyString(), anyString(), any(NotificationType.class));
     }
 
-
     @Test
     void whenBookEvent_InvalidEmail_thenThrowMailSendException() {
         EventRequestModel requestModel = EventRequestModel.builder()
@@ -287,24 +286,26 @@ class EventServiceImplUnitTest {
                 .expectError(IllegalArgumentException.class)
                 .verify();
     }
+
     @Test
     void whenGetEventsByEmail_thenReturnEvents() {
         Mockito.when(eventRepository.findEventsByEmail("liondance@yopmail.com"))
                 .thenReturn(Flux.just(event1, event2));
 
         StepVerifier.create(eventService.getEventsByEmail("liondance@yopmail.com"))
-                .expectNextCount(2)
+                .expectNextMatches(eventResponseModel -> {
+                    Event event = Event.builder().build();
+                    BeanUtils.copyProperties(eventResponseModel, event);
+                    return event.equals(event1);
+                })
+                .expectNextMatches(eventResponseModel -> {
+                    Event event = Event.builder().build();
+                    BeanUtils.copyProperties(eventResponseModel, event);
+                    return event.equals(event2);
+                })
                 .verifyComplete();
     }
-    @Test
-    void whenGetEventsByInvalidEmail_thenReturnNotFound() {
-        Mockito.when(eventRepository.findEventsByEmail("invalid-email"))
-                .thenReturn(Flux.empty());
 
-        StepVerifier.create(eventService.getEventsByEmail("invalid-email"))
-                .expectError(NotFoundException.class)
-                .verify();
-    }
     @Test
     void whenRescheduleEvent_FailedToSendEmail_thenThrowMailSendException() {
         Mockito.when(eventRepository.findById(anyString()))
@@ -395,5 +396,15 @@ class EventServiceImplUnitTest {
                 .verify();
 
         verify(notificationService, times(1)).sendMail(anyString(), anyString(), anyString(), any(NotificationType.class));
+    }
+
+    @Test
+    void whenGetEventsByInvalidEmail_thenReturnNotFound() {
+        Mockito.when(eventRepository.findEventsByEmail("invalid-email"))
+                .thenReturn(Flux.empty());
+
+        StepVerifier.create(eventService.getEventsByEmail("invalid-email"))
+                .expectError(NotFoundException.class)
+                .verify();
     }
 }

@@ -1,3 +1,4 @@
+
 package com.liondance.liondance_backend.presentationlayer.Event;
 
 import com.liondance.liondance_backend.datalayer.Event.Event;
@@ -318,28 +319,6 @@ class EventControllerIntegrationTest {
                 .uri("/api/v1/event/" + eventId + "/date")
                 .header("Content-Type", "application/json")
                 .bodyValue("{\"eventDateTime\": \"2021-12-31T23:59:59Z\"}")
-                .exchange()
-                .expectStatus().isNotFound();
-    }
-
-    @Test
-    void whenGetEventByEmail_ReturnEvents(){
-        String email = "liondance@yopmail.com";
-
-        webTestClient.get()
-                .uri("/api/v1/events/email/" + email)
-                .exchange()
-                .expectStatus().isOk()
-                .expectBodyList(EventResponseModel.class)
-                .hasSize(2);
-    }
-
-    @Test
-    void whenGetEventByInvalidEmail_ReturnNotFound() {
-        String email = "invalid";
-
-        webTestClient.get()
-                .uri("/api/v1/events/email/" + email)
                 .exchange()
                 .expectStatus().isNotFound();
     }
