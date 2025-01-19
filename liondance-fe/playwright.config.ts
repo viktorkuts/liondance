@@ -17,7 +17,7 @@ import { resolve } from "path";
 dotenv.config({ path: resolve(import.meta.dirname, "..", ".env") });
 
 export default defineConfig({
-  globalTimeout: 300,
+  globalTimeout: 3_000_00,
   testDir: "./tests",
   /* Run tests in files in parallel */
   fullyParallel: true,
