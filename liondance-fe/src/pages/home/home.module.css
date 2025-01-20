@@ -19,11 +19,11 @@
   
   .textContent {
     max-width: 900px;
-    text-align: left; /* Align the text to the left */
+    text-align: left;
   }
   
   .lionImage {
-    height: 400px; /* Adjust the height to fit your design */
+    height: 400px;
     width: auto;
   }
   
