@@ -147,9 +147,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.addAllowedOrigin(frontend);
         config.addAllowedOrigin(issuer.substring(0, issuer.length() - 1));
-        log.debug("Checking cors");
         if(deploymentBranch != null && deploymentBranch.split("/")[1].matches("\\d+")){
-            log.debug(frontend.replace("://", "://" + deploymentBranch.split("/")[1] + "."));
             config.addAllowedOrigin(frontend.replace("://", "://" + deploymentBranch.split("/")[1] + "."));
         }
         config.addAllowedHeader("*");
