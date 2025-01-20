@@ -37,7 +37,7 @@ public class StudentController {
         this.courseService = courseService;
     }
 
-    @PreAuthorize("hasAuthority('STUDENT')")
+    @PreAuthorize("hasAuthority('STAFF')")
     @GetMapping
     public Flux<UserResponseModel> getAllStudents(@AuthenticationPrincipal JwtAuthenticationToken jwt) {
         return userService.getAllUsers(Role.STUDENT);
@@ -49,32 +49,38 @@ public class StudentController {
                 .map(userResponseModel -> ResponseEntity.status(HttpStatus.CREATED).body(userResponseModel));
     }
 
+    @PreAuthorize("hasAuthority('STAFF')")
     @PatchMapping("/{userId}/registration-status")
     public Mono<ResponseEntity<UserResponseModel>> updateStudentRegistrationStatus(@PathVariable String userId, @RequestBody RegistrationStatusPatchRequestModel registrationStatusPatchRequestModel) {
         return userService.updateStudentRegistrationStatus(userId, registrationStatusPatchRequestModel)
                 .map(userResponseModel -> ResponseEntity.ok().body(userResponseModel));
     }
 
+    @PreAuthorize("hasAuthority('STAFF')")
     @GetMapping("/status")
     public Flux<UserResponseModel> getStudentsByStatuses(@RequestParam List<RegistrationStatus> statuses) {
         return userService.getStudentsByRegistrationStatuses(statuses);
     }
 
+    @PreAuthorize("hasAuthority('STAFF')")
     @GetMapping(value = "/pending/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<UserResponseModel> getPendingStudentById(@PathVariable String userId) {
         return userService.getPendingStudentById(userId);
     }
 
+    @PreAuthorize("hasAnyAuthority('STUDENT','STAFF')")
     @GetMapping("/{studentId}/courses")
     public Flux<CourseResponseModel> getCoursesByStudentId(@PathVariable String studentId) {
         return courseService.getAllCoursesByStudentId(studentId);
     }
 
+    @PreAuthorize("hasAnyAuthority('STUDENT', 'STAFF')")
     @GetMapping("/{studentId}")
     public Mono<UserResponseModel> getStudentById(@PathVariable String studentId) {
         return userService.getStudentById(studentId);
     }
 
+    @PreAuthorize("hasAnyAuthority('STUDENT', 'STAFF')")
     @PutMapping("/{studentId}")
     public Mono<UserResponseModel> updateStudent(@PathVariable String studentId, @RequestBody StudentRequestModel studentRequestModel) {
         return userService.updateStudent(studentId, studentRequestModel);

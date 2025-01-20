@@ -83,17 +83,27 @@ export const useUserService = () => {
     student: Student
   ): Promise<AxiosResponse<Student>> => {
     return await axiosInstance.put<Student>(`/students/${studentId}`, student);
-  }
+  };
 
   const updateUserRoles = async (
     userId: string,
     roles: Role[]
   ): Promise<AxiosResponse<Role[]>> => {
-    return await axiosInstance.patch<Role[]>(`/users/${userId}/role`, { roles });
+    return await axiosInstance.patch<Role[]>(`/users/${userId}/role`, {
+      roles,
+    });
   };
 
   const userRoles = async (): Promise<AxiosResponse<Role[]>> => {
     return await axiosInstance.get<Role[]>(`/users/current-user/roles`);
+  };
+
+  const getSessionUser = async (): Promise<AxiosResponse<User>> => {
+    return await axiosInstance.get<User>(`/users/authenticated-user`);
+  };
+
+  const getSessionRoles = async (): Promise<AxiosResponse<Role[]>> => {
+    return await axiosInstance.get<Role[]>(`/users/authenticated-user/roles`);
   };
 
   return {
@@ -106,5 +116,10 @@ export const useUserService = () => {
     getAllStudents,
     getStudentsByStatuses,
     updateRegistrationStatus,
+    updateStudent,
+    updateUserRoles,
+    userRoles,
+    getSessionUser,
+    getSessionRoles,
   };
 };

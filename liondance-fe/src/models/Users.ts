@@ -9,6 +9,7 @@ export enum Role {
   STUDENT = "STUDENT",
   CLIENT = "CLIENT",
   ADMIN = "ADMIN",
+  STAFF = "STAFF",
 }
 
 export enum RegistrationStatus {

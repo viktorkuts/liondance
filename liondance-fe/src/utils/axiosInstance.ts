@@ -5,20 +5,25 @@ export const useAxiosInstance = (): AxiosInstance => {
   const { getAccessTokenSilently } = useAuth0();
   const instance = axios.create({
     baseURL:
-    (/^\d+$/.test(window.location.host.split(".")[0])
-      ? import.meta.env.BACKEND_URL.replace(
-          "://",
-          `://${window.location.host.split(".")[0]}.`
-        )
-      : import.meta.env.BACKEND_URL) + "/api/v1",
+      (/^\d+$/.test(window.location.host.split(".")[0])
+        ? import.meta.env.BACKEND_URL.replace(
+            "://",
+            `://${window.location.host.split(".")[0]}.`
+          )
+        : import.meta.env.BACKEND_URL) + "/api/v1",
     headers: {
       "Content-Type": "application/json",
     },
   });
 
   instance.interceptors.request.use(async (config) => {
-    const token = await getAccessTokenSilently();
-    if (token) config.headers.Authorization = `Bearer ${token}`;
+    try {
+      const token = await getAccessTokenSilently();
+      if (token) config.headers.Authorization = `Bearer ${token}`;
+    } catch (err) {
+      console.log(err);
+    }
+
     return config;
   });
 

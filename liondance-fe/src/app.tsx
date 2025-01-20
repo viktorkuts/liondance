@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { BrowserRouter } from "react-router";
 import Router from "./pages/router";
 import "@mantine/core/styles.css";
@@ -8,6 +7,7 @@ import Navbar from "./components/navbar";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Auth0Provider } from "@auth0/auth0-react";
+import { UserProvider } from "./utils/userProvider";
 
 const theme = createTheme({
   colors: {
@@ -55,10 +55,12 @@ function App() {
       >
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <MantineProvider theme={theme}>
-            <BrowserRouter>
-              <Navbar />
-              <Router />
-            </BrowserRouter>
+            <UserProvider>
+              <BrowserRouter>
+                <Navbar />
+                <Router />
+              </BrowserRouter>
+            </UserProvider>
           </MantineProvider>
         </LocalizationProvider>
       </Auth0Provider>

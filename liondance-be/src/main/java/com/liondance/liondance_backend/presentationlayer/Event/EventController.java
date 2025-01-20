@@ -39,6 +39,7 @@ public class EventController {
                 .map(eventResponseModel -> ResponseEntity.status(HttpStatus.CREATED).body(eventResponseModel));
     }
 
+    @PreAuthorize("hasAuthority('STAFF')")
     @PatchMapping("/{eventId}/status")
     public Mono<ResponseEntity<EventResponseModel>> updateEventStatus(@PathVariable String eventId, @RequestBody Mono<Map<String, String>> requestBody) {
         return requestBody
@@ -58,6 +59,7 @@ public class EventController {
                 .map(eventResponseModel -> ResponseEntity.ok().body(eventResponseModel));
     }
 
+    @PreAuthorize("hasAuthority('STAFF')")
     @GetMapping("/{eventId}")
     public Mono<ResponseEntity<EventResponseModel>> getEventById(@PathVariable String eventId) {
         return eventService.getEventById(eventId)
@@ -76,6 +78,8 @@ public class EventController {
                 })
                 .map(eventResponseModel -> ResponseEntity.ok().body(eventResponseModel));
     }
+
+    @PreAuthorize("hasAuthority('STAFF')")
     @GetMapping("/email/{email}")
     Flux<EventResponseModel> getEventsByEmail(@PathVariable String email) {
         return eventService.getEventsByEmail(email);

@@ -1,6 +1,7 @@
 package com.liondance.liondance_backend.presentationlayer.User;
 
 import com.liondance.liondance_backend.datalayer.User.Role;
+import com.liondance.liondance_backend.datalayer.User.User;
 import com.liondance.liondance_backend.logiclayer.User.UserService;
 import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
 import jakarta.validation.Valid;
@@ -30,28 +31,14 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @GetMapping("{userId}")
-    public Mono<UserResponseModel> getUserByUserId(@PathVariable String userId) {
-        return userService.getUserByUserId(userId)
-                .switchIfEmpty(Mono.error(new NotFoundException("User not found with id: " + userId)));
-    }
-    @PutMapping("{userId}")
-    public Mono<UserResponseModel> updateUser(@PathVariable String userId, @RequestBody UserRequestModel userRequestModel) {
-        return userService.updateUser(userId, userRequestModel);
-    }
-
-    @PostMapping()
-    public Mono<UserResponseModel> addNewUser(@Valid @RequestBody Mono<UserRequestModel> userRequestModel, @RequestParam String role) {
-        role.toUpperCase();
-        return userService.addNewUser(role, userRequestModel);
-    }
-    @PatchMapping("{userId}/role")
-    public Mono<UserResponseModel> updateUserRole(@PathVariable String userId, @RequestBody UserRolePatchRequestModel role) {
-        return userService.updateUserRole(userId, role);
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("authenticated-user")
+    public Mono<User> getSessionUser(@AuthenticationPrincipal JwtAuthenticationToken jwt){
+        return userService.validate(jwt.getName());
     }
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/current-user/roles")
+    @GetMapping("authenticated-user/roles")
     public Mono<EnumSet<Role>> getSessionRoles(@AuthenticationPrincipal JwtAuthenticationToken jwt){
         EnumSet<Role> roles = EnumSet.noneOf(Role.class);
         jwt.getAuthorities().forEach(role -> {
@@ -59,5 +46,28 @@ public class UserController {
         });
 
         return Mono.just(roles);
+    }
+
+    @PreAuthorize("hasAuthority('STAFF')")
+    @GetMapping("{userId}")
+    public Mono<UserResponseModel> getUserByUserId(@PathVariable String userId) {
+        return userService.getUserByUserId(userId)
+                .switchIfEmpty(Mono.error(new NotFoundException("User not found with id: " + userId)));
+    }
+    @PreAuthorize("hasAuthority('STAFF')")
+    @PutMapping("{userId}")
+    public Mono<UserResponseModel> updateUser(@PathVariable String userId, @RequestBody UserRequestModel userRequestModel) {
+        return userService.updateUser(userId, userRequestModel);
+    }
+    @PreAuthorize("hasAuthority('STAFF')")
+    @PostMapping()
+    public Mono<UserResponseModel> addNewUser(@Valid @RequestBody Mono<UserRequestModel> userRequestModel, @RequestParam String role) {
+        role.toUpperCase();
+        return userService.addNewUser(role, userRequestModel);
+    }
+    @PreAuthorize("hasAuthority('STAFF')")
+    @PatchMapping("{userId}/role")
+    public Mono<UserResponseModel> updateUserRole(@PathVariable String userId, @RequestBody UserRolePatchRequestModel role) {
+        return userService.updateUserRole(userId, role);
     }
 }

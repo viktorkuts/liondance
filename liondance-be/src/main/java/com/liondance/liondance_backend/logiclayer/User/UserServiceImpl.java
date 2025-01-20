@@ -295,6 +295,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Mono<User> validate(String subId){
-        return userRepository.findUserByAssociatedId(subId);
+        return userRepository.findUserByAssociatedId(subId)
+                .switchIfEmpty(Mono.error(new NotFoundException("Session user is not associated")));
     }
 }
