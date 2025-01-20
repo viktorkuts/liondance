@@ -4,7 +4,8 @@ import { DateInput } from "@mantine/dates";
 import dayjs from "dayjs";
 import axiosInstance from "@/utils/axiosInstance";
 import { Event } from "@/models/Event";
-import "@/components/studentProfile.css";
+import "@/pages/event/rescheduleEvent.css";
+
 
 interface RescheduleEventStatusProps {
   event: Event;
