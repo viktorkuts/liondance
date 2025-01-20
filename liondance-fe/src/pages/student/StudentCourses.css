@@ -23,13 +23,6 @@
     font-size: 18px;
     margin: 20px 0;
   }
-
-  h1,
-  h2 {
-    text-align: center;
-    color: #c05621;
-    background-color: #ECBA4B;
-  }
   
   .loading,
   .error,
