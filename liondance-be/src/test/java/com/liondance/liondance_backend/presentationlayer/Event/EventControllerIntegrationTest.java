@@ -1,6 +1,7 @@
 
 package com.liondance.liondance_backend.presentationlayer.Event;
 
+import com.liondance.liondance_backend.TestSecurityConfig;
 import com.liondance.liondance_backend.datalayer.Event.*;
 import com.liondance.liondance_backend.datalayer.common.Address;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,7 +22,7 @@ import java.time.LocalTime;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"spring.data.mongodb.port= 0"})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"spring.data.mongodb.port= 0"}, classes = TestSecurityConfig.class)
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @AutoConfigureWebTestClient

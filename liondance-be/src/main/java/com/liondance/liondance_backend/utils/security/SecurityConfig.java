@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -43,6 +44,7 @@ import java.util.stream.Collectors;
 @Configuration
 @EnableWebFluxSecurity
 @EnableReactiveMethodSecurity
+@Profile("!test")
 public class SecurityConfig {
     @Value("${spring.security.oauth2.client.provider.okta.issuer-uri}")
     private String issuer;
