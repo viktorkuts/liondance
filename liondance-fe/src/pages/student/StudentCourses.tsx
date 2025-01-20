@@ -25,13 +25,13 @@ const StudentCourses: React.FC = () => {
   const [selectedCourses, setSelectedCourses] = useState<Course[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
 
-  const studentId = "a79b0c3c-2462-42a1-922d-1a20be857cba"; 
+  const studentId = "a79b0c3c-2462-42a1-922d-1a20be857cba";
 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
         const response = await axios.get<Course[]>(
-          `http://localhost:8080/api/v1/students/${studentId}/courses`
+          `${import.meta.env.BACKEND_URL}/api/v1/students/${studentId}/courses`
         );
         setCourses(response.data);
         setLoading(false);
@@ -52,7 +52,8 @@ const StudentCourses: React.FC = () => {
   const handleDayClick = (date: Date) => {
     const clickedCourses = courses.filter(
       (course) =>
-        course.dayOfWeek === date.toLocaleDateString("en-US", { weekday: "long" }).toUpperCase()
+        course.dayOfWeek ===
+        date.toLocaleDateString("en-US", { weekday: "long" }).toUpperCase()
     );
 
     setSelectedCourses(clickedCourses);
@@ -63,13 +64,15 @@ const StudentCourses: React.FC = () => {
   const getTileClassName = ({ date }: { date: Date }) => {
     const hasCourse = courses.some(
       (course) =>
-        course.dayOfWeek === date.toLocaleDateString("en-US", { weekday: "long" }).toUpperCase()
+        course.dayOfWeek ===
+        date.toLocaleDateString("en-US", { weekday: "long" }).toUpperCase()
     );
     return hasCourse ? "course-day" : "";
   };
 
   if (loading) return <Text style={{ textAlign: "center" }}>Loading...</Text>;
-  if (error) return <Text style={{ textAlign: "center", color: "red" }}>{error}</Text>;
+  if (error)
+    return <Text style={{ textAlign: "center", color: "red" }}>{error}</Text>;
 
   return (
     <div className="student-courses-container">
@@ -98,7 +101,8 @@ const StudentCourses: React.FC = () => {
                   </td>
                   <td>
                     {course.instructorFirstName}{" "}
-                    {course.instructorMiddleName && course.instructorMiddleName + " "}
+                    {course.instructorMiddleName &&
+                      course.instructorMiddleName + " "}
                     {course.instructorLastName}
                   </td>
                 </tr>
@@ -143,14 +147,3 @@ const StudentCourses: React.FC = () => {
 };
 
 export default StudentCourses;
-
-
-
-
-
-
-
-
-
-
-

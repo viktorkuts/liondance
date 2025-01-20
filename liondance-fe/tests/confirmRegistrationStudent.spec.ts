@@ -3,10 +3,10 @@ import { test, expect } from "@playwright/test";
 test("upon approve remove from pending and add to users list", async ({
   page,
 }) => {
-  await page.goto("http://localhost:5173/");
-  await expect(page.getByText('ReviewsContactCalendarBook')).toBeVisible();
+  await page.goto("/");
+  await expect(page.getByText("ReviewsContactCalendarBook")).toBeVisible();
   await page.getByRole("link", { name: "Pending Registrations" }).click();
-  await page.goto("http://localhost:5173/pending-registrations");
+  await page.goto("/pending-registrations");
   await page.waitForTimeout(1000);
   await expect(page.getByRole("cell", { name: "John Pork" })).toBeVisible();
   await page.getByRole("cell", { name: "John Pork" }).click();
@@ -17,7 +17,7 @@ test("upon approve remove from pending and add to users list", async ({
   await page.getByRole("link", { name: "Students" }).click();
   await page.getByPlaceholder("Select statuses").click();
   await page.getByRole("option", { name: "ACTIVE", exact: true }).click();
-  await page.goto("http://localhost:5173/users");
+  await page.goto("/users");
   await page.waitForTimeout(1000);
   await expect(
     page.getByRole("cell", { name: "John Doesounow Pork" })
@@ -25,8 +25,8 @@ test("upon approve remove from pending and add to users list", async ({
 });
 
 test("upon deny delete student", async ({ page }) => {
-  await page.goto("http://localhost:5173/");
-  await expect(page.getByText('ReviewsContactCalendarBook')).toBeVisible();
+  await page.goto("/");
+  await expect(page.getByText("ReviewsContactCalendarBook")).toBeVisible();
   await page.getByRole("link", { name: "Pending Registrations" }).click();
   await page.waitForTimeout(1000);
   await expect(page.getByRole("cell", { name: "Tony Nearos" })).toBeVisible();
@@ -40,7 +40,5 @@ test("upon deny delete student", async ({ page }) => {
   await page.getByPlaceholder("Select statuses").click();
   await page.getByRole("option", { name: "INACTIVE", exact: true }).click();
   await page.waitForTimeout(250);
-  await expect(
-    page.getByRole("cell", { name: "Tony Nearos" })
-  ).toHaveCount(0);
+  await expect(page.getByRole("cell", { name: "Tony Nearos" })).toHaveCount(0);
 });
