@@ -335,6 +335,7 @@ class EventControllerIntegrationTest {
                 .eventDateTime(LocalDate.now().atTime(LocalTime.NOON))
                 .eventType(EventType.WEDDING)
                 .paymentMethod(PaymentMethod.CASH)
+                .eventPrivacy(EventPrivacy.PRIVATE)
                 .specialRequest("Special request")
                 .build();
 
