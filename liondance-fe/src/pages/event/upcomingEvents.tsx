@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axiosInstance from "../../utils/axiosInstance";
+import { useAxiosInstance } from "../../utils/axiosInstance";
 import { UpcomingEvent } from "@/models/UpcomingEvent.ts";
 import "./upcomingEvents.css";
 
@@ -7,7 +7,7 @@ function UpcomingEvents() {
   const [events, setEvents] = useState<UpcomingEvent[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
-
+  const axiosInstance = useAxiosInstance();
   useEffect(() => {
     const fetchEvents = async () => {
       try {
