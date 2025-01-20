@@ -22,7 +22,6 @@ const AddNewUser = () => {
       firstName: "",
       middleName: "",
       lastName: "",
-      gender: "",
       dob: null,
       email: "",
       phone: "",
@@ -38,7 +37,6 @@ const AddNewUser = () => {
     validate: {
       firstName: (value) => (value.length > 0 ? null : "First name is required"),
       lastName: (value) => (value.length > 0 ? null : "Last name is required"),
-      gender: (value) => (value ? null : "Gender is required"),
       dob: (value) => (value ? null : "Date of birth is required"),
       email: (value) =>
         /^\S+@\S+$/.test(value) ? null : "Invalid email address",
@@ -114,13 +112,6 @@ const AddNewUser = () => {
             label="Last Name"
             placeholder="Doe"
             {...form.getInputProps("lastName")}
-            required
-          />
-          <Select
-            label="Gender"
-            placeholder="Select gender"
-            data={["MALE", "FEMALE", "OTHER"]}
-            {...form.getInputProps("gender")}
             required
           />
           <DateInput

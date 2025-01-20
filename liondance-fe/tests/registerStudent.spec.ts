@@ -26,8 +26,6 @@ test("student can register form", async ({ page }) => {
   };
   const formattedDate = yesterday.toLocaleDateString("en-GB", options);
   await page.getByLabel(formattedDate, { exact: true }).click();
-  await page.getByPlaceholder("MALE").click();
-  await page.getByRole("option", { name: "MALE", exact: true }).click();
   await page.getByRole("button", { name: "Next" }).click();
   await page.getByPlaceholder("john.doe@example.com").click();
   await page.getByPlaceholder("john.doe@example.com").fill(randomEmail);

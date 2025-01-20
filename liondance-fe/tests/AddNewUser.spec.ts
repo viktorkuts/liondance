@@ -12,8 +12,6 @@ test("register admin user", async ({ page }) => {
   await page.getByPlaceholder("John").fill("Chie");
   await page.getByPlaceholder("Doe").click();
   await page.getByPlaceholder("Doe").fill("Satonaka");
-  await page.getByPlaceholder("Select gender").click();
-  await page.getByRole("option", { name: "FEMALE" }).click();
   await page.getByPlaceholder("YYYY-MM-DD").click();
   await page
     .locator("div")

@@ -14,7 +14,7 @@ test("can view specific student registration", async ({ page }) => {
   await expect(page.getByText("ReviewsContactCalendarBook")).toBeVisible();
   await expect(
     page.getByText(
-      "Pending RegistrationsNameEmailGenderDate of BirthNikolaos Michaloliakosnikolaos"
+      "Pending RegistrationsNameEmailDate of BirthNikolaos Michaloliakosnikolaos"
     )
   ).toBeVisible();
   await expect(
@@ -22,7 +22,6 @@ test("can view specific student registration", async ({ page }) => {
   ).toBeVisible();
   await expect(page.getByRole("cell", { name: "Name" })).toBeVisible();
   await expect(page.getByRole("cell", { name: "Email" })).toBeVisible();
-  await expect(page.getByRole("cell", { name: "Gender" })).toBeVisible();
   await expect(page.getByRole("cell", { name: "Date of Birth" })).toBeVisible();
   await expect(
     page.getByRole("cell", { name: "nikolaos.michaloliakos@" })

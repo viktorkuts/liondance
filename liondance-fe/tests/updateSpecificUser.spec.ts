@@ -12,7 +12,6 @@ test("can edit specific user details", async ({ page }) => {
   await expect(page.locator("tbody")).toContainText(
     "zippora.snickett@stories.org"
   );
-  await expect(page.locator("tbody")).toContainText("FEMALE");
   await page
     .getByRole("row", { name: "Zippora Lemony Snickett" })
     .getByRole("button")
@@ -20,7 +19,6 @@ test("can edit specific user details", async ({ page }) => {
   await expect(page.locator("#root")).toContainText(
     "Name: Zippora Lemony Snickett"
   );
-  await expect(page.locator("#root")).toContainText("Gender: FEMALE");
   await expect(page.locator("#root")).toContainText(
     "Email: zippora.snickett@stories.org"
   );
@@ -29,8 +27,6 @@ test("can edit specific user details", async ({ page }) => {
   await page.getByPlaceholder("John", { exact: true }).fill("Zipporas");
   await page.getByPlaceholder("Pork").click();
   await page.getByPlaceholder("Pork").fill("Snicketts");
-  await page.getByRole("textbox", { name: "Gender" }).click();
-  await page.getByRole("option", { name: "MALE", exact: true }).click();
   await page.getByPlaceholder("john.doe@example.com").click();
   await page
     .getByPlaceholder("john.doe@example.com")
@@ -41,7 +37,6 @@ test("can edit specific user details", async ({ page }) => {
   await expect(page.locator("#root")).toContainText(
     "Name: Zipporas Lemony Snicketts"
   );
-  await expect(page.locator("#root")).toContainText("Gender: MALE");
   await expect(page.locator("#root")).toContainText(
     "Email: zippora.snickett@stories.com"
   );
@@ -52,7 +47,6 @@ test("can edit specific user details", async ({ page }) => {
   await expect(page.locator("tbody")).toContainText(
     "zippora.snickett@stories.com"
   );
-  await expect(page.locator("tbody")).toContainText("MALE");
   await page
     .getByRole("row", { name: "Zipporas Lemony Snicketts" })
     .getByRole("button")
@@ -62,14 +56,11 @@ test("can edit specific user details", async ({ page }) => {
   await page.getByPlaceholder("John", { exact: true }).fill("Zippora");
   await page.getByPlaceholder("Pork").click();
   await page.getByPlaceholder("Pork").fill("Snickett");
-  await page.getByRole("textbox", { name: "Gender" }).click();
-  await page.getByRole("option", { name: "FEMALE" }).click();
   await page.getByPlaceholder("john.doe@example.com").click();
   await page
     .getByPlaceholder("john.doe@example.com")
     .fill("zippora.snickett@stories.org");
   await page.getByRole("button", { name: "Update User" }).click();
-  await expect(page.locator("#root")).toContainText("Gender: FEMALE");
   await expect(page.locator("#root")).toContainText(
     "Email: zippora.snickett@stories.org"
   );
@@ -78,5 +69,4 @@ test("can edit specific user details", async ({ page }) => {
   await expect(page.locator("tbody")).toContainText(
     "zippora.snickett@stories.org"
   );
-  await expect(page.locator("tbody")).toContainText("FEMALE");
 });

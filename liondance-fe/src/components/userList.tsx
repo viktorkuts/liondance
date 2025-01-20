@@ -33,7 +33,6 @@ const UserList: React.FC = () => {
      <tr>
       <th>Name</th>
       <th>Email</th>
-      <th>Gender</th>
       <th>Date of Birth</th>
       <th>Actions</th>
      </tr>
@@ -43,7 +42,6 @@ const UserList: React.FC = () => {
       <tr key={user.userId}>
        <td>{user.firstName} {user.middleName} {user.lastName}</td>
        <td>{user.email}</td>
-       <td>{user.gender}</td>
        <td>{new Date(user.dob).toLocaleDateString()}</td>
        <td>
         <Link to={`/profile/${user.userId}`}>

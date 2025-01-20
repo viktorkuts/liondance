@@ -15,7 +15,6 @@ test("can edit specific student details", async ({ page }) => {
   await expect(page.locator("#root")).toContainText(
     "Name: Hawk Doesounow Tuah"
   );
-  await expect(page.locator("#root")).toContainText("Gender: FEMALE");
   await expect(page.locator("#root")).toContainText(
     "Email: hawktuah@onthatthang.org"
   );
@@ -29,8 +28,6 @@ test("can edit specific student details", async ({ page }) => {
   await page.getByPlaceholder("John", { exact: true }).fill("Tuah");
   await page.getByPlaceholder("Pork").click();
   await page.getByPlaceholder("Pork").fill("Hawk");
-  await page.getByRole("textbox", { name: "Gender" }).click();
-  await page.getByRole("option", { name: "MALE", exact: true }).click();
   await page.getByPlaceholder("john.doe@example.com").click();
   await page
     .getByPlaceholder("john.doe@example.com")
@@ -43,7 +40,6 @@ test("can edit specific student details", async ({ page }) => {
   await expect(page.locator("#root")).toContainText(
     "Name: Tuah Doesounow Hawk"
   );
-  await expect(page.locator("#root")).toContainText("Gender: MALE");
   await expect(page.locator("#root")).toContainText(
     "Email: hawktuah@onthatthang.com"
   );
@@ -51,7 +47,6 @@ test("can edit specific student details", async ({ page }) => {
   await page.getByRole("button", { name: "Back to Student List" }).click();
   await expect(page.locator("tbody")).toContainText("Tuah Doesounow Hawk");
   await expect(page.locator("tbody")).toContainText("hawktuah@onthatthang.com");
-  await expect(page.locator("tbody")).toContainText("MALE");
   await page
     .getByRole("row", { name: "Tuah Doesounow Hawk hawktuah@" })
     .getByRole("button")
@@ -61,8 +56,6 @@ test("can edit specific student details", async ({ page }) => {
   await page.getByPlaceholder("John", { exact: true }).fill("Hawk");
   await page.getByPlaceholder("Pork").click();
   await page.getByPlaceholder("Pork").fill("Tuah");
-  await page.getByRole("textbox", { name: "Gender" }).click();
-  await page.getByRole("option", { name: "FEMALE" }).click();
   await page.getByPlaceholder("john.doe@example.com").click();
   await page
     .getByPlaceholder("john.doe@example.com")
@@ -73,7 +66,6 @@ test("can edit specific student details", async ({ page }) => {
   await expect(page.locator("#root")).toContainText(
     "Name: Hawk Doesounow Tuah"
   );
-  await expect(page.locator("#root")).toContainText("Gender: FEMALE");
   await expect(page.locator("#root")).toContainText(
     "Email: hawktuah@onthatthang.org"
   );
@@ -81,5 +73,4 @@ test("can edit specific student details", async ({ page }) => {
   await page.getByRole("button", { name: "Back to Student List" }).click();
   await expect(page.locator("tbody")).toContainText("Hawk Doesounow Tuah");
   await expect(page.locator("tbody")).toContainText("hawktuah@onthatthang.org");
-  await expect(page.locator("tbody")).toContainText("FEMALE");
 });

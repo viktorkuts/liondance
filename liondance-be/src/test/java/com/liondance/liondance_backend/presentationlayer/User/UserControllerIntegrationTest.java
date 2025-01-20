@@ -65,7 +65,6 @@ class UserControllerIntegrationTest {
             .lastName("Doe")
             .email("john.doe@null.local")
             .dob(LocalDate.parse("1990-01-01"))
-            .gender(Gender.MALE)
             .roles(EnumSet.of(Role.STAFF))
             .address(Address.builder()
                     .streetAddress("123 Main St")
@@ -82,7 +81,6 @@ class UserControllerIntegrationTest {
             .lastName("Doe")
             .email("jane.doe@null.local")
             .dob(LocalDate.parse("1995-01-01"))
-            .gender(Gender.FEMALE)
             .roles(EnumSet.of(Role.STUDENT))
             .address(Address.builder()
                     .streetAddress("456 Main St")
@@ -100,7 +98,6 @@ class UserControllerIntegrationTest {
             .lastName("Doe")
             .email("john.doe-same-same-but-different@null.local")
             .dob(LocalDate.parse("2000-01-01"))
-            .gender(Gender.MALE)
             .roles(EnumSet.of(Role.STUDENT))
             .address(Address.builder()
                     .streetAddress("500 Main St")
@@ -163,7 +160,6 @@ class UserControllerIntegrationTest {
                         .zip("H0H 0H0")
                         .build()
                 )
-                .gender(Gender.FEMALE)
                 .build();
 
         client.post()
@@ -316,7 +312,6 @@ class UserControllerIntegrationTest {
                     assertEquals(student2.getLastName(), actualResponses.get(0).getLastName());
                     assertEquals(student2.getEmail(), actualResponses.get(0).getEmail());
                     assertEquals(student2.getDob(), actualResponses.get(0).getDob());
-                    assertEquals(student2.getGender(), actualResponses.get(0).getGender());
                     assertEquals(student2.getRoles(), actualResponses.get(0).getRoles());
                     assertEquals(student2.getAddress(), actualResponses.get(0).getAddress());
                 });
@@ -390,7 +385,6 @@ class UserControllerIntegrationTest {
                 .lastName("Doe")
                 .email("john.doe@null.local")
                 .dob(LocalDate.parse("1990-01-01"))
-                .gender(Gender.MALE)
                 .roles(EnumSet.of(Role.CLIENT))
                 .address(Address.builder()
                         .streetAddress("123 Main St")
@@ -453,7 +447,6 @@ class UserControllerIntegrationTest {
                     assertEquals(student1.getLastName(), student.getLastName());
                     assertEquals(student1.getEmail(), student.getEmail());
                     assertEquals(student1.getDob(), student.getDob());
-                    assertEquals(student1.getGender(), student.getGender());
                     assertEquals(student1.getRoles(), student.getRoles());
                     assertEquals(student1.getAddress(), student.getAddress());
                 });
@@ -486,7 +479,6 @@ class UserControllerIntegrationTest {
                         .state("QC")
                         .zip("H0H 0H0")
                         .build())
-                .gender(Gender.FEMALE)
                 .build();
 
         client.put()
@@ -501,7 +493,6 @@ class UserControllerIntegrationTest {
                     assertEquals("UpdatedLastName", student.getLastName());
                     assertEquals("updated.email@null.local", student.getEmail());
                     assertEquals(LocalDate.parse("1995-01-01"), student.getDob());
-                    assertEquals(Gender.FEMALE, student.getGender());
                     assertEquals("456 Updated St", student.getAddress().getStreetAddress());
                     assertEquals("UpdatedCity", student.getAddress().getCity());
                     assertEquals("QC", student.getAddress().getState());
@@ -523,7 +514,6 @@ class UserControllerIntegrationTest {
                         .state("QC")
                         .zip("H0H 0H0")
                         .build())
-                .gender(Gender.FEMALE)
                 .build();
 
         client.put()
@@ -579,7 +569,6 @@ class UserControllerIntegrationTest {
                 .lastName("Smith")
                 .email("alice.smith@null.local")
                 .dob(LocalDate.parse("1995-01-01"))
-                .gender(Gender.FEMALE)
                 .address(Address.builder()
                         .streetAddress("789 Elm St")
                         .city("Toronto")
@@ -610,7 +599,6 @@ class UserControllerIntegrationTest {
                 .lastName("Smith")
                 .email("invalid-email")
                 .dob(LocalDate.parse("1995-01-01"))
-                .gender(Gender.FEMALE)
                 .address(Address.builder()
                         .streetAddress("789 Elm St")
                         .city("Toronto")

@@ -1,13 +1,11 @@
 package com.liondance.liondance_backend.presentationlayer.User;
 
 import com.liondance.liondance_backend.datalayer.common.Address;
-import com.liondance.liondance_backend.datalayer.User.Gender;
 import com.liondance.liondance_backend.datalayer.User.User;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.beans.BeanUtils;
-import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -22,8 +20,6 @@ public class UserRequestModel {
     private String middleName;
     @NotBlank(message = "lastName is required")
     private String lastName;
-    @NotNull(message = "gender is required")
-    private Gender gender;
     @NotNull(message = "dob is required")
     private LocalDate dob;
     @NotBlank(message = "email is required")
