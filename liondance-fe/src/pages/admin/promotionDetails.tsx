@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { Loader } from '@mantine/core';
-import { getPromotionById } from '@/services/promotionService';
-import { Promotion } from '@/models/Promotions';
-import './promotions.css';
+import React, { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import { Loader } from "@mantine/core";
+import { usePromotionService } from "@/services/promotionService";
+import { Promotion } from "@/models/Promotions";
+import "./promotions.css";
 
 const PromotionDetails: React.FC = () => {
+  const promotionService = usePromotionService();
   const { promotionId } = useParams<{ promotionId: string }>();
   const [promotion, setPromotion] = useState<Promotion | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -14,17 +15,19 @@ const PromotionDetails: React.FC = () => {
   useEffect(() => {
     const fetchPromotion = async () => {
       try {
-        const data = await getPromotionById(promotionId!);
+        const data = await promotionService.getPromotionById(promotionId!);
         setPromotion(data);
       } catch (err) {
-        setError('Failed to load promotion details. Please try again later. '+err);
+        setError(
+          "Failed to load promotion details. Please try again later. " + err
+        );
       } finally {
         setLoading(false);
       }
     };
 
     fetchPromotion();
-  }, [promotionId]);
+  }, [promotionId, promotionService]);
 
   if (loading) return <Loader />;
   if (error) return <div className="error">{error}</div>;
@@ -71,4 +74,3 @@ const PromotionDetails: React.FC = () => {
 };
 
 export default PromotionDetails;
-

@@ -1,8 +1,10 @@
 import { Anchor, Image } from "@mantine/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import classes from "./navbar.module.css";
 import logo from "../../assets/logo.png";
-
+import { useAuth0 } from "@auth0/auth0-react";
+import { useUserContext } from "@/utils/userProvider";
+import { Role } from "@/models/Users";
 
 function Navbar() {
   const [adminDropdownOpen, setAdminDropdownOpen] = useState(false);
@@ -10,6 +12,13 @@ function Navbar() {
   const toggleAdminDropdown = () => {
     setAdminDropdownOpen(!adminDropdownOpen);
   };
+
+  const { loginWithRedirect, logout, isAuthenticated } = useAuth0();
+  const { user } = useUserContext();
+
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
 
   return (
     <div className={classes.navbar}>
@@ -24,51 +33,70 @@ function Navbar() {
         <Anchor href="/contact-us" fw={1000} fz="h2">
           Contact
         </Anchor>
-        <Anchor href="/calendar" fw={1000} fz="h2">
-          Calendar
-        </Anchor>
+        {user && user.roles?.includes(Role.STUDENT) ? (
+          <Anchor href="/student-courses" fw={1000} fz={"h2"}>
+            Courses
+          </Anchor>
+        ) : null}
         <Anchor href="/filtered-events" fw={1000} fz="h2">
           Upcoming Events
         </Anchor>
         <Anchor href="/booking" fw={1000} fz="h2">
           Book Event
         </Anchor>
-        <Anchor href="/events/email/:email" fw={1000} fz="h2">
-          Your Events
-        </Anchor>
+        {user && user.roles?.includes(Role.CLIENT) ? (
+          <Anchor href="/events/email/:email" fw={1000} fz="h2">
+            Your Events
+          </Anchor>
+        ) : null}
         <Anchor href="/registration" fw={1000} fz="h2">
           Registration
         </Anchor>
-        <Anchor href="/pending-registrations" fw={1000} fz="h2">
-          Pending Registrations
-        </Anchor>
-        <Anchor href="/login" fw={1000} fz="h2">
-          Login
-        </Anchor>
-        <div className={classes.dropdown}>
-          <Anchor onClick={toggleAdminDropdown} fw={1000} fz="h2">
-            Admin
+        {user && user.roles?.includes(Role.STAFF) ? (
+          <Anchor href="/pending-registrations" fw={1000} fz="h2">
+            Pending Registrations
           </Anchor>
-          {adminDropdownOpen && (
-           <div className={classes.dropdownContent}>
-             <Anchor href="/users" fw={1000} fz="h2">
-               Users
-             </Anchor>
-             <Anchor href="/students" fw={1000} fz="h2">
-               Students
-             </Anchor>
-              <Anchor href="/events" fw={1000} fz="h2">
-               Events
-              </Anchor>
-              <Anchor href="/promotions" fw={1000} fz="h2">
-              Promotions
-              </Anchor>
-           </div>
-          )}
-        </div>
-        <Anchor href="/student-courses" fw={1000} fz={"h2"}>
-          Courses
+        ) : null}
+        <Anchor
+          onClick={() => {
+            if (!isAuthenticated) {
+              loginWithRedirect();
+            } else {
+              logout({
+                logoutParams: {
+                  returnTo: window.location.origin,
+                },
+              });
+            }
+          }}
+          fw={1000}
+          fz="h2"
+        >
+          {isAuthenticated ? "Logout" : "Login"}
         </Anchor>
+        {user && user.roles?.includes(Role.STAFF) ? (
+          <div className={classes.dropdown}>
+            <Anchor onClick={toggleAdminDropdown} fw={1000} fz="h2">
+              Admin
+            </Anchor>
+            {adminDropdownOpen && (
+              <div className={classes.dropdownContent}>
+                <Anchor href="/users" fw={1000} fz="h2">
+                  Users
+                </Anchor>
+                <Anchor href="/students" fw={1000} fz="h2">
+                  Students
+                </Anchor>
+                <Anchor href="/events" fw={1000} fz="h2">
+                  Events
+                </Anchor>
+                <Anchor href="/promotions" fw={1000} fz="h2">
+                  Promotions
+                </Anchor>
+              </div>
+            )}
+          </div>
+        ) : null}
       </div>
     </div>
   );

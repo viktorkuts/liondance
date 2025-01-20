@@ -1,10 +1,12 @@
 package com.liondance.liondance_backend.utils.security;
 
 import com.liondance.liondance_backend.logiclayer.User.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -40,9 +42,11 @@ import reactor.core.publisher.Mono;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Configuration
 @EnableWebFluxSecurity
 @EnableReactiveMethodSecurity
+@Profile("!test")
 public class SecurityConfig {
     @Value("${spring.security.oauth2.client.provider.okta.issuer-uri}")
     private String issuer;

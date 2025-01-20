@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Modal, Button, Select } from "@mantine/core";
-import axiosInstance from "@/utils/axiosInstance";
+import { useAxiosInstance } from "@/utils/axiosInstance";
 import { Event, EventStatus } from "@/models/Event";
 import "@/components/studentProfile.css";
 
@@ -15,6 +15,7 @@ const UpdateEventStatus: React.FC<UpdateEventStatusProps> = ({
   onClose,
   onUpdate,
 }) => {
+  const axiosInstance = useAxiosInstance();
   const [newStatus, setNewStatus] = useState<EventStatus>(event.eventStatus);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");

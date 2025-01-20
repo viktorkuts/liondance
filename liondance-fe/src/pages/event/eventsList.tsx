@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axiosInstance from "../../utils/axiosInstance.ts";
+import { useAxiosInstance } from "../../utils/axiosInstance.ts";
 import { Event } from "@/models/Event.ts";
 import "./eventsList.css";
 import UpdateEventStatus from "./updateEventStatus.tsx";
@@ -8,6 +8,7 @@ import UpdateEventDetails from "./updateEventDetails.tsx";
 import { useNavigate } from "react-router-dom";
 
 function GetAllEvents() {
+  const axiosInstance = useAxiosInstance();
   const navigate = useNavigate();
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -35,7 +36,7 @@ function GetAllEvents() {
       }
     };
     fetchEvents();
-  }, []);
+  }, [axiosInstance]);
 
   const handleStatusClick = (event: Event) => {
     setSelectedEvent(event);
@@ -82,7 +83,9 @@ function GetAllEvents() {
 
   const handleReschedule = (updatedEvent: Event) => {
     setEvents((prevEvents) =>
-      prevEvents.map((event) => (event.id === updatedEvent.id ? updatedEvent : event))
+      prevEvents.map((event) =>
+        event.id === updatedEvent.id ? updatedEvent : event
+      )
     );
   };
 

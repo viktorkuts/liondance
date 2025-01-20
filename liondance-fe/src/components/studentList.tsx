@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Button, Title, MultiSelect } from '@mantine/core';
-import studentService from '../services/userService';
-import { Student } from '../models/Users';
-import './studentList.css';
-import './loader.css';
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { Button, Title, MultiSelect } from "@mantine/core";
+import { useUserService } from "../services/userService";
+import { Student } from "../models/Users";
+import "./studentList.css";
+import "./loader.css";
 
 const StudentList: React.FC = () => {
+  const studentService = useUserService();
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
   const [statuses, setStatuses] = useState<string[]>([]);
@@ -14,23 +15,23 @@ const StudentList: React.FC = () => {
   useEffect(() => {
     setLoading(true);
     if (statuses.length > 0) {
-      studentService.getStudentsByStatuses(statuses).then(data => {
+      studentService.getStudentsByStatuses(statuses).then((data) => {
         setStudents(data);
         setLoading(false);
       });
     } else {
-      studentService.getAllStudents().then(data => {
+      studentService.getAllStudents().then((data) => {
         setStudents(data);
         setLoading(false);
       });
     }
-  }, [statuses]);
+  }, [statuses, studentService]);
 
   return (
     <div className="user-list">
       <Title order={1}>Student List</Title>
       <MultiSelect
-        data={['ACTIVE', 'INACTIVE']}
+        data={["ACTIVE", "INACTIVE"]}
         value={statuses}
         onChange={setStatuses}
         placeholder="Select statuses"
@@ -52,15 +53,19 @@ const StudentList: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {students.map(student => (
+            {students.map((student) => (
               <tr key={student.userId}>
-                <td>{student.firstName} {student.middleName} {student.lastName}</td>
+                <td>
+                  {student.firstName} {student.middleName} {student.lastName}
+                </td>
                 <td>{student.email}</td>
                 <td>{new Date(student.dob).toLocaleDateString()}</td>
                 <td>{student.registrationStatus}</td>
                 <td>
                   <Link to={`/student-profile/${student.userId}`}>
-                    <Button className="view-profile-button" variant="outline">View Profile</Button>
+                    <Button className="view-profile-button" variant="outline">
+                      View Profile
+                    </Button>
                   </Link>
                 </td>
               </tr>

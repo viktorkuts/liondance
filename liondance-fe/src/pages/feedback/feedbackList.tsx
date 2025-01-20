@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import feedbackService from "../../services/feedbackService";
+import { useFeedbackService } from "../../services/feedbackService";
 import { Feedback } from "../../models/Feedback";
-import './feedbackList.css';
+import "./feedbackList.css";
 import { useParams, useNavigate } from "react-router-dom";
 
 interface FeedbackListProps {
@@ -9,6 +9,7 @@ interface FeedbackListProps {
 }
 
 const FeedbackList: React.FC<FeedbackListProps> = () => {
+  const feedbackService = useFeedbackService();
   const { eventId } = useParams<{ eventId: string }>();
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -32,7 +33,7 @@ const FeedbackList: React.FC<FeedbackListProps> = () => {
     };
 
     fetchFeedbacks();
-  }, [eventId]);
+  }, [eventId, feedbackService]);
 
   if (loading) {
     return <div>Loading...</div>;

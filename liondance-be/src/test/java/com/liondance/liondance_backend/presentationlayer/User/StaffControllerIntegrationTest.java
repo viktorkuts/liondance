@@ -1,5 +1,6 @@
 package com.liondance.liondance_backend.presentationlayer.User;
 
+import com.liondance.liondance_backend.TestSecurityConfig;
 import com.liondance.liondance_backend.datalayer.User.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,7 +22,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"spring.data.mongodb.port= 0"})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"spring.data.mongodb.port= 0"}, classes = TestSecurityConfig.class)
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @AutoConfigureWebTestClient

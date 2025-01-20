@@ -1,21 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Button, Title } from '@mantine/core';
-import userService from '../services/userService';
-import { User } from '../models/Users';
-import './userList.css';
-import './loader.css';
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { Button, Title } from "@mantine/core";
+import { useUserService } from "../services/userService";
+import { User } from "../models/Users";
+import "./userList.css";
+import "./loader.css";
 
 const UserList: React.FC = () => {
- const [users, setUsers] = useState<User[]>([]);
- const [loading, setLoading] = useState(true);
+  const userService = useUserService();
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
 
- useEffect(() => {
-  userService.getAllUsers().then(data => {
-   setUsers(data);
-   setLoading(false);
-  });
- }, []);
+  useEffect(() => {
+    userService.getAllUsers().then((data) => {
+      setUsers(data);
+      setLoading(false);
+    });
+  }, [userService]);
 
  return (
   <div className="user-list">

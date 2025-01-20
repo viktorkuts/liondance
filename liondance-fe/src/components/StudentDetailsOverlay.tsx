@@ -1,7 +1,7 @@
 import React from "react";
 import "./StudentDetailsOverlay.css";
 import { Button } from "@mantine/core";
-import userService from "@/services/userService";
+import { useUserService } from "@/services/userService";
 import { RegistrationStatus } from "@/models/Users";
 
 interface StudentDetailsOverlayProps {
@@ -39,6 +39,7 @@ const StudentDetailsOverlay: React.FC<StudentDetailsOverlayProps> = ({
   student,
   onClose,
 }) => {
+  const userService = useUserService();
   const submitRegistrationStatus = async (isApproved: boolean) => {
     userService.updateRegistrationStatus(student.userId, {
       registrationStatus: isApproved

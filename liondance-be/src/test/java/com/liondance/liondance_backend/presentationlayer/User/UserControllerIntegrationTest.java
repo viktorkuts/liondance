@@ -1,5 +1,6 @@
 package com.liondance.liondance_backend.presentationlayer.User;
 
+import com.liondance.liondance_backend.TestSecurityConfig;
 import com.liondance.liondance_backend.datalayer.Course.Course;
 import com.liondance.liondance_backend.datalayer.Course.CourseRepository;
 import com.liondance.liondance_backend.datalayer.User.*;
@@ -34,7 +35,7 @@ import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"spring.data.mongodb.port= 0"})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"spring.data.mongodb.port= 0"}, classes = TestSecurityConfig.class)
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @AutoConfigureWebTestClient
