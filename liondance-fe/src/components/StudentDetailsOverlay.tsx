@@ -10,7 +10,6 @@ interface StudentDetailsOverlayProps {
     firstName: string;
     middleName?: string;
     lastName: string;
-    gender: string;
     dob: string;
     email: string;
     phone?: string;

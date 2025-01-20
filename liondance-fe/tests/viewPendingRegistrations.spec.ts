@@ -8,6 +8,5 @@ test("view pending registrations", async ({ page }) => {
   ).toBeVisible();
   await expect(page.getByRole("cell", { name: "Name" })).toBeVisible();
   await page.getByRole("cell", { name: "Email" }).click();
-  await page.getByRole("cell", { name: "Gender" }).click();
   await page.getByRole("cell", { name: "Date of Birth" }).click();
 });

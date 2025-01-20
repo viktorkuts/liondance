@@ -46,7 +46,6 @@ const StudentList: React.FC = () => {
             <tr>
               <th>Name</th>
               <th>Email</th>
-              <th>Gender</th>
               <th>Date of Birth</th>
               <th>Status</th>
               <th>Actions</th>
@@ -57,7 +56,6 @@ const StudentList: React.FC = () => {
               <tr key={student.userId}>
                 <td>{student.firstName} {student.middleName} {student.lastName}</td>
                 <td>{student.email}</td>
-                <td>{student.gender}</td>
                 <td>{new Date(student.dob).toLocaleDateString()}</td>
                 <td>{student.registrationStatus}</td>
                 <td>

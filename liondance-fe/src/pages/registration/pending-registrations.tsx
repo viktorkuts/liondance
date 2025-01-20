@@ -64,7 +64,6 @@ function PendingRegistrations() {
             <tr>
               <th>Name</th>
               <th>Email</th>
-              <th>Gender</th>
               <th>Date of Birth</th>
             </tr>
           </thead>
@@ -79,7 +78,6 @@ function PendingRegistrations() {
                   {student.firstName} {student.lastName}
                 </td>
                 <td>{student.email}</td>
-                <td>{student.gender}</td>
                 <td>{new Date(student.dob).toLocaleDateString()}</td>
               </tr>
             ))}
