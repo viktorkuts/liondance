@@ -1,0 +1,29 @@
+.welcomeHero {
+    background-color: var(--mantine-color-lionRed-1);
+    color: var(--mantine-color-default);
+    text-align: center;
+    padding: 30px;
+    padding-right: 50px;
+    padding-left: 50px;
+    border-radius: 50px;
+    margin-top: 8vh;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2); 
+  }
+
+  .content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  
+  .textContent {
+    max-width: 900px;
+    text-align: left; /* Align the text to the left */
+  }
+  
+  .lionImage {
+    height: 400px; /* Adjust the height to fit your design */
+    width: auto;
+  }
+  
