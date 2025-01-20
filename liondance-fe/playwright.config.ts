@@ -14,7 +14,10 @@ import { resolve } from "path";
  * See https://playwright.dev/docs/test-configuration.
  */
 
-dotenv.config({ path: resolve(import.meta.dirname, "..", ".env") });
+import { fileURLToPath } from 'url';
+
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
+dotenv.config({ path: resolve(__dirname, "..", ".env") });
 
 export default defineConfig({
   globalTimeout: 3_000_00,
