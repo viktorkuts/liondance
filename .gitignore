@@ -1,6 +1,6 @@
 data/
 .liondance-fe
-.env
+.env*
 .idea
 .DS_Store
 env

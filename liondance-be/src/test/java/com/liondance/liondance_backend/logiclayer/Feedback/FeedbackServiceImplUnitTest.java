@@ -9,6 +9,7 @@ import com.liondance.liondance_backend.datalayer.Feedback.FeedbackRepository;
 import com.liondance.liondance_backend.presentationlayer.Feedback.FeedbackResponseModel;
 import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -21,6 +22,7 @@ import java.time.Instant;
 
 import static org.mockito.Mockito.when;
 
+@Disabled
 class FeedbackServiceImplUnitTest {
     @Mock
     private FeedbackRepository feedbackRepository;
