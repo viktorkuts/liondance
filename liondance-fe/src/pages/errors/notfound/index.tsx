@@ -1,5 +1,4 @@
 import { Button, Container, Group, Text, Title } from "@mantine/core";
-import React from "react";
 import { Illustration } from "./Illustration";
 import classes from "./index.module.css";
 

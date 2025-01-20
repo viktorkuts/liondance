@@ -1,5 +1,5 @@
 import { Anchor, Image } from "@mantine/core";
-import React, { useState } from "react";
+import { useState } from "react";
 import classes from "./navbar.module.css";
 import logo from "../../assets/logo.png";
 

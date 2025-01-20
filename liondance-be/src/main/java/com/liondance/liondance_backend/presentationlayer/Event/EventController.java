@@ -85,5 +85,8 @@ public class EventController {
         return eventService.getFilteredEvents();
     }
 
-
+    @PutMapping("/{eventId}")
+    public Mono<EventResponseModel> updateEventDetails(@PathVariable String eventId, @Valid @RequestBody EventRequestModel eventRequestModel) {
+        return eventService.updateEventDetails(eventId, eventRequestModel);
+    }
 }

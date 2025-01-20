@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: ${BACKEND_PORT}
   error:
     include-message: always
 
@@ -15,6 +15,30 @@ de:
     mongodb:
       embedded:
         version: 8.0.0
+
+
+liondance:
+  frontend:
+    url: ${FRONTEND_URL}
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${OKTA_ISSUER}
+          jwk-set-uri: ${OKTA_ISSUER}.well-known/jwks.json
+      client:
+        registration:
+          okta:
+            client-id: ${OKTA_CLIENT_ID}
+            client-secret: ${OKTA_CLIENT_SECRET}
+            client-authentication-method: client_secret_basic
+            authorization-grant-type: authorization_code
+            scope: openid,profile,email
+        provider:
+          okta:
+            issuer-uri: ${OKTA_ISSUER}
 
 ---
 
