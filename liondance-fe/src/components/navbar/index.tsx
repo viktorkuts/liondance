@@ -27,6 +27,9 @@ function Navbar() {
         <Anchor href="/calendar" fw={1000} fz="h2">
           Calendar
         </Anchor>
+        <Anchor href="/filtered-events" fw={1000} fz="h2">
+          Upcoming Events
+        </Anchor>
         <Anchor href="/booking" fw={1000} fz="h2">
           Book Event
         </Anchor>

@@ -1,10 +1,7 @@
 
 package com.liondance.liondance_backend.presentationlayer.Event;
 
-import com.liondance.liondance_backend.datalayer.Event.Event;
-import com.liondance.liondance_backend.datalayer.Event.EventRepository;
-import com.liondance.liondance_backend.datalayer.Event.EventType;
-import com.liondance.liondance_backend.datalayer.Event.PaymentMethod;
+import com.liondance.liondance_backend.datalayer.Event.*;
 import com.liondance.liondance_backend.datalayer.common.Address;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -129,6 +126,7 @@ class EventControllerIntegrationTest {
                 .eventDateTime(LocalDate.now().atTime(LocalTime.NOON))
                 .eventType(EventType.WEDDING)
                 .paymentMethod(PaymentMethod.CASH)
+                .eventPrivacy(EventPrivacy.PRIVATE)
                 .specialRequest("Special request")
                 .build();
 
@@ -337,6 +335,7 @@ class EventControllerIntegrationTest {
                 .eventDateTime(LocalDate.now().atTime(LocalTime.NOON))
                 .eventType(EventType.WEDDING)
                 .paymentMethod(PaymentMethod.CASH)
+                .eventPrivacy(EventPrivacy.PRIVATE)
                 .specialRequest("Special request")
                 .build();
 
@@ -378,6 +377,142 @@ class EventControllerIntegrationTest {
     }
 
     @Test
+    void whenGetFilteredEvents_thenReturnFilteredEvents() {
+        // Create test events with different privacy settings
+        Event publicEvent = Event.builder()
+                .firstName("John")
+                .lastName("Public")
+                .email("public@example.com")
+                .phone("1234567890")
+                .address(
+                        new Address(
+                                "1234 Main St.",
+                                "Springfield",
+                                "Quebec",
+                                "J2X 2J4")
+                )
+                .eventDateTime(Instant.now())
+                .eventType(EventType.WEDDING)
+                .eventPrivacy(EventPrivacy.PUBLIC)
+                .paymentMethod(PaymentMethod.CASH)
+                .specialRequest("Public event")
+                .build();
+
+        Event privateEvent = Event.builder()
+                .firstName("Jane")
+                .lastName("Private")
+                .email("private@example.com")
+                .phone("0987654321")
+                .address(
+                        new Address(
+                                "5678 Side St.",
+                                "Montreal",
+                                "Quebec",
+                                "H2X 1Y2")
+                )
+                .eventDateTime(Instant.now())
+                .eventType(EventType.BIRTHDAY)
+                .eventPrivacy(EventPrivacy.PRIVATE)
+                .paymentMethod(PaymentMethod.CASH)
+                .specialRequest("Private event")
+                .build();
+
+        // Save test events
+        StepVerifier.create(eventRepository.deleteAll())
+                .verifyComplete();
+
+        Publisher<Event> eventPublisher = Flux.just(publicEvent, privateEvent)
+                .flatMap(eventRepository::save);
+
+        StepVerifier.create(eventPublisher)
+                .expectNextCount(2)
+                .verifyComplete();
+
+        // Test the endpoint
+        webTestClient.get().uri("/api/v1/events/filtered-events")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(EventDisplayDTO.class)
+                .value(events -> {
+                    assertThat(events).hasSize(2);
+                    events.forEach(dto -> {
+                        if (dto.getEventPrivacy().equals(EventPrivacy.PUBLIC.toString())) {
+                            assertThat(dto.getEventAddress()).isNotNull();
+                        } else {
+                            assertThat(dto.getEventAddress()).isNull();
+                        }
+                    });
+                });
+    }
+
+    @Test
+    void whenGetFilteredEvents_IncorrectEndpoint_thenReturn404() {
+        webTestClient.get().uri("/api/v1/filtered-event")
+                .exchange()
+                .expectStatus().isNotFound();
+    }
+
+    @Test
+    void whenGetFilteredEvents_EmptyDatabase_thenReturnEmptyList() {
+        // Clear the database
+        StepVerifier.create(eventRepository.deleteAll())
+                .verifyComplete();
+
+        // Test the endpoint
+        webTestClient.get().uri("/api/v1/events/filtered-events")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(EventDisplayDTO.class)
+                .hasSize(0);
+    }
+
+    @Test
+    void whenGetFilteredEvents_VerifyDTOFields() {
+        Event testEvent = Event.builder()
+                .firstName("Test")
+                .lastName("User")
+                .email("test@example.com")
+                .phone("1234567890")
+                .address(
+                        new Address(
+                                "1234 Test St.",
+                                "TestCity",
+                                "Quebec",
+                                "J2X 2J4")
+                )
+                .eventDateTime(Instant.parse("2024-12-31T23:59:59Z"))
+                .eventType(EventType.WEDDING)
+                .eventPrivacy(EventPrivacy.PUBLIC)
+                .paymentMethod(PaymentMethod.CASH)
+                .specialRequest("Test event")
+                .build();
+
+        // Save test event
+        StepVerifier.create(eventRepository.deleteAll())
+                .verifyComplete();
+
+        StepVerifier.create(eventRepository.save(testEvent))
+                .expectNextCount(1)
+                .verifyComplete();
+
+        // Test the endpoint
+        webTestClient.get().uri("/api/v1/events/filtered-events")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(EventDisplayDTO.class)
+                .value(events -> {
+                    assertThat(events).hasSize(1);
+                    EventDisplayDTO dto = events.get(0);
+                    assertThat(dto.getEventId()).isNotNull();
+                    assertThat(dto.getEventDateTime()).contains("2024-12-31T23:59:59Z");
+                    assertThat(dto.getEventType()).isEqualTo(EventType.WEDDING.toString());
+                    assertThat(dto.getEventPrivacy()).isEqualTo(EventPrivacy.PUBLIC.toString());
+                    assertThat(dto.getEventAddress()).isNotNull();
+                    assertThat(dto.getEventAddress().getCity()).isEqualTo("TestCity");
+                });
+    }
+
+    @Test
     void whenUpdateEventDetails_InvalidRequest_thenReturnUnprocessableEntityStatus() {
         Event event = eventRepository.findAll().blockFirst();
         String eventId = event.getId();
@@ -392,3 +527,4 @@ class EventControllerIntegrationTest {
     }
 
 }
+

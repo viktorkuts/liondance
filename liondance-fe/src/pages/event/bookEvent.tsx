@@ -16,7 +16,7 @@ import { Province } from "@/types/geo";
 import classes from "./booking.module.css";
 import { IMaskInput } from 'react-imask';
 import { InputBase } from '@mantine/core';
-import { EventType, Event, PaymentMethod, EventStatus } from "@/models/Event";
+import { EventType, Event, PaymentMethod, EventStatus, EventPrivacy } from "@/models/Event";
 import eventService from "@/services/eventService";
 
 function BookEvent() {
@@ -91,6 +91,7 @@ function BookEvent() {
       eventType: "",
       paymentMethod: "",
       specialRequest: "",
+      eventPrivacy: "",
     },
 
     validate: {
@@ -107,6 +108,7 @@ function BookEvent() {
         value && value.length > 0 ? null : "Both date and time are required",
       eventType: (value) => (value.length > 0 ? null : "Field is required"),
       paymentMethod: (value) => (value.length > 0 ? null : "Field is required"),
+      eventPrivacy: (value) => (value.length > 0 ? null : "Field is required"),
       address:
         (activeStep === 1 && {
           streetAddress: (value) =>
@@ -189,7 +191,8 @@ function BookEvent() {
       eventType: values.eventType as EventType,
       paymentMethod: values.paymentMethod as PaymentMethod,
       specialRequest: values.specialRequest,
-      eventStatus: EventStatus.PENDING
+      eventStatus: EventStatus.PENDING,
+      eventPrivacy: values.eventPrivacy as EventPrivacy,
     };
 
     const run = async () => {
@@ -294,6 +297,14 @@ function BookEvent() {
             key={form.key("specialRequest")}
             {...form.getInputProps("specialRequest")}
           />
+          <Select
+            label="Event Privacy"
+            placeholder="PRIVATE"
+            data={Object.values(EventPrivacy)}
+            key={form.key("eventPrivacy")}
+            required
+            {...form.getInputProps("eventPrivacy")}
+          />
         </Stepper.Step>
         <Stepper.Step label="Location Information">
           <TextInput
@@ -350,9 +361,12 @@ function BookEvent() {
             <p>
               Event Date: {dayjs(form.getValues().eventDateTime).format("MMMM D, YYYY")}
               </p>
-            <p>
+              <p>
               Event Time: {dayjs(form.getValues().eventDateTime).format("h:mm A")}
               </p>
+              <p>
+              Event Privacy: {form.getValues().eventPrivacy}
+             </p>
           </div>
         </Stepper.Step>
         <Stepper.Completed>

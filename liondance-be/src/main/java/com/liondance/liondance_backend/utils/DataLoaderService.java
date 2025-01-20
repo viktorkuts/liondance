@@ -60,6 +60,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .paymentMethod(PaymentMethod.CASH)
                         .specialRequest("I just got out of jail")
                         .eventStatus(EventStatus.PENDING)
+                        .eventPrivacy(EventPrivacy.PUBLIC)
                         .build()
         );
         events.add(
@@ -79,6 +80,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .eventType(EventType.WEDDING)
                         .paymentMethod(PaymentMethod.CREDIT)
                         .eventStatus(EventStatus.PENDING)
+                        .eventPrivacy(EventPrivacy.PUBLIC)
                         .build()
         );
         events.add(
@@ -99,6 +101,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .paymentMethod(PaymentMethod.CASH)
                         .specialRequest("Aint no party like a Diddy party")
                         .eventStatus(EventStatus.PENDING)
+                        .eventPrivacy(EventPrivacy.PUBLIC)
                         .build()
         );
         events.add(
@@ -119,6 +122,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .paymentMethod(PaymentMethod.CASH)
                         .specialRequest("bring lean")
                         .eventStatus(EventStatus.CANCELLED)
+                        .eventPrivacy(EventPrivacy.PRIVATE)
                         .build()
         );
         events.add(
@@ -138,6 +142,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .eventType(EventType.WEDDING)
                         .paymentMethod(PaymentMethod.CASH)
                         .eventStatus(EventStatus.CONFIRMED)
+                        .eventPrivacy(EventPrivacy.PUBLIC)
                         .build()
         );
         events.add(
@@ -157,6 +162,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .eventType(EventType.BIRTHDAY)
                         .paymentMethod(PaymentMethod.CASH)
                         .eventStatus(EventStatus.CONFIRMED)
+                        .eventPrivacy(EventPrivacy.PRIVATE)
                         .build()
         );
         events.add(
@@ -176,6 +182,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .eventType(EventType.OTHER)
                         .paymentMethod(PaymentMethod.CASH)
                         .eventStatus(EventStatus.CANCELLED)
+                        .eventPrivacy(EventPrivacy.PUBLIC)
                         .build()
         );
         events.add(
@@ -196,6 +203,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .paymentMethod(PaymentMethod.CASH)
                         .specialRequest("No special requests")
                         .eventStatus(EventStatus.PENDING)
+                        .eventPrivacy(EventPrivacy.PRIVATE)
                         .build()
         );
         events.add(
@@ -216,6 +224,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .paymentMethod(PaymentMethod.CREDIT)
                         .specialRequest("No special requests")
                         .eventStatus(EventStatus.PENDING)
+                        .eventPrivacy(EventPrivacy.PUBLIC)
                         .build()
         );
         events.add(
@@ -236,6 +245,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .paymentMethod(PaymentMethod.CASH)
                         .specialRequest("i have chair")
                         .eventStatus(EventStatus.PENDING)
+                        .eventPrivacy(EventPrivacy.PRIVATE)
                         .build()
         );
         events.add(
@@ -256,6 +266,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .paymentMethod(PaymentMethod.CASH)
                         .specialRequest("No special requests")
                         .eventStatus(EventStatus.PENDING)
+                        .eventPrivacy(EventPrivacy.PRIVATE)
                         .build()
         );
         events.add(
@@ -276,6 +287,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .paymentMethod(PaymentMethod.CASH)
                         .specialRequest("No special requests")
                         .eventStatus(EventStatus.PENDING)
+                        .eventPrivacy(EventPrivacy.PRIVATE)
                         .build()
         );
         events.add(
@@ -296,6 +308,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .paymentMethod(PaymentMethod.CREDIT)
                         .specialRequest("Vegetarian meal")
                         .eventStatus(EventStatus.PENDING)
+                        .eventPrivacy(EventPrivacy.PRIVATE)
                         .build()
         );
         events.add(
@@ -316,6 +329,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .paymentMethod(PaymentMethod.PAYPAL)
                         .specialRequest("Projector needed")
                         .eventStatus(EventStatus.PENDING)
+                        .eventPrivacy(EventPrivacy.PUBLIC)
                         .build()
         );
         events.add(
@@ -336,6 +350,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .paymentMethod(PaymentMethod.CASH)
                         .specialRequest("Whiteboard needed")
                         .eventStatus(EventStatus.PENDING)
+                        .eventPrivacy(EventPrivacy.PUBLIC)
                         .build()
         );
         events.add(
@@ -356,6 +371,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .paymentMethod(PaymentMethod.CREDIT)
                         .specialRequest("Handouts needed")
                         .eventStatus(EventStatus.PENDING)
+                        .eventPrivacy(EventPrivacy.PRIVATE)
                         .build()
         );
 

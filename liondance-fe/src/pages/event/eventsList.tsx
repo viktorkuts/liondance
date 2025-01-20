@@ -4,7 +4,7 @@ import { Event } from "@/models/Event.ts";
 import "./eventsList.css";
 import UpdateEventStatus from "./updateEventStatus.tsx";
 import RescheduleEvent from "./rescheduleEvent.tsx";
-import UpdateEventDetails from "./updateEventDetails.tsx"; // Import the new component
+import UpdateEventDetails from "./updateEventDetails.tsx";
 import { useNavigate } from "react-router-dom";
 
 function GetAllEvents() {
@@ -102,6 +102,7 @@ function GetAllEvents() {
               <th>Event Date & Time</th>
               <th>Event Type</th>
               <th>Special Request</th>
+              <th>Event Privacy</th>
               <th>Event Status</th>
               <th>Actions</th>
             </tr>
@@ -123,6 +124,7 @@ function GetAllEvents() {
                     ? event.specialRequest
                     : "No special requests"}
                 </td>
+                <td>{event.eventPrivacy}</td>
                 <td>
                   <button onClick={() => handleStatusClick(event)}>
                     {event.eventStatus ?? "N/A"}

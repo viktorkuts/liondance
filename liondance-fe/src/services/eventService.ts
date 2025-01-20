@@ -31,10 +31,16 @@ const getEventsByEmail = async (email: string): Promise<Event[]> => {
   return response.data;
 };
 
+export const fetchPublicEvents = async () => {
+  const response = await axiosInstance.get('/events/filtered-events');
+  return response.data;
+};
+
 const updateEventDetails = async (eventId: string, event: Event): Promise<Event> => {
   const response = await axiosInstance.put<Event>(`/events/${eventId}`, event);
   return response.data;
 };
+
 
 const eventService = {
   getAllEvents,
@@ -43,6 +49,7 @@ const eventService = {
   rescheduleEvent,
   getEventById,
   getEventsByEmail,
+  fetchPublicEvents,
   updateEventDetails
 };
 

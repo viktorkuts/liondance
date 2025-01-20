@@ -80,6 +80,11 @@ public class EventController {
         return eventService.getEventsByEmail(email);
     }
 
+    @GetMapping("/filtered-events")
+    public Flux<EventDisplayDTO> getFilteredEvents() {
+        return eventService.getFilteredEvents();
+    }
+
     @PutMapping("/{eventId}")
     public Mono<EventResponseModel> updateEventDetails(@PathVariable String eventId, @Valid @RequestBody EventRequestModel eventRequestModel) {
         return eventService.updateEventDetails(eventId, eventRequestModel);

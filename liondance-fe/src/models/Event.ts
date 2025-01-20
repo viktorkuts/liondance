@@ -27,6 +27,11 @@ export enum EventStatus {
     CANCELLED = "CANCELLED",
 }
 
+export enum EventPrivacy {
+    PUBLIC = "PUBLIC",
+    PRIVATE = "PRIVATE",
+}
+
 export interface Event {
     id? : string;
     firstName: string;
@@ -40,4 +45,5 @@ export interface Event {
     paymentMethod: PaymentMethod;
     specialRequest?: string;
     eventStatus: EventStatus;
+    eventPrivacy: EventPrivacy;
 }
