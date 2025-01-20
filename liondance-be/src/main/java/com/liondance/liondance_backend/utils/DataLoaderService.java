@@ -394,8 +394,6 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Montreal")
                                 .build())
                         .roles(EnumSet.of(Role.STAFF))
-                        // TODO: Remove this id after presentation
-                        .associatedId("google-oauth2|111158373482141727647")
                         .build()
         );
         students.add(
@@ -436,6 +434,8 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Montreal")
                                 .build())
                         .roles(EnumSet.of(Role.STUDENT))
+                        // TODO: Remove this id after presentation
+                        .associatedId("google-oauth2|111158373482141727647")
                         .build()
         );
         students.add(

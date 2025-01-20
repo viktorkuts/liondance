@@ -1,6 +1,7 @@
 package com.liondance.liondance_backend.utils.security;
 
 import com.liondance.liondance_backend.logiclayer.User.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -41,6 +42,7 @@ import reactor.core.publisher.Mono;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Configuration
 @EnableWebFluxSecurity
 @EnableReactiveMethodSecurity
@@ -145,7 +147,9 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.addAllowedOrigin(frontend);
         config.addAllowedOrigin(issuer.substring(0, issuer.length() - 1));
+        log.debug("Checking cors");
         if(deploymentBranch != null && deploymentBranch.split("/")[1].matches("\\d+")){
+            log.debug(frontend.replace("://", "://" + deploymentBranch.split("/")[1] + "."));
             config.addAllowedOrigin(frontend.replace("://", "://" + deploymentBranch.split("/")[1] + "."));
         }
         config.addAllowedHeader("*");

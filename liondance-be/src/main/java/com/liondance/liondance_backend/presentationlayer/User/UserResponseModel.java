@@ -25,6 +25,7 @@ public class UserResponseModel {
     private String phone;
     private Address address;
     private EnumSet<Role> roles;
+    private String associatedId;
 
     public static UserResponseModel from(User user) {
         UserResponseModel responseModel = new UserResponseModel();
