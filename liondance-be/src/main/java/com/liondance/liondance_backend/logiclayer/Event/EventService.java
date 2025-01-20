@@ -7,7 +7,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 public interface EventService {
     public Flux<EventResponseModel> getAllEvents();
@@ -16,4 +15,5 @@ public interface EventService {
     public Mono<EventResponseModel> getEventById(String eventId);
     public Mono<EventResponseModel> rescheduleEvent(String eventId, Instant eventDateTime);
     public Flux<EventResponseModel> getEventsByEmail(String email);
+    public Mono<EventResponseModel> updateEventDetails(String eventId, EventRequestModel eventRequestModel);
 }

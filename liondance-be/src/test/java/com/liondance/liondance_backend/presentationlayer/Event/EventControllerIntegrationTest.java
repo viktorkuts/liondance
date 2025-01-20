@@ -1,3 +1,4 @@
+
 package com.liondance.liondance_backend.presentationlayer.Event;
 
 import com.liondance.liondance_backend.datalayer.Event.Event;
@@ -323,25 +324,71 @@ class EventControllerIntegrationTest {
     }
 
     @Test
-    void whenGetEventByEmail_ReturnEvents(){
-        String email = "liondance@yopmail.com";
+    void whenUpdateEventDetails_thenReturnEventResponseModel() {
+        Event event = eventRepository.findAll().blockFirst();
+        String eventId = event.getId();
 
-        webTestClient.get()
-                .uri("/api/v1/events/email/" + email)
+        EventRequestModel eventRequestModel = EventRequestModel.builder()
+                .firstName("Jane")
+                .lastName("Doe")
+                .email("liondance@yopmail.com")
+                .phone("1234567890")
+                .address(new Address("1234 Main St.", "Springfield", "Quebec", "J2X 2J4"))
+                .eventDateTime(LocalDate.now().atTime(LocalTime.NOON))
+                .eventType(EventType.WEDDING)
+                .paymentMethod(PaymentMethod.CASH)
+                .specialRequest("Special request")
+                .build();
+
+        webTestClient.put()
+                .uri("/api/v1/events/" + eventId)
+                .bodyValue(eventRequestModel)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBodyList(EventResponseModel.class)
-                .hasSize(2);
+                .expectBody(EventResponseModel.class)
+                .value(response -> {
+                    assertThat(response.getFirstName()).isEqualTo("Jane");
+                    assertThat(response.getLastName()).isEqualTo("Doe");
+                    assertThat(response.getEmail()).isEqualTo("liondance@yopmail.com");
+                });
     }
 
     @Test
-    void whenGetEventByInvalidEmail_ReturnNotFound() {
-        String email = "invalid";
+    void whenUpdateEventDetails_IncorrectEndpoint_thenReturn404() {
+        Event event = eventRepository.findAll().blockFirst();
+        String eventId = event.getId();
 
-        webTestClient.get()
-                .uri("/api/v1/events/email/" + email)
+        EventRequestModel eventRequestModel = EventRequestModel.builder()
+                .firstName("Jane")
+                .lastName("Doe")
+                .email("liondance@yopmail.com")
+                .phone("1234567890")
+                .address(new Address("1234 Main St.", "Springfield", "Quebec", "J2X 2J4"))
+                .eventDateTime(LocalDate.now().atTime(LocalTime.NOON))
+                .eventType(EventType.WEDDING)
+                .paymentMethod(PaymentMethod.CASH)
+                .specialRequest("Special request")
+                .build();
+
+        webTestClient.put()
+                .uri("/api/v1/event/" + eventId)
+                .bodyValue(eventRequestModel)
                 .exchange()
                 .expectStatus().isNotFound();
+    }
+
+    @Test
+    void whenUpdateEventDetails_InvalidRequest_thenReturnUnprocessableEntityStatus() {
+        Event event = eventRepository.findAll().blockFirst();
+        String eventId = event.getId();
+
+        EventRequestModel eventRequestModel = EventRequestModel.builder().build();
+
+        webTestClient.put()
+                .uri("/api/v1/events/" + eventId)
+                .bodyValue(eventRequestModel)
+                .exchange()
+                .expectStatus().isEqualTo(422);
     }
 
 }
