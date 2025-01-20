@@ -79,4 +79,11 @@ public class EventController {
     Flux<EventResponseModel> getEventsByEmail(@PathVariable String email) {
         return eventService.getEventsByEmail(email);
     }
+
+    @GetMapping("/filtered-events")
+    public Flux<EventDisplayDTO> getFilteredEvents() {
+        return eventService.getFilteredEvents();
+    }
+
+
 }

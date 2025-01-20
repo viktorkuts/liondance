@@ -1,9 +1,11 @@
 package com.liondance.liondance_backend.logiclayer.Event;
 
+import com.liondance.liondance_backend.datalayer.Event.EventPrivacy;
 import com.liondance.liondance_backend.datalayer.Event.EventRepository;
 import com.liondance.liondance_backend.datalayer.Event.EventStatus;
 import com.liondance.liondance_backend.datalayer.Notification.NotificationType;
 import com.liondance.liondance_backend.logiclayer.Notification.NotificationService;
+import com.liondance.liondance_backend.presentationlayer.Event.EventDisplayDTO;
 import com.liondance.liondance_backend.presentationlayer.Event.EventRequestModel;
 import com.liondance.liondance_backend.presentationlayer.Event.EventResponseModel;
 import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
@@ -134,4 +136,18 @@ public class EventServiceImpl implements EventService {
        return eventRepository.findEventsByEmail(email)
                .map(EventResponseModel::from).switchIfEmpty(Mono.error(new NotFoundException("No events found for email: " + email)));
     }
+
+    @Override
+    public Flux<EventDisplayDTO> getFilteredEvents() {
+        return eventRepository.findAll()
+                .map(event -> new EventDisplayDTO(
+                        event.getId(),
+                        event.getEventDateTime().toString(),
+                        event.getEventType().toString(),
+                        event.getEventPrivacy().toString(),
+                        event.getEventPrivacy() == EventPrivacy.PUBLIC ? event.getAddress() : null
+                ));
+    }
+
+
 }

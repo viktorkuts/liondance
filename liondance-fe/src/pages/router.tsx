@@ -1,7 +1,6 @@
 import { Route, Routes } from "react-router";
 import { routerType } from "../types/router.types";
 import pagesData from "./pagesData";
-import React from "react";
 import { NotFound } from "./errors/notfound";
 
 const Router = () => {

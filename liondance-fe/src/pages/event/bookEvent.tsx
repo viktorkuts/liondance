@@ -366,7 +366,7 @@ function BookEvent() {
               </p>
               <p>
               Event Privacy: {form.getValues().eventPrivacy}
-              </p>
+             </p>
           </div>
         </Stepper.Step>
         <Stepper.Completed>
