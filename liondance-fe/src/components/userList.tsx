@@ -16,7 +16,7 @@ const UserList: React.FC = () => {
       setUsers(data);
       setLoading(false);
     });
-  }, []);
+  }, [userService]);
 
  return (
   <div className="user-list">

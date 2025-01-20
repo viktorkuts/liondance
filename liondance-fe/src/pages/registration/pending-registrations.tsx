@@ -29,7 +29,7 @@ function PendingRegistrations() {
     };
 
     fetchPendingStudents();
-  }, []);
+  }, [axiosInstance]);
 
   const handleRowClick = async (userId: string) => {
     try {

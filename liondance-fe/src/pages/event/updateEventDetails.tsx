@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Modal, Button, TextInput, Select } from "@mantine/core";
-import axiosInstance from "@/utils/axiosInstance";
+import { useAxiosInstance } from "@/utils/axiosInstance";
 import { Event } from "@/models/Event";
 import '@/components/studentProfile.css';
 import { EventType, PaymentMethod } from "@/models/Event";
@@ -27,7 +27,7 @@ const UpdateEventDetails: React.FC<UpdateEventDetailsProps> = ({ event, onClose,
     const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(event.paymentMethod);
     const [specialRequest, setSpecialRequest] = useState<string>(event.specialRequest || "");
     const [error, setError] = useState<string>("");
-
+    const axiosInstance = useAxiosInstance();
     const handleUpdate = async () => {
         if (!firstName || !lastName || !email || !phone || !streetAddress || !city || !state || !zip || !eventType || !paymentMethod) {
             setError("Please fill in all fields.");

@@ -1,4 +1,4 @@
-import { Role, User } from "@/models/Users";
+import { User } from "@/models/Users";
 import { useAuth0 } from "@auth0/auth0-react";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useUserService } from "@/services/userService";

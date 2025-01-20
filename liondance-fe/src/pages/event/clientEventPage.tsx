@@ -35,7 +35,7 @@ const GetEventsByEmail: React.FC<{ email: string }> = ({ email }) => {
     };
 
     fetchEvents();
-  }, [email]);
+  }, [email, eventService]);
 
   if (loading) return <div className="loading">Loading...</div>;
   if (error) return <div className="error">{error}</div>;

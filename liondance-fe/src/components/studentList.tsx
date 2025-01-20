@@ -25,7 +25,7 @@ const StudentList: React.FC = () => {
         setLoading(false);
       });
     }
-  }, [statuses]);
+  }, [statuses, studentService]);
 
   return (
     <div className="user-list">

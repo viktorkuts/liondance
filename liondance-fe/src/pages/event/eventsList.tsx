@@ -36,7 +36,7 @@ function GetAllEvents() {
       }
     };
     fetchEvents();
-  }, []);
+  }, [axiosInstance]);
 
   const handleStatusClick = (event: Event) => {
     setSelectedEvent(event);

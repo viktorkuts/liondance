@@ -33,7 +33,7 @@ const FeedbackList: React.FC<FeedbackListProps> = () => {
     };
 
     fetchFeedbacks();
-  }, [eventId]);
+  }, [eventId, feedbackService]);
 
   if (loading) {
     return <div>Loading...</div>;

@@ -29,7 +29,7 @@ const PromotionsList: React.FC = () => {
     };
 
     fetchPromotions();
-  }, []);
+  }, [promotionService]);
 
   if (loading) return <Loader />;
   if (error) return <div className="error">{error}</div>;
