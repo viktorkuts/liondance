@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axiosInstance from "../../utils/axiosInstance";
 import { UpcomingEvent } from "@/models/UpcomingEvent.ts";
 import "./upcomingEvents.css";
