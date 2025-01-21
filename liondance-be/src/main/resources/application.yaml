@@ -57,3 +57,21 @@ spring:
       username: ${MONGO_ROOT_USER}
       password: ${MONGO_ROOT_PASS}
       authentication-database: admin
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: deployment
+  autoconfigure:
+    exclude: de.flapdoodle.embed.mongo.spring.autoconfigure.EmbeddedMongoAutoConfiguration
+
+  data:
+    mongodb:
+      host: ${MONGO_HOST}
+      port: ${MONGO_PORT}
+      database: ${MONGO_DATABASE}
+      username: ${MONGO_ROOT_USER}
+      password: ${MONGO_ROOT_PASS}
+      authentication-database: admin

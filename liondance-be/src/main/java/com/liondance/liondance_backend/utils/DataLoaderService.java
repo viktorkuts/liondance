@@ -12,6 +12,7 @@ import com.liondance.liondance_backend.datalayer.User.*;
 import com.liondance.liondance_backend.datalayer.common.Address;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.time.*;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
+@Profile("!deployment")
 @Service
 public class DataLoaderService implements CommandLineRunner {
 
