@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
 @Configuration
 @EnableWebFluxSecurity
 @EnableReactiveMethodSecurity
-//@Profile("!test")
+@Profile("!test")
 public class SecurityConfig {
     @Value("${spring.security.oauth2.client.provider.okta.issuer-uri}")
     private String issuer;
