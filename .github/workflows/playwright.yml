@@ -35,7 +35,7 @@ jobs:
           echo $frontend
           echo $backend
           timeout 180 bash -c '
-            while [[ "$(curl -s -o /dev/null -w "%{http_code}" '$frontend')" != "200" ]] || [[ "$(curl -s -o /dev/null -w "%{http_code}" '$backend/test')" != "200" ]]; do
+            while [[ "$(curl -s -o /dev/null -w "%{http_code}" '$frontend')" != "200" ]] || [[ "$(curl -s -o /dev/null -w "%{http_code}" '$backend/actuator/health')" != "200" ]]; do
               sleep 5
             done
           ' || false
