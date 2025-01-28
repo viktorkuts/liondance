@@ -44,3 +44,9 @@ export interface Student extends User {
   parentEmail?: string;
   parentPhone?: string;
 }
+
+export interface Client extends User {
+  joinDate?: string;
+  activeEvents?: string[];
+  pastEvents?: string[];
+}

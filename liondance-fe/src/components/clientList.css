@@ -1,0 +1,51 @@
+.clientListContainer {
+    padding: 20px;
+  }
+  
+  .clientListContainer table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #ecba4b;
+  }
+  
+  .clientListContainer th,
+  .clientListContainer td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ecba4b;
+  }
+  
+  .clientListContainer th {
+    background-color: #ffe4c4;
+    color: #333;
+    font-weight: bold;
+  }
+  
+  .clientListContainer tr:nth-child(even) {
+    background-color: #fff7eb;
+  }
+  
+  .clientListContainer tr:hover {
+    background-color: #fde2c4;
+  }
+  
+  .customLoader {
+    text-align: center;
+  }
+  
+  .noData {
+    text-align: center;
+    font-size: 18px;
+  }
+  
+  .viewProfileButton {
+    margin-bottom: 20px;
+  }
+  
+  .tableTitle {
+    text-align: center;
+    background-color: #ffe4c4;
+    color: #333;
+    font-weight: bold;
+  }
