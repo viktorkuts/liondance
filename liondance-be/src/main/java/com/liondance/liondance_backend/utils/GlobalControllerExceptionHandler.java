@@ -1,9 +1,6 @@
 package com.liondance.liondance_backend.utils;
 
-import com.liondance.liondance_backend.utils.exceptions.EmailInUse;
-import com.liondance.liondance_backend.utils.exceptions.InvalidInputException;
-import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
-import com.liondance.liondance_backend.utils.exceptions.StudentNotPending;
+import com.liondance.liondance_backend.utils.exceptions.*;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -75,5 +72,13 @@ public class GlobalControllerExceptionHandler {
     public HttpErrorInfo handleEmailInUse(ServerHttpRequest request, Exception ex){
         return createHttpErrorInfo(UNPROCESSABLE_ENTITY, request, ex);
     }
+
+    @ResponseStatus(FORBIDDEN)
+    @ExceptionHandler(Unauthorized.class)
+    public HttpErrorInfo handleUnauthorized(ServerHttpRequest request, Exception ex){
+        return createHttpErrorInfo(FORBIDDEN, request, ex);
+    }
+
+
 
 }

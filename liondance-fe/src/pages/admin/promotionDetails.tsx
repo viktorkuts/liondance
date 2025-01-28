@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { Loader, Card, Button } from '@mantine/core';
-import { getPromotionById } from '@/services/promotionService';
-import { Promotion } from '@/models/Promotions';
-import './promotions.css';
+import React, { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import { Loader } from "@mantine/core";
+import { usePromotionService } from "@/services/promotionService";
+import { Promotion } from "@/models/Promotions";
+import "./promotions.css";
 
 const PromotionDetails: React.FC = () => {
+  const promotionService = usePromotionService();
   const { promotionId } = useParams<{ promotionId: string }>();
   const [promotion, setPromotion] = useState<Promotion | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -14,44 +15,62 @@ const PromotionDetails: React.FC = () => {
   useEffect(() => {
     const fetchPromotion = async () => {
       try {
-        const data = await getPromotionById(promotionId!);
+        const data = await promotionService.getPromotionById(promotionId!);
         setPromotion(data);
       } catch (err) {
-        setError('Failed to load promotion details. Please try again later. '+err);
+        setError(
+          "Failed to load promotion details. Please try again later. " + err
+        );
       } finally {
         setLoading(false);
       }
     };
 
     fetchPromotion();
-  }, [promotionId]);
+  }, [promotionId, promotionService]);
 
   if (loading) return <Loader />;
   if (error) return <div className="error">{error}</div>;
 
   return (
-    <div className="promotion-details">
-      <h1>Promotion Details</h1>
+    <div className="promotions-container">
+      <h1 className="promotions-title">Promotion Details</h1>
       {promotion && (
-        <Card shadow="sm" p="lg" radius="md" withBorder>
-          <h2>{promotion.promotionName}</h2>
-          <p><strong>Discount Rate:</strong> {promotion.discountRate*100}%</p>
-          <p>
-            <strong>Start Date:</strong>{' '}
-            {new Date(promotion.startDate).toLocaleDateString('en-CA')}
-          </p>
-          <p>
-            <strong>End Date:</strong>{' '}
-            {new Date(promotion.endDate).toLocaleDateString('en-CA')}
-          </p>
-          <p><strong>Status:</strong> {promotion.promotionStatus}</p>
-          <Button color='red' size='sm' radius='sm'> Edit </Button>
-          <Button color='yellow' size='sm' radius='sm'component={Link} to="/promotions" >Back</Button>
-        </Card>
+        <div className="promotion-card">
+          <div className="promotion-info">
+            <div className="promotion-header">{promotion.promotionName}</div>
+            <div className="promotion-details">
+              <div className="promotion-detail">
+                <strong>Discount Rate:</strong> {promotion.discountRate * 100}%
+              </div>
+              <div className="promotion-detail">
+                <strong>Start Date:</strong>{' '}
+                {new Date(promotion.startDate).toLocaleDateString('en-CA')}
+              </div>
+              <div className="promotion-detail">
+                <strong>End Date:</strong>{' '}
+                {new Date(promotion.endDate).toLocaleDateString('en-CA')}
+              </div>
+              <div className="promotion-detail promotion-status">
+                <strong>Status:</strong> {promotion.promotionStatus}
+              </div>
+              <div className="promotion-actions">
+                <button 
+                  className="action-button edit-button"
+                  onClick={() => console.log('Edit clicked')}
+                >
+                  Edit
+                </button>
+                <Link to="/promotions" className="action-button back-button">
+                  Back
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
 };
 
 export default PromotionDetails;
-

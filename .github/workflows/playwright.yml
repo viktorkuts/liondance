@@ -1,39 +1,54 @@
-# testt
-# name: Playwright Tests
-# on:
-#   push:
-#     branches: [ "master" ]
-#   pull_request:
-#     branches: [ "master" ]
+name: Playwright Tests
+on:
+  pull_request:
+    branches: [ "master" ]
 
-# jobs:
-#   test:
-#     runs-on: self-hosted
-#     steps:
-#       - uses: actions/checkout@v4
-#       - uses: actions/setup-node@v4
-#         with:
-#           node-version: lts/*
-#       - uses: docker/setup-buildx-action@v3
-#       - name: Create .env file
-#         run: echo $ENV_FILE | base64 --decode > .env
-#       - name: Build with docker
-#         run: docker compose up --build -d
-#       - name: Install deps
-#         run: yarn
-#         working-directory: ./liondance-fe
-#       - name: Install Playwright
-#         run: npx playwright install
-#         working-directory: ./liondance-fe
-#       - name: Run Playwright
-#         run: npx playwright test
-#         working-directory: ./liondance-fe
-#       - name: Compose down
-#         run: docker compose down
-#       - name: Archive report
-#         uses: actions/upload-artifact@v4
-#         if: ${{ !cancelled() }}
-#         with:
-#           name: playwright-report
-#           path: playwright-report/
-#           retention-days: 7
+jobs:
+  test:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+      - name: Install yarn
+        run: npm install -g yarn
+      - name: Reconfigure node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: yarn
+          cache-dependency-path: liondance-fe/yarn.lock
+      - name: Install deps
+        run: yarn
+        working-directory: ./liondance-fe
+      - name: Install Playwright
+        run: npx playwright install chromium --with-deps
+        working-directory: ./liondance-fe
+      - name: Wait for deployment
+        env:
+          FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
+          BACKEND_URL: ${{ secrets.BACKEND_URL }}
+        run: |
+          frontend="${FRONTEND_URL/:\/\//://${{ github.event.number }}.}"
+          backend="${BACKEND_URL/:\/\//://${{ github.event.number }}.}"
+          echo $frontend
+          echo $backend
+          timeout 180 bash -c '
+            while [[ "$(curl -s -o /dev/null -w "%{http_code}" '$frontend')" != "200" ]] || [[ "$(curl -s -o /dev/null -w "%{http_code}" '$backend/test')" != "200" ]]; do
+              sleep 5
+            done
+          ' || false
+      - name: Run Playwright
+        run: npx playwright test --workers=4 --project='chromium'
+        working-directory: ./liondance-fe
+        env:
+          PR_NUMBER: ${{ github.event.number }}
+          FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
+      - name: Archive report
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: ./liondance-fe/playwright-report/
+          retention-days: 7

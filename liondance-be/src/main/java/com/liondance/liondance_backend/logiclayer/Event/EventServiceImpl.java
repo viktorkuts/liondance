@@ -1,9 +1,11 @@
 package com.liondance.liondance_backend.logiclayer.Event;
 
+import com.liondance.liondance_backend.datalayer.Event.EventPrivacy;
 import com.liondance.liondance_backend.datalayer.Event.EventRepository;
 import com.liondance.liondance_backend.datalayer.Event.EventStatus;
 import com.liondance.liondance_backend.datalayer.Notification.NotificationType;
 import com.liondance.liondance_backend.logiclayer.Notification.NotificationService;
+import com.liondance.liondance_backend.presentationlayer.Event.EventDisplayDTO;
 import com.liondance.liondance_backend.presentationlayer.Event.EventRequestModel;
 import com.liondance.liondance_backend.presentationlayer.Event.EventResponseModel;
 import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
@@ -12,10 +14,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
@@ -46,7 +45,7 @@ public class EventServiceImpl implements EventService {
                         return Mono.error(new IllegalArgumentException("Email is required"));
                     }
                     return Mono.just(request);
-                })                .map(EventRequestModel::toEntity)
+                }).map(EventRequestModel::toEntity)
                 .map(event -> {
                     event.setId(UUID.randomUUID().toString());
                     event.setEventStatus(PENDING);
@@ -69,7 +68,7 @@ public class EventServiceImpl implements EventService {
                             NotificationType.EVENT_BOOKING
                     );
 
-                    if(!success){
+                    if (!success) {
                         throw new MailSendException("Failed to send email to " + event.getEmail());
                     }
 
@@ -120,7 +119,7 @@ public class EventServiceImpl implements EventService {
                             NotificationType.EVENT_RESCHEDULE
                     );
 
-                    if(!success){
+                    if (!success) {
                         throw new MailSendException("Failed to send email to " + event.getEmail());
                     }
 
@@ -129,9 +128,62 @@ public class EventServiceImpl implements EventService {
                 .flatMap(eventRepository::save)
                 .map(EventResponseModel::from);
     }
+  
     @Override
     public Flux<EventResponseModel> getEventsByEmail(String email) {
        return eventRepository.findEventsByEmail(email)
                .map(EventResponseModel::from).switchIfEmpty(Mono.error(new NotFoundException("No events found for email: " + email)));
     }
+
+    @Override
+    public Flux<EventDisplayDTO> getFilteredEvents() {
+        return eventRepository.findAll()
+                .map(event -> new EventDisplayDTO(
+                        event.getId(),
+                        event.getEventDateTime().toString(),
+                        event.getEventType().toString(),
+                        event.getEventPrivacy().toString(),
+                        event.getEventPrivacy() == EventPrivacy.PUBLIC ? event.getAddress() : null
+                ));
+    }
+
+    @Override
+    public Mono<EventResponseModel> updateEventDetails(String eventId, EventRequestModel eventRequestModel) {
+        return eventRepository.findById(eventId)
+                .switchIfEmpty(Mono.error(new IllegalArgumentException("Event not found")))
+                .map(event -> {
+                    event.setFirstName(eventRequestModel.getFirstName());
+                    event.setLastName(eventRequestModel.getLastName());
+                    event.setEmail(eventRequestModel.getEmail());
+                    event.setPhone(eventRequestModel.getPhone());
+                    event.setAddress(eventRequestModel.getAddress());
+                    event.setEventDateTime(eventRequestModel.getEventDateTime().atZone(ZoneOffset.UTC).toInstant());
+                    event.setEventType(eventRequestModel.getEventType());
+                    event.setPaymentMethod(eventRequestModel.getPaymentMethod());
+                    event.setSpecialRequest(eventRequestModel.getSpecialRequest());
+                    return event;
+                })
+                .flatMap(event -> {
+                    String message = new StringBuilder()
+                            .append("Your event details have been updated. Go take a look!")
+                            .append("\n\nThank you for choosing the LVH Lion Dance Team!")
+                            .toString();
+
+                    Boolean success = notificationService.sendMail(
+                            event.getEmail(),
+                            "LVH Lion Dance Team - Event Details Updated",
+                            message,
+                            NotificationType.EVENT_UPDATE
+                    );
+
+                    if (!success) {
+                        throw new MailSendException("Failed to send email to " + event.getEmail());
+                    }
+
+                    return Mono.just(event);
+                })
+                .flatMap(eventRepository::save)
+                .map(EventResponseModel::from);
+    }
+
 }

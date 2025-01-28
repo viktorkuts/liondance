@@ -5,16 +5,11 @@ export interface Address {
   zip: string;
 }
 
-export enum Gender {
-  MALE = "MALE",
-  FEMALE = "FEMALE",
-  OTHER = "OTHER",
-}
-
 export enum Role {
   STUDENT = "STUDENT",
   CLIENT = "CLIENT",
   ADMIN = "ADMIN",
+  STAFF = "STAFF",
 }
 
 export enum RegistrationStatus {
@@ -33,7 +28,6 @@ export interface User {
   firstName: string;
   middleName?: string;
   lastName: string;
-  gender: Gender;
   dob: string;
   email: string;
   phone?: string;

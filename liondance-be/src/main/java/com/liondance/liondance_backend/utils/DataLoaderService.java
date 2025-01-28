@@ -60,6 +60,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .paymentMethod(PaymentMethod.CASH)
                         .specialRequest("I just got out of jail")
                         .eventStatus(EventStatus.PENDING)
+                        .eventPrivacy(EventPrivacy.PUBLIC)
                         .build()
         );
         events.add(
@@ -79,6 +80,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .eventType(EventType.WEDDING)
                         .paymentMethod(PaymentMethod.CREDIT)
                         .eventStatus(EventStatus.PENDING)
+                        .eventPrivacy(EventPrivacy.PUBLIC)
                         .build()
         );
         events.add(
@@ -99,6 +101,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .paymentMethod(PaymentMethod.CASH)
                         .specialRequest("Aint no party like a Diddy party")
                         .eventStatus(EventStatus.PENDING)
+                        .eventPrivacy(EventPrivacy.PUBLIC)
                         .build()
         );
         events.add(
@@ -119,6 +122,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .paymentMethod(PaymentMethod.CASH)
                         .specialRequest("bring lean")
                         .eventStatus(EventStatus.CANCELLED)
+                        .eventPrivacy(EventPrivacy.PRIVATE)
                         .build()
         );
         events.add(
@@ -138,6 +142,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .eventType(EventType.WEDDING)
                         .paymentMethod(PaymentMethod.CASH)
                         .eventStatus(EventStatus.CONFIRMED)
+                        .eventPrivacy(EventPrivacy.PUBLIC)
                         .build()
         );
         events.add(
@@ -157,6 +162,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .eventType(EventType.BIRTHDAY)
                         .paymentMethod(PaymentMethod.CASH)
                         .eventStatus(EventStatus.CONFIRMED)
+                        .eventPrivacy(EventPrivacy.PRIVATE)
                         .build()
         );
         events.add(
@@ -176,6 +182,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .eventType(EventType.OTHER)
                         .paymentMethod(PaymentMethod.CASH)
                         .eventStatus(EventStatus.CANCELLED)
+                        .eventPrivacy(EventPrivacy.PUBLIC)
                         .build()
         );
         events.add(
@@ -196,6 +203,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .paymentMethod(PaymentMethod.CASH)
                         .specialRequest("No special requests")
                         .eventStatus(EventStatus.PENDING)
+                        .eventPrivacy(EventPrivacy.PRIVATE)
                         .build()
         );
         events.add(
@@ -216,6 +224,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .paymentMethod(PaymentMethod.CREDIT)
                         .specialRequest("No special requests")
                         .eventStatus(EventStatus.PENDING)
+                        .eventPrivacy(EventPrivacy.PUBLIC)
                         .build()
         );
         events.add(
@@ -236,6 +245,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .paymentMethod(PaymentMethod.CASH)
                         .specialRequest("i have chair")
                         .eventStatus(EventStatus.PENDING)
+                        .eventPrivacy(EventPrivacy.PRIVATE)
                         .build()
         );
         events.add(
@@ -256,6 +266,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .paymentMethod(PaymentMethod.CASH)
                         .specialRequest("No special requests")
                         .eventStatus(EventStatus.PENDING)
+                        .eventPrivacy(EventPrivacy.PRIVATE)
                         .build()
         );
         events.add(
@@ -276,6 +287,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .paymentMethod(PaymentMethod.CASH)
                         .specialRequest("No special requests")
                         .eventStatus(EventStatus.PENDING)
+                        .eventPrivacy(EventPrivacy.PRIVATE)
                         .build()
         );
         events.add(
@@ -296,6 +308,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .paymentMethod(PaymentMethod.CREDIT)
                         .specialRequest("Vegetarian meal")
                         .eventStatus(EventStatus.PENDING)
+                        .eventPrivacy(EventPrivacy.PRIVATE)
                         .build()
         );
         events.add(
@@ -316,6 +329,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .paymentMethod(PaymentMethod.PAYPAL)
                         .specialRequest("Projector needed")
                         .eventStatus(EventStatus.PENDING)
+                        .eventPrivacy(EventPrivacy.PUBLIC)
                         .build()
         );
         events.add(
@@ -336,6 +350,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .paymentMethod(PaymentMethod.CASH)
                         .specialRequest("Whiteboard needed")
                         .eventStatus(EventStatus.PENDING)
+                        .eventPrivacy(EventPrivacy.PUBLIC)
                         .build()
         );
         events.add(
@@ -356,6 +371,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .paymentMethod(PaymentMethod.CREDIT)
                         .specialRequest("Handouts needed")
                         .eventStatus(EventStatus.PENDING)
+                        .eventPrivacy(EventPrivacy.PRIVATE)
                         .build()
         );
 
@@ -368,7 +384,6 @@ public class DataLoaderService implements CommandLineRunner {
                         .firstName("Sarah")
                         .middleName("Jane")
                         .lastName("Smith")
-                        .gender(Gender.FEMALE)
                         .dob(LocalDate.parse("2000-01-01"))
                         .email("Sarah.Smith@myfunnywebsite.org")
                         .phone("123-456-7890")
@@ -379,6 +394,8 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Montreal")
                                 .build())
                         .roles(EnumSet.of(Role.STAFF))
+                        // TODO: Remove this id after presentation
+                        .associatedId("google-oauth2|111158373482141727647")
                         .build()
         );
         students.add(
@@ -389,7 +406,6 @@ public class DataLoaderService implements CommandLineRunner {
                         .firstName("Nikolaos")
                         .middleName("Georgios")
                         .lastName("Michaloliakos")
-                        .gender(Gender.MALE)
                         .dob(LocalDate.parse("2000-01-01"))
                         .email("nikolaos.michaloliakos@goldendawn.org")
                         .phone("123-456-7890")
@@ -399,7 +415,8 @@ public class DataLoaderService implements CommandLineRunner {
                                 .state("QC")
                                 .city("Montreal")
                                 .build())
-                        .roles(EnumSet.of(Role.STUDENT))
+                        .roles(EnumSet.of(Role.STAFF))
+                        .associatedId("google-oauth2|111871631735892967671")
                         .build()
         );
         students.add(
@@ -410,7 +427,6 @@ public class DataLoaderService implements CommandLineRunner {
                         .firstName("Hawk")
                         .middleName("Doesounow")
                         .lastName("Tuah")
-                        .gender(Gender.FEMALE)
                         .dob(LocalDate.parse("1999-01-01"))
                         .email("hawktuah@onthatthang.org")
                         .phone("514-637-8400")
@@ -420,7 +436,8 @@ public class DataLoaderService implements CommandLineRunner {
                                 .state("QC")
                                 .city("Montreal")
                                 .build())
-                        .roles(EnumSet.of(Role.STUDENT))
+                        .associatedId("google-oauth2|106264117745944422000")
+                        .roles(EnumSet.of(Role.STAFF))
                         .build()
         );
         students.add(
@@ -431,7 +448,6 @@ public class DataLoaderService implements CommandLineRunner {
                         .firstName("Tony")
                         .middleName("")
                         .lastName("Nearos")
-                        .gender(Gender.MALE)
                         .dob(LocalDate.parse("1999-01-01"))
                         .email("denbleko@mebatsous.org")
                         .phone("514-637-8400")
@@ -452,7 +468,6 @@ public class DataLoaderService implements CommandLineRunner {
                         .firstName("Zippora")
                         .middleName("Lemony")
                         .lastName("Snickett")
-                        .gender(Gender.FEMALE)
                         .dob(LocalDate.parse("1998-06-15"))
                         .email("zippora.snickett@stories.org")
                         .phone("438-999-1234")
@@ -473,7 +488,6 @@ public class DataLoaderService implements CommandLineRunner {
                         .firstName("Apollo")
                         .middleName("Dart")
                         .lastName("Lightning")
-                        .gender(Gender.MALE)
                         .dob(LocalDate.parse("1997-03-21"))
                         .email("apollo.lightning@skyhigh.org")
                         .phone("450-123-4567")
@@ -494,7 +508,6 @@ public class DataLoaderService implements CommandLineRunner {
                         .firstName("Jazz")
                         .middleName("Beet")
                         .lastName("Nickelback")
-                        .gender(Gender.MALE)
                         .dob(LocalDate.parse("2001-11-11"))
                         .email("jazz.nickelback@tuneful.org")
                         .phone("514-777-8899")
@@ -515,7 +528,6 @@ public class DataLoaderService implements CommandLineRunner {
                         .firstName("Pixel")
                         .middleName("Bit")
                         .lastName("Byte")
-                        .gender(Gender.MALE)
                         .dob(LocalDate.parse("2002-02-02"))
                         .email("pixel.byte@techwave.org")
                         .phone("514-567-8901")
@@ -536,7 +548,6 @@ public class DataLoaderService implements CommandLineRunner {
                         .firstName("Echo")
                         .middleName("Silence")
                         .lastName("Noiseworth")
-                        .gender(Gender.FEMALE)
                         .dob(LocalDate.parse("1996-12-12"))
                         .email("echo.noiseworth@soundscape.org")
                         .phone("438-888-9999")
@@ -557,7 +568,6 @@ public class DataLoaderService implements CommandLineRunner {
                         .firstName("Kai")
                         .middleName("")
                         .lastName("Smith")
-                        .gender(Gender.MALE)
                         .dob(LocalDate.parse("1995-01-01"))
                         .email("kai.smith@ninjago.org")
                         .phone("514-123-1234")
@@ -578,7 +588,6 @@ public class DataLoaderService implements CommandLineRunner {
                         .firstName("Jay")
                         .middleName("")
                         .lastName("Walker")
-                        .gender(Gender.MALE)
                         .dob(LocalDate.parse("1996-02-02"))
                         .email("jay.walker@ninjago.org")
                         .phone("438-234-2345")
@@ -599,7 +608,6 @@ public class DataLoaderService implements CommandLineRunner {
                         .firstName("Zane")
                         .middleName("")
                         .lastName("Julien")
-                        .gender(Gender.MALE)
                         .dob(LocalDate.parse("1997-03-03"))
                         .email("zane.julien@ninjago.org")
                         .phone("450-345-3456")
@@ -620,7 +628,6 @@ public class DataLoaderService implements CommandLineRunner {
                         .firstName("Cole")
                         .middleName("")
                         .lastName("Brookstone")
-                        .gender(Gender.MALE)
                         .dob(LocalDate.parse("1998-04-04"))
                         .email("cole.brookstone@ninjago.org")
                         .phone("514-456-4567")
@@ -641,7 +648,6 @@ public class DataLoaderService implements CommandLineRunner {
                         .firstName("Lloyd")
                         .middleName("")
                         .lastName("Garmadon")
-                        .gender(Gender.MALE)
                         .dob(LocalDate.parse("1999-05-05"))
                         .email("lloyd.garmadon@ninjago.org")
                         .phone("438-567-5678")
@@ -663,7 +669,6 @@ public class DataLoaderService implements CommandLineRunner {
                         .firstName("Donald")
                         .middleName("J.")
                         .lastName("Trump")
-                        .gender(Gender.MALE)
                         .dob(LocalDate.parse("1999-01-01"))
                         .email("donald@trump.org")
                         .phone("514-637-8400")
@@ -684,7 +689,6 @@ public class DataLoaderService implements CommandLineRunner {
                         .firstName("Lilliam")
                         .middleName("")
                         .lastName("Pumpernickel")
-                        .gender(Gender.MALE)
                         .dob(LocalDate.parse("1999-01-01"))
                         .email("guccigang@guccigang.org")
                         .phone("514-637-8400")
@@ -705,7 +709,6 @@ public class DataLoaderService implements CommandLineRunner {
                         .firstName("Tim")
                         .middleName("")
                         .lastName("Robinson")
-                        .gender(Gender.MALE)
                         .dob(LocalDate.parse("1999-01-01"))
                         .email("tim@robinson.org")
                         .phone("514-637-8400")
@@ -726,7 +729,6 @@ public class DataLoaderService implements CommandLineRunner {
                         .firstName("Dave")
                         .middleName("Fat")
                         .lastName("Blunts")
-                        .gender(Gender.FEMALE)
                         .dob(LocalDate.parse("1999-01-01"))
                         .email("icantput@downthecup.org")
                         .phone("514-637-8400")
@@ -747,7 +749,6 @@ public class DataLoaderService implements CommandLineRunner {
                         .firstName("NBA")
                         .middleName("12 kids")
                         .lastName("Youngboy")
-                        .gender(Gender.FEMALE)
                         .dob(LocalDate.parse("1999-01-01"))
                         .email("youngboy@neverbrokeagain.org")
                         .phone("514-637-8400")
@@ -768,7 +769,6 @@ public class DataLoaderService implements CommandLineRunner {
                         .firstName("Michael")
                         .middleName("Gary")
                         .lastName("Scott")
-                        .gender(Gender.MALE)
                         .dob(LocalDate.parse("1999-01-01"))
                         .email("mike@scott.org")
                         .phone("514-637-8400")
@@ -789,7 +789,6 @@ public class DataLoaderService implements CommandLineRunner {
                         .firstName("Knee")
                         .middleName("Doesounow")
                         .lastName("Surgeon")
-                        .gender(Gender.FEMALE)
                         .dob(LocalDate.parse("1999-01-01"))
                         .email("hawktuah@onthatthang.org")
                         .phone("514-637-8400")
@@ -810,7 +809,6 @@ public class DataLoaderService implements CommandLineRunner {
                         .firstName("John")
                         .middleName("Doesounow")
                         .lastName("Pork")
-                        .gender(Gender.FEMALE)
                         .dob(LocalDate.parse("1999-01-01"))
                         .email("john@pork.org")
                         .phone("514-637-8400")
@@ -832,7 +830,6 @@ public class DataLoaderService implements CommandLineRunner {
                         .firstName("John")
                         .middleName("Doe")
                         .lastName("Smith")
-                        .gender(Gender.MALE)
                         .dob(LocalDate.parse("2000-01-01"))
                         .email("john.doe@myfunnywebsite.org")
                         .phone("123-456-7890")
@@ -853,7 +850,6 @@ public class DataLoaderService implements CommandLineRunner {
                         .firstName("Alice")
                         .middleName("Grace")
                         .lastName("Johnson")
-                        .gender(Gender.FEMALE)
                         .dob(LocalDate.parse("1998-02-15"))
                         .email("alice.johnson@webmail.com")
                         .phone("234-567-8901")
@@ -874,7 +870,6 @@ public class DataLoaderService implements CommandLineRunner {
                         .firstName("Bob")
                         .middleName("Ray")
                         .lastName("Lee")
-                        .gender(Gender.MALE)
                         .dob(LocalDate.parse("2001-04-22"))
                         .email("bob.lee@someplace.com")
                         .phone("345-678-9012")
@@ -895,7 +890,6 @@ public class DataLoaderService implements CommandLineRunner {
                         .firstName("Maria")
                         .middleName("Sophia")
                         .lastName("Garcia")
-                        .gender(Gender.FEMALE)
                         .dob(LocalDate.parse("1999-06-10"))
                         .email("maria.garcia@xyz.org")
                         .phone("456-789-0123")
@@ -916,7 +910,6 @@ public class DataLoaderService implements CommandLineRunner {
                         .firstName("Charlie")
                         .middleName("Alan")
                         .lastName("Brown")
-                        .gender(Gender.MALE)
                         .dob(LocalDate.parse("1997-08-25"))
                         .email("charlie.brown@fakeemail.com")
                         .phone("567-890-1234")
@@ -937,7 +930,6 @@ public class DataLoaderService implements CommandLineRunner {
                         .firstName("Eve")
                         .middleName("Marie")
                         .lastName("Davis")
-                        .gender(Gender.FEMALE)
                         .dob(LocalDate.parse("1996-03-14"))
                         .email("eve.davis@newdomain.org")
                         .phone("678-901-2345")
@@ -958,7 +950,6 @@ public class DataLoaderService implements CommandLineRunner {
                         .firstName("David")
                         .middleName("James")
                         .lastName("Miller")
-                        .gender(Gender.MALE)
                         .dob(LocalDate.parse("1995-05-05"))
                         .email("david.miller@workplace.com")
                         .phone("789-012-3456")
@@ -979,7 +970,6 @@ public class DataLoaderService implements CommandLineRunner {
                         .firstName("Grace")
                         .middleName("Lynn")
                         .lastName("Wilson")
-                        .gender(Gender.FEMALE)
                         .dob(LocalDate.parse("1998-09-30"))
                         .email("grace.wilson@university.com")
                         .phone("890-123-4567")
@@ -1000,7 +990,6 @@ public class DataLoaderService implements CommandLineRunner {
                         .firstName("Jake")
                         .middleName("Kyle")
                         .lastName("Moore")
-                        .gender(Gender.MALE)
                         .dob(LocalDate.parse("2000-11-11"))
                         .email("jake.moore@cooldomain.com")
                         .phone("901-234-5678")
@@ -1021,7 +1010,6 @@ public class DataLoaderService implements CommandLineRunner {
                         .firstName("Sophia")
                         .middleName("Rachel")
                         .lastName("Taylor")
-                        .gender(Gender.FEMALE)
                         .dob(LocalDate.parse("1999-12-20"))
                         .email("samprasad7220@gmail.com")
                         .phone("102-345-6789")

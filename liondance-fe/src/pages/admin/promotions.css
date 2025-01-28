@@ -1,20 +1,113 @@
-.promotions-list {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 2rem;
-    background-color: #ECBA4B;
+.promotions-container {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
 
-  }
-  
-  .promotion-details {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 2rem;
-    background-color: #ECBA4B;
-  }
-  
-  .error {
-    color: red;
-    text-align: center;
-  }
-  
+.promotion-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 55%;
+  padding: 30px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #ECBA4B;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  transition: box-shadow 0.3s ease;
+}
+
+.promotion-card:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+.promotion-info {
+  flex: 1;
+  padding-right: 20px;
+  align-items: center;
+  width: 55%;
+}
+
+.promotion-header {
+  font-size: 28px;
+  color: #d10000;
+  font-weight: bold;
+}
+
+.promotion-details {
+  margin-top: 15px;
+  width: 55%;
+  align-items: center;
+}
+
+.promotion-detail {
+  margin: 8px 0;
+  font-size: 22px;
+  color: #333;
+}
+
+.promotion-status {
+  font-weight: bold;
+  color: #007BFF;
+}
+
+.loading {
+  text-align: center;
+  font-size: 1.2rem;
+  margin: 2rem;
+}
+
+.error {
+  color: red;
+  text-align: center;
+  font-size: 1.2rem;
+  margin: 2rem;
+}
+
+.promotions-title {
+  font-size: 32px;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: bold;
+  width: 55%;
+}
+
+.promotion-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.action-button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+
+.edit-button {
+  background-color: #d10000;
+  color: white;
+}
+
+.edit-button:hover {
+  background-color: #b00000;
+}
+
+.back-button {
+  background-color: #FFDB58;
+  color: #333;
+}
+
+.back-button:hover {
+  background-color: #FFD700;
+}

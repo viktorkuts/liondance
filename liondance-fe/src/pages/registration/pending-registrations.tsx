@@ -1,12 +1,13 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 import { useEffect, useState } from "react";
-import axiosInstance from "../../utils/axiosInstance.ts";
+import { useAxiosInstance } from "../../utils/axiosInstance.ts";
 import { Student } from "@/models/Users.ts";
 import "./PendingRegistrations.css";
 import StudentDetailsOverlay from "../../components/StudentDetailsOverlay.tsx";
 
 function PendingRegistrations() {
+  const axiosInstance = useAxiosInstance();
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
@@ -28,7 +29,7 @@ function PendingRegistrations() {
     };
 
     fetchPendingStudents();
-  }, []);
+  }, [axiosInstance]);
 
   const handleRowClick = async (userId: string) => {
     try {
@@ -64,7 +65,6 @@ function PendingRegistrations() {
             <tr>
               <th>Name</th>
               <th>Email</th>
-              <th>Gender</th>
               <th>Date of Birth</th>
             </tr>
           </thead>
@@ -79,7 +79,6 @@ function PendingRegistrations() {
                   {student.firstName} {student.lastName}
                 </td>
                 <td>{student.email}</td>
-                <td>{student.gender}</td>
                 <td>{new Date(student.dob).toLocaleDateString()}</td>
               </tr>
             ))}

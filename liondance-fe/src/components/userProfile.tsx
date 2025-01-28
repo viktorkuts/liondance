@@ -12,9 +12,9 @@ import {
   MultiSelect,
   Notification,
 } from "@mantine/core";
-import userService from "../services/userService";
+import { useUserService } from "../services/userService";
 import geoService from "@/services/geoService";
-import { Gender, Address, User } from "@/models/Users.ts";
+import { Address, User } from "@/models/Users.ts";
 import "./userProfile.css";
 import { useForm } from "@mantine/form";
 import { Province } from "@/types/geo";
@@ -26,7 +26,6 @@ interface UserResponseModel {
   firstName: string;
   middleName?: string;
   lastName: string;
-  gender: Gender;
   dob: string;
   email: string;
   phone?: string;
@@ -34,6 +33,7 @@ interface UserResponseModel {
 }
 
 const UserProfile: React.FC = () => {
+  const userService = useUserService();
   const { userId } = useParams<{ userId: string }>();
   const [user, setUser] = useState<UserResponseModel | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -61,7 +61,6 @@ const UserProfile: React.FC = () => {
           firstName: data.firstName,
           middleName: data.middleName,
           lastName: data.lastName,
-          gender: data.gender,
           // eslint-disable-next-line
           // @ts-ignore
           dob: new Date(data.dob),
@@ -98,7 +97,6 @@ const UserProfile: React.FC = () => {
       firstName: "",
       middleName: "",
       lastName: "",
-      gender: "",
       dob: "",
       email: "",
       phone: "",
@@ -112,8 +110,6 @@ const UserProfile: React.FC = () => {
     validate: {
       firstName: (value) => (value.length <= 50 ? null : "First name too long"),
       lastName: (value) => (value.length <= 50 ? null : "Last name too long"),
-      gender: (value) =>
-        ["MALE", "FEMALE", "OTHER"].includes(value) ? null : "Invalid gender",
       // eslint-disable-next-line
       // @ts-ignore
       dob: (value) =>
@@ -171,7 +167,6 @@ const UserProfile: React.FC = () => {
         firstName: values.firstName,
         middleName: values.middleName,
         lastName: values.lastName,
-        gender: values.gender as Gender,
         dob: new Date(values.dob).toISOString().split("T")[0],
         email: values.email,
         phone: values.phone,
@@ -231,12 +226,6 @@ const UserProfile: React.FC = () => {
             placeholder="Pork"
             required
             {...form.getInputProps("lastName")}
-          />
-          <Select
-            label="Gender"
-            required
-            data={["MALE", "FEMALE", "OTHER"]}
-            {...form.getInputProps("gender")}
           />
           <DateInput
             rightSection={<Calendar />}
@@ -300,9 +289,6 @@ const UserProfile: React.FC = () => {
           <p>
             <strong>Name:</strong> {user.firstName} {user.middleName}{" "}
             {user.lastName}
-          </p>
-          <p>
-            <strong>Gender:</strong> {user.gender}
           </p>
           <p>
             <strong>Date of Birth:</strong> {user.dob}

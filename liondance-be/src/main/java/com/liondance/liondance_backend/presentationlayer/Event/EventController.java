@@ -5,6 +5,7 @@ import com.liondance.liondance_backend.logiclayer.Event.EventService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -38,6 +39,7 @@ public class EventController {
                 .map(eventResponseModel -> ResponseEntity.status(HttpStatus.CREATED).body(eventResponseModel));
     }
 
+    @PreAuthorize("hasAuthority('STAFF')")
     @PatchMapping("/{eventId}/status")
     public Mono<ResponseEntity<EventResponseModel>> updateEventStatus(@PathVariable String eventId, @RequestBody Mono<Map<String, String>> requestBody) {
         return requestBody
@@ -57,6 +59,7 @@ public class EventController {
                 .map(eventResponseModel -> ResponseEntity.ok().body(eventResponseModel));
     }
 
+    @PreAuthorize("hasAuthority('STAFF')")
     @GetMapping("/{eventId}")
     public Mono<ResponseEntity<EventResponseModel>> getEventById(@PathVariable String eventId) {
         return eventService.getEventById(eventId)
@@ -75,8 +78,20 @@ public class EventController {
                 })
                 .map(eventResponseModel -> ResponseEntity.ok().body(eventResponseModel));
     }
+
+    @PreAuthorize("hasAuthority('STAFF')")
     @GetMapping("/email/{email}")
     Flux<EventResponseModel> getEventsByEmail(@PathVariable String email) {
         return eventService.getEventsByEmail(email);
+    }
+
+    @GetMapping("/filtered-events")
+    public Flux<EventDisplayDTO> getFilteredEvents() {
+        return eventService.getFilteredEvents();
+    }
+
+    @PutMapping("/{eventId}")
+    public Mono<EventResponseModel> updateEventDetails(@PathVariable String eventId, @Valid @RequestBody EventRequestModel eventRequestModel) {
+        return eventService.updateEventDetails(eventId, eventRequestModel);
     }
 }

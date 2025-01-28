@@ -14,12 +14,13 @@ import { DateInput } from "@mantine/dates";
 import geoService from "@/services/geoService";
 import { Province } from "@/types/geo";
 import classes from "./booking.module.css";
-import { IMaskInput } from 'react-imask';
-import { InputBase } from '@mantine/core';
-import { EventType, Event, PaymentMethod, EventStatus } from "@/models/Event";
-import eventService from "@/services/eventService";
+import { IMaskInput } from "react-imask";
+import { InputBase } from "@mantine/core";
+import { EventType, Event, PaymentMethod, EventStatus, EventPrivacy } from "@/models/Event";
+import { useEventService } from "@/services/eventService";
 
 function BookEvent() {
+  const eventService = useEventService();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [emailData, setEmailData] = useState<string[]>([]);
@@ -49,13 +50,13 @@ function BookEvent() {
       const [hoursMinutes, period] = time.split(" ");
       const [hours, minutes] = hoursMinutes.split(":").map(Number);
       const hour24 = period === "PM" && hours !== 12 ? hours + 12 : hours % 12;
-  
+
       const combinedDateTime = dayjs(date)
         .hour(hour24)
         .minute(minutes)
         .second(0)
         .toISOString();
-  
+
       form.setFieldValue("eventDateTime", combinedDateTime);
       form.clearFieldError("eventDateTime");
     } else {
@@ -63,8 +64,6 @@ function BookEvent() {
       form.setFieldError("eventDateTime", "Both date and time are required");
     }
   };
-  
-  
 
   useEffect(() => {
     const run = async () => {
@@ -91,6 +90,7 @@ function BookEvent() {
       eventType: "",
       paymentMethod: "",
       specialRequest: "",
+      eventPrivacy: "",
     },
 
     validate: {
@@ -107,6 +107,7 @@ function BookEvent() {
         value && value.length > 0 ? null : "Both date and time are required",
       eventType: (value) => (value.length > 0 ? null : "Field is required"),
       paymentMethod: (value) => (value.length > 0 ? null : "Field is required"),
+      eventPrivacy: (value) => (value.length > 0 ? null : "Field is required"),
       address:
         (activeStep === 1 && {
           streetAddress: (value) =>
@@ -189,7 +190,8 @@ function BookEvent() {
       eventType: values.eventType as EventType,
       paymentMethod: values.paymentMethod as PaymentMethod,
       specialRequest: values.specialRequest,
-      eventStatus: EventStatus.PENDING
+      eventStatus: EventStatus.PENDING,
+      eventPrivacy: values.eventPrivacy as EventPrivacy,
     };
 
     const run = async () => {
@@ -257,7 +259,6 @@ function BookEvent() {
             required
           />
 
-
           <Select
             label="Event Time"
             placeholder="Select a time"
@@ -270,7 +271,6 @@ function BookEvent() {
             error={form.errors.eventDateTime}
             required
           />
-
 
           <Select
             label="Event Type"
@@ -293,6 +293,14 @@ function BookEvent() {
             placeholder="Request..."
             key={form.key("specialRequest")}
             {...form.getInputProps("specialRequest")}
+          />
+          <Select
+            label="Event Privacy"
+            placeholder="PRIVATE"
+            data={Object.values(EventPrivacy)}
+            key={form.key("eventPrivacy")}
+            required
+            {...form.getInputProps("eventPrivacy")}
           />
         </Stepper.Step>
         <Stepper.Step label="Location Information">
@@ -335,13 +343,9 @@ function BookEvent() {
             <h2>Does this information look correct?</h2>
             <p>
               Name: {form.getValues().firstName} {form.getValues().lastName}
-              </p>
-            <p>
-              Email: {form.getValues().email}
-              </p>
-            <p>
-              Phone: {form.getValues().phone}
-              </p>
+            </p>
+            <p>Email: {form.getValues().email}</p>
+            <p>Phone: {form.getValues().phone}</p>
             <p>
               Location: {form.getValues().address.streetAddress},{" "}
               {form.getValues().address.city}, {form.getValues().address.state},{" "}
@@ -350,9 +354,12 @@ function BookEvent() {
             <p>
               Event Date: {dayjs(form.getValues().eventDateTime).format("MMMM D, YYYY")}
               </p>
-            <p>
+              <p>
               Event Time: {dayjs(form.getValues().eventDateTime).format("h:mm A")}
               </p>
+              <p>
+              Event Privacy: {form.getValues().eventPrivacy}
+             </p>
           </div>
         </Stepper.Step>
         <Stepper.Completed>
@@ -360,11 +367,12 @@ function BookEvent() {
             <div className={classes.completedForm}>
               <h2>Request Submitted!</h2>
               <p>
-                Thank you for choosing the LVH Lion Dance Team, {form.getValues().firstName}!
+                Thank you for choosing the LVH Lion Dance Team,{" "}
+                {form.getValues().firstName}!
               </p>
               <p>
-                We will be in touch with you shortly to confirm your booking request. 
-                Please check your email inbox for updates.
+                We will be in touch with you shortly to confirm your booking
+                request. Please check your email inbox for updates.
               </p>
               <Button component="a" href="/">
                 Back to Home

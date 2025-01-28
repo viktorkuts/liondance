@@ -65,7 +65,6 @@ public class UserServiceImpl implements UserService {
                     user.setFirstName(userRequestModel.getFirstName());
                     user.setMiddleName(userRequestModel.getMiddleName());
                     user.setLastName(userRequestModel.getLastName());
-                    user.setGender(userRequestModel.getGender());
                     user.setDob(userRequestModel.getDob());
                     user.setEmail(userRequestModel.getEmail());
                     user.setPhone(userRequestModel.getPhone());
@@ -279,7 +278,6 @@ public class UserServiceImpl implements UserService {
                     student.setFirstName(studentRequestModel.getFirstName());
                     student.setMiddleName(studentRequestModel.getMiddleName());
                     student.setLastName(studentRequestModel.getLastName());
-                    student.setGender(studentRequestModel.getGender());
                     student.setDob(studentRequestModel.getDob());
                     student.setEmail(studentRequestModel.getEmail());
                     student.setPhone(studentRequestModel.getPhone());
@@ -297,6 +295,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Mono<User> validate(String subId){
-        return userRepository.findUserByAssociatedId(subId);
+        return userRepository.findUserByAssociatedId(subId)
+                .switchIfEmpty(Mono.error(new NotFoundException("Session user is not associated")));
     }
 }

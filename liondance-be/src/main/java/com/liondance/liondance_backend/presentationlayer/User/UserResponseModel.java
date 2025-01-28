@@ -20,12 +20,12 @@ public class UserResponseModel {
     private String firstName;
     private String middleName;
     private String lastName;
-    private Gender gender;
     private LocalDate dob;
     private String email;
     private String phone;
     private Address address;
     private EnumSet<Role> roles;
+    private String associatedId;
 
     public static UserResponseModel from(User user) {
         UserResponseModel responseModel = new UserResponseModel();

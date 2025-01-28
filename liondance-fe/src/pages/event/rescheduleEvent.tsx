@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import { Modal, Button, Select } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import dayjs from "dayjs";
-import axiosInstance from "@/utils/axiosInstance";
+import { useAxiosInstance } from "@/utils/axiosInstance";
 import { Event } from "@/models/Event";
-import "@/components/studentProfile.css";
+import "@/pages/event/rescheduleEvent.css";
+
 
 interface RescheduleEventStatusProps {
   event: Event;
@@ -17,6 +18,7 @@ const RescheduleEvent: React.FC<RescheduleEventStatusProps> = ({
   onClose,
   onReschedule,
 }) => {
+  const axiosInstance = useAxiosInstance();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);

@@ -33,4 +33,5 @@ public class Event {
     private PaymentMethod paymentMethod;
     private String specialRequest;
     private EventStatus eventStatus;
+    private EventPrivacy eventPrivacy;
 }

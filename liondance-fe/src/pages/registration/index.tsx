@@ -14,10 +14,11 @@ import classes from "./registration.module.css";
 import { Calendar } from "react-feather";
 import geoService from "@/services/geoService";
 import { Province } from "@/types/geo";
-import { Gender, Student } from "@/models/Users";
-import userService from "@/services/userService";
+import { Student } from "@/models/Users";
+import { useUserService } from "@/services/userService";
 
 function Registration() {
+  const userService = useUserService();
   const [emailData, setEmailData] = useState<string[]>([]);
   const [emailDataLoading, setEmailDataLoading] = useState<boolean>(false);
   const [emailParentData, setEmailParentData] = useState<string[]>([]);
@@ -50,7 +51,6 @@ function Registration() {
       firstName: "",
       middleName: "",
       lastName: "",
-      gender: "",
       dob: "",
       email: "",
       address: {
@@ -70,7 +70,6 @@ function Registration() {
     validate: {
       firstName: (value) => (value.length > 0 ? null : "Field is required"),
       lastName: (value) => (value.length > 0 ? null : "Field is required"),
-      gender: (value) => (value.length > 0 ? null : "Field is required"),
       dob: (value) => {
         if (typeof value !== "object") {
           return "Field is required";
@@ -170,7 +169,6 @@ function Registration() {
       firstName: values.firstName,
       middleName: values.middleName,
       lastName: values.lastName,
-      gender: values.gender as Gender,
       dob: values.dob,
       email: values.email,
       phone: values.phone,
@@ -227,16 +225,6 @@ function Registration() {
             placeholder="514-123-1234"
             key={form.key("phone")}
             {...form.getInputProps("phone")}
-          />
-          <Select
-            mt="md"
-            label="Gender"
-            placeholder="MALE"
-            comboboxProps={{ withinPortal: true }}
-            data={["MALE", "FEMALE", "OTHER"]}
-            key={form.key("gender")}
-            required
-            {...form.getInputProps("gender")}
           />
           <DateInput
             rightSection={<Calendar />}

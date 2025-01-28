@@ -7,6 +7,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "5173:5173"
+    env_file:
+      - .env
     volumes:
       - ./liondance-fe/src:/app/src
       - ./liondance-fe/data:/app/data

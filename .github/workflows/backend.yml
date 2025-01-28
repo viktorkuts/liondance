@@ -8,7 +8,7 @@ on:
 
 jobs:
   liondance_be:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     permissions:
       contents: write
       pull-requests: write
@@ -32,15 +32,26 @@ jobs:
       
       - name: Build Gradle
         env:
-          SERVER_ROOT_DOMAIN: ${{ secrets.SERVER_ROOT_DOMAIN }}
-          MONGO_DATABASE: ${{ secrets.MONGO_DATABASE }}
-          MONGO_PORT: ${{ secrets.MONGO_PORT }}
-          MONGO_ROOT_USER: ${{ secrets.MONGO_ROOT_USER }}
-          MONGO_ROOT_PASS: ${{ secrets.MONGO_ROOT_PASS }}
+          BACKEND_PORT: ${{ secrets.BACKEND_PORT }}
+          BACKEND_URL: ${{ secrets.BACKEND_URL }}
+          FRONTEND_PORT: ${{ secrets.FRONTEND_PORT }}
+          FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
           MAIL_SMTP_HOST: ${{ secrets.MAIL_SMTP_HOST }}
+          MAIL_SMTP_PASS: ${{ secrets.MAIL_SMTP_PASS }}
           MAIL_SMTP_PORT: ${{ secrets.MAIL_SMTP_PORT }}
           MAIL_SMTP_USER: ${{ secrets.MAIL_SMTP_USER }}
-          MAIL_SMTP_PASS: ${{ secrets.MAIL_SMTP_PASS }}
+          MONGO_DATABASE: ${{ secrets.MONGO_DATABASE }}
+          MONGO_PORT: ${{ secrets.MONGO_PORT }}
+          MONGO_ROOT_PASS: ${{ secrets.MONGO_ROOT_PASS }}
+          MONGO_ROOT_USER: ${{ secrets.MONGO_ROOT_USER }}
+          MONGO_WEB_PASS: ${{ secrets.MONGO_WEB_PASS }}
+          MONGO_WEB_USER: ${{ secrets.MONGO_WEB_USER }}
+          OKTA_AUDIENCE: ${{ secrets.OKTA_AUDIENCE }}
+          OKTA_CLIENT_ID: ${{ secrets.OKTA_CLIENT_ID }}
+          OKTA_CLIENT_SECRET: ${{ secrets.OKTA_CLIENT_SECRET }}
+          OKTA_ISSUER: ${{ secrets.OKTA_ISSUER }}
+          OKTA_REDIRECT_URI: ${{ secrets.OKTA_REDIRECT_URI }}
+          SERVER_ROOT_DOMAIN: ${{ secrets.SERVER_ROOT_DOMAIN }}
         run: ./gradlew clean build
         working-directory: ./liondance-be
 
