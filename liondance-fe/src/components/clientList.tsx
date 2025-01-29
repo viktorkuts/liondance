@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Button, Title } from "@mantine/core";
+import { Button, Title, Input } from "@mantine/core";
 import { useUserService } from "@/services/userService";
 import { Client } from "@/models/Users";
 import "./clientList.css";
@@ -8,18 +8,33 @@ import "./clientList.css";
 const ClientList: React.FC = () => {
   const userService = useUserService();
   const [clients, setClients] = useState<Client[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    userService.getAllClients().then(setClients);
+    userService.getAllClients().then((data) => {
+      setClients(data);
+    });
   }, [userService]);
 
+  const filteredClients = clients.filter(client =>
+    `${client.firstName} ${client.middleName || ""} ${client.lastName}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <div className="user-list">
+    <div className="clientListContainer">
       <Title order={1}>Client List</Title>
-      {clients.length === 0 ? (
-        <p className="no-data">No clients found.</p>
+      <Input
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        placeholder="Search by name"
+        className="searchInput"
+      />
+      {filteredClients.length === 0 ? (
+        <p className="noData">No clients found.</p>
       ) : (
-        <table className="users-table">
+        <table className="clientsTable">
           <thead>
             <tr>
               <th>Name</th>
@@ -29,7 +44,7 @@ const ClientList: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {clients.map((client) => (
+            {filteredClients.map((client) => (
               <tr key={client.userId}>
                 <td>
                   {client.firstName} {client.middleName} {client.lastName}
@@ -38,7 +53,7 @@ const ClientList: React.FC = () => {
                 <td>{client.phone}</td>
                 <td>
                   <Link to={`/client-profile/${client.userId}`}>
-                    <Button className="view-profile-button" variant="outline">
+                    <Button className="viewProfileButton" variant="outline">
                       View Profile
                     </Button>
                   </Link>

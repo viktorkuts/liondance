@@ -23,5 +23,4 @@ public interface UserService {
     Mono<UserResponseModel> updateUserRole(String userId, UserRolePatchRequestModel role);
     Mono<UserResponseModel> updateStudent(String studentId, StudentRequestModel studentRequestModel);
     Mono<User> validate(String subId);
-//    Flux<UserResponseModel> getClientsByRole(Role role);
 }

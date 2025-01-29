@@ -36,10 +36,6 @@ public class UserResponseModel {
 
         if (user instanceof Client) {
             responseModel = new ClientResponseModel();
-//            Client client = (Client) user;
-//            ((ClientResponseModel) responseModel).setJoinDate(client.getJoinDate());
-//            ((ClientResponseModel) responseModel).setActiveEvents(client.getActiveEvents());
-//            ((ClientResponseModel) responseModel).setPastEvents(client.getPastEvents());
         }
 
         BeanUtils.copyProperties(user, responseModel);

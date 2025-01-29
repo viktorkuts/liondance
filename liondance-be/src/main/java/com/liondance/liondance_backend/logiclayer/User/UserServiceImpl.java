@@ -299,11 +299,4 @@ public class UserServiceImpl implements UserService {
                 .switchIfEmpty(Mono.error(new NotFoundException("Session user is not associated")));
     }
 
-//    @Override
-//    public Flux<UserResponseModel> getClientsByRole(Role role) {
-//        return userRepository.findUsersByRolesContaining(role)
-//                .filter(user -> user instanceof Client)
-//                .map(Client.class::cast)
-//                .map(UserResponseModel::from);
-//    }
 }
