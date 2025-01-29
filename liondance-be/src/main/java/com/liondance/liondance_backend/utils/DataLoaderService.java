@@ -12,6 +12,8 @@ import com.liondance.liondance_backend.datalayer.User.*;
 import com.liondance.liondance_backend.datalayer.common.Address;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.*;
@@ -21,6 +23,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
+@Profile("!production")
 @Service
 public class DataLoaderService implements CommandLineRunner {
 
@@ -38,6 +41,14 @@ public class DataLoaderService implements CommandLineRunner {
 
     @Autowired
     FeedbackRepository feedbackRepository;
+
+    private void tearDown(){
+        eventRepository.deleteAll().subscribe();
+        userRepository.deleteAll().subscribe();
+        courseRepository.deleteAll().subscribe();
+        promotionRepository.deleteAll().subscribe();
+        feedbackRepository.deleteAll().subscribe();
+    }
 
     @Override
     public void run(String... args) throws Exception {
@@ -1248,6 +1259,8 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                 .instructorId("eb07c6c6-dc48-489f-aa20-0d7d6fb12448")
                 .cancelledDates(new ArrayList<>())
                 .build();
+
+        tearDown();
 
         eventRepository.insert(events).subscribe();
         userRepository.insert(students).subscribe();

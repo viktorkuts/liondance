@@ -1,4 +1,3 @@
-//test
 package com.liondance.liondance_backend;
 
 import org.springframework.boot.SpringApplication;
