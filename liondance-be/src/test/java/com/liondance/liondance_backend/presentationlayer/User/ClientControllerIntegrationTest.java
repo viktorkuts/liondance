@@ -34,14 +34,14 @@ public class ClientControllerIntegrationTest {
             .firstName("Alice")
             .lastName("Johnson")
             .email("alice.johnson@webmail.com")
-            .roles(EnumSet.of(Role.CLIENT))  // Ensure the correct role is set
+            .roles(EnumSet.of(Role.CLIENT))
             .build();
 
     private final User client2 = User.builder()
             .userId("d89f1a3e-01a5-4f97-b2a3-9927555e4951")
             .firstName("Bob")
             .email("bob.lee@someplace.com")
-            .roles(EnumSet.of(Role.CLIENT))  // Ensure the correct role is set
+            .roles(EnumSet.of(Role.CLIENT))
             .build();
     @Autowired
     private UserService userService;
@@ -58,7 +58,6 @@ public class ClientControllerIntegrationTest {
     @Test
     void getAllClients_returnsClients_whenClientsExist() {
 
-        // Mock JWT with authority for "ROLE_STAFF" and log the request for debugging
         webTestClient
                 .get()
                 .uri("/api/v1/clients")
