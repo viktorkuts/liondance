@@ -34,6 +34,10 @@ public class UserResponseModel {
             responseModel = new StudentResponseModel();
         }
 
+        if (user instanceof Client) {
+            responseModel = new ClientResponseModel();
+        }
+
         BeanUtils.copyProperties(user, responseModel);
         return responseModel;
     }

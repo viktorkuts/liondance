@@ -8,7 +8,6 @@ import UpdateEventDetails from "./updateEventDetails.tsx";
 import { useNavigate } from "react-router-dom";
 
 function GetAllEvents() {
-  const axiosInstance = useAxiosInstance();
   const navigate = useNavigate();
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -17,6 +16,8 @@ function GetAllEvents() {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showRescheduleModal, setShowRescheduleModal] = useState<boolean>(false);
   const [showUpdateDetailsModal, setShowUpdateDetailsModal] = useState<boolean>(false);
+
+  const axiosInstance = useAxiosInstance();
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -36,7 +37,7 @@ function GetAllEvents() {
       }
     };
     fetchEvents();
-  }, [axiosInstance]);
+  }, []);
 
   const handleStatusClick = (event: Event) => {
     setSelectedEvent(event);
@@ -83,9 +84,7 @@ function GetAllEvents() {
 
   const handleReschedule = (updatedEvent: Event) => {
     setEvents((prevEvents) =>
-      prevEvents.map((event) =>
-        event.id === updatedEvent.id ? updatedEvent : event
-      )
+      prevEvents.map((event) => (event.id === updatedEvent.id ? updatedEvent : event))
     );
   };
 

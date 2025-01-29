@@ -106,6 +106,11 @@ export const useUserService = () => {
     return await axiosInstance.get<Role[]>(`/users/authenticated-user/roles`);
   };
 
+  const getAllClients = async () => {
+    const response = await axiosInstance.get("/clients");
+    return response.data;
+  };
+
   return {
     getAllUsers,
     getUserProfile,
@@ -121,5 +126,6 @@ export const useUserService = () => {
     userRoles,
     getSessionUser,
     getSessionRoles,
+    getAllClients,
   };
 };

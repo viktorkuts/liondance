@@ -1022,7 +1022,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .middleName("Rachel")
                         .lastName("Taylor")
                         .dob(LocalDate.parse("1999-12-20"))
-                        .email("sophia.taylor@somemail.com")
+                        .email("samprasad7220@gmail.com")
                         .phone("102-345-6789")
                         .address(Address.builder()
                                 .streetAddress("6789 Willow Way")
@@ -1030,7 +1030,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .state("NL")
                                 .city("St. John's")
                                 .build())
-                        .roles(EnumSet.of(Role.CLIENT))
+                        .roles(EnumSet.of(Role.STUDENT))
                         .build()
         );
 ArrayList<Promotion> promotions = new ArrayList<>();
@@ -1249,12 +1249,23 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                 .instructorId("eb07c6c6-dc48-489f-aa20-0d7d6fb12448")
                 .cancelledDates(new ArrayList<>())
                 .build();
+        Course coursetest = Course.builder()
+                .courseId("40374c92-6c55-417e-b8bc-9dfb38740255")
+                .name("Martial Arts")
+                .userIds(userIds)
+                .startTime(LocalTime.parse("10:00", DateTimeFormatter.ofPattern("HH:mm")))
+                .endTime(LocalTime.now().plusMinutes(5))
+                .dayOfWeek(LocalDate.now().getDayOfWeek())
+                .instructorId("eb07c6c6-dc48-489f-aa20-0d7d6fb12448")
+                .cancelledDates(new ArrayList<>())
+                .build();
 
         tearDown();
 
         eventRepository.insert(events).subscribe();
         userRepository.insert(students).subscribe();
         courseRepository.insert(course).subscribe();
+        courseRepository.insert(coursetest).subscribe();
         promotionRepository.insert(promotions).subscribe();
         feedbackRepository.insert(feedbacks).subscribe();
     }

@@ -15,6 +15,7 @@ import PromotionsList from "./admin/promotionsList";
 import PromotionDetails from "./admin/promotionDetails";
 import FeedbackList from "./feedback/feedbackList";
 import UpcomingEvents from "./event/upcomingEvents";
+import ClientList from "@/components/clientList";
 
 const pagesData: routerType[] = [
   {
@@ -97,7 +98,13 @@ const pagesData: routerType[] = [
     path: "feedbacks/:eventId",
     element: <FeedbackList eventId={":eventId"} />,
     title: "Feedback List",
+  },
+  {
+    path: "clients",
+    element: <ClientList />,
+    title: "Client List",
   }
+
 ];
 
 export default pagesData;
