@@ -1,18 +1,25 @@
 package com.liondance.liondance_backend.presentationlayer.Feedback;
 
+import com.liondance.liondance_backend.TestSecurityConfig;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
 import static org.mockito.Mockito.when;
 import com.liondance.liondance_backend.logiclayer.Feedback.FeedbackService;
 import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
 
-@Disabled
-@WebFluxTest(FeedbackController.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"spring.data.mongodb.port= 0"}, classes = TestSecurityConfig.class)
+@ActiveProfiles("test")
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@AutoConfigureWebTestClient
 class FeedbackControllerIntegrationTest {
 
     @Autowired

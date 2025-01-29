@@ -93,6 +93,9 @@ function Navbar() {
                 <Anchor href="/promotions" fw={1000} fz="h2">
                   Promotions
                 </Anchor>
+                <Anchor href="/clients" fw={1000} fz="h2">
+                  Client List
+                </Anchor>
               </div>
             )}
           </div>
