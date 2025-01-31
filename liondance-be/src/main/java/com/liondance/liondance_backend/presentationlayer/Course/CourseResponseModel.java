@@ -1,8 +1,6 @@
 package com.liondance.liondance_backend.presentationlayer.Course;
 
 import com.liondance.liondance_backend.datalayer.Course.Course;
-import com.liondance.liondance_backend.datalayer.Course.CourseStatus;
-import com.liondance.liondance_backend.datalayer.User.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,7 +28,6 @@ public class CourseResponseModel {
     private String instructorMiddleName;
     private String instructorLastName;
     private List<LocalDate> cancelledDates;
-    private CourseStatus status;
 
 
     public static CourseResponseModel from(Course course) {

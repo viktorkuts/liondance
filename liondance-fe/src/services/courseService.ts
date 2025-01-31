@@ -1,14 +1,20 @@
 import { useAxiosInstance } from "../utils/axiosInstance";
-import { CourseStatus } from "@/models/Courses.ts";
 
 export const useCourseService = () => {
   const axiosInstance = useAxiosInstance();
-  const cancelCourse = async (courseId: string, status: CourseStatus): Promise<Event> => {
-    const response = await axiosInstance.patch<Event>(`/courses/${courseId}/status`, { status });
+
+  const getAllCourses = async () => {
+    const response = await axiosInstance.get(`/courses`);
+    return response.data;
+  }
+
+  const cancelCourse = async (courseId: string, cancelledDates: string[]): Promise<void> => {
+    const response = await axiosInstance.patch(`/courses/${courseId}/date`, { cancelledDates });
     return response.data;
   };
 
   return {
-    cancelCourse
+    getAllCourses,
+    cancelCourse,
   };
 };

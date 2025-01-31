@@ -1,42 +1,165 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Text } from "@mantine/core";
+// import { Modal, Button } from "@mantine/core";
+// import Calendar from "react-calendar";
+// import "react-calendar/dist/Calendar.css";
 import { useCourseService } from "@/services/courseService";
-import { CourseStatus } from "@/models/Courses";
+// import dayjs from "dayjs";
+import "./CancelCourse.css";
 
-const CancelCoursePage: React.FC = () => {
-    const { cancelCourse } = useCourseService();
-    const [courseId, setCourseId] = useState<string>("");
-    const [status, setStatus] = useState<CourseStatus>(CourseStatus.ACTIVE);
-    const [message, setMessage] = useState<string>("");
+interface Course {
+    courseId: string;
+    name: string;
+    dayOfWeek: string;
+    startTime: string;
+    endTime: string;
+    instructorFirstName: string;
+    instructorMiddleName?: string;
+    instructorLastName: string;
+    cancelledDates: string[];
+}
 
-    const handleCancelCourse = async () => {
-        try {
-            await cancelCourse(courseId, status);
-            setMessage(`Course ${courseId} status updated to ${status}`);
-        } catch (error) {
-            setMessage(`Failed to update course status: ${error}`);
-        }
-    };
+const CancelCourse: React.FC = () => {
+    const { getAllCourses } = useCourseService(); // Removed cancelCourse from destructuring
+    const [courses, setCourses] = useState<Course[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
+    // const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+    // const [showModal, setShowModal] = useState<boolean>(false);
+
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                const data = await getAllCourses();
+                setCourses(data);
+                setLoading(false);
+            } catch {
+                setError("Failed to load courses. Please try again later.");
+                setLoading(false);
+            }
+        };
+
+        fetchCourses();
+    }, []);
+
+    // const handleCancelCourse = async (courseId: string, date: Date) => {
+    //     try {
+    //         const cancelledDate = dayjs(date).toISOString();
+    //         await cancelCourse(courseId, [cancelledDate]);
+    //         setCourses((prevCourses) =>
+    //             prevCourses.map((course) =>
+    //                 course.courseId === courseId
+    //                     ? {
+    //                             ...course,
+    //                             cancelledDates: [...course.cancelledDates, cancelledDate],
+    //                         }
+    //                     : course
+    //             )
+    //         );
+    //         setShowModal(false);
+    //     } catch {
+    //         setError("Failed to cancel course. Please try again later.");
+    //     }
+    // };
+
+    // const handleDayClick = (date: Date) => {
+    //     setSelectedDate(date);
+    //     setShowModal(true);
+    // };
+
+    // const getTileClassName = ({ date }: { date: Date }) => {
+    //     const hasCourse = courses.some(
+    //         (course) =>
+    //             course.dayOfWeek ===
+    //             date.toLocaleDateString("en-US", { weekday: "long" }).toUpperCase()
+    //     );
+    //     return hasCourse ? "course-day" : "";
+    // };
+
+    if (loading) return <Text style={{ textAlign: "center" }}>Loading...</Text>;
+    if (error)
+        return <Text style={{ textAlign: "center", color: "red" }}>{error}</Text>;
 
     return (
-        <div>
-            <h1>Cancel Course</h1>
-            <input
-                type="text"
-                placeholder="Course ID"
-                value={courseId}
-                onChange={(e) => setCourseId(e.target.value)}
-            />
-            <select
-                value={status}
-                onChange={(e) => setStatus(e.target.value as CourseStatus)}
+        <div className="cancel-course-container">
+            <div className="course-list">
+                <h1>Upcoming Courses</h1>
+                {courses.length === 0 ? (
+                    <p className="no-courses">No courses available.</p>
+                ) : (
+                    <table className="courses-table">
+                        <thead>
+                            <tr>
+                                <th>Course Name</th>
+                                <th>Day</th>
+                                <th>Time</th>
+                                <th>Instructor</th>
+                                {/* <th>Action</th> */}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {courses.map((course) => (
+                                <tr key={course.courseId}>
+                                    <td>{course.name}</td>
+                                    <td>{course.dayOfWeek}</td>
+                                    <td>
+                                        {course.startTime} - {course.endTime}
+                                    </td>
+                                    <td>
+                                        {course.instructorFirstName}{" "}
+                                        {course.instructorMiddleName &&
+                                            course.instructorMiddleName + " "}
+                                        {course.instructorLastName}
+                                    </td>
+                                    {/* <td>
+                                        <Button
+                                            onClick={() => handleDayClick(new Date(course.startTime))}
+                                        >
+                                            Cancel
+                                        </Button>
+                                    </td> */}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                )}
+            </div>
+
+            {/* <div className="calendar-container">
+                <h2>Course Calendar</h2>
+                <Calendar
+                    onClickDay={handleDayClick}
+                    tileClassName={getTileClassName}
+                />
+            </div>
+
+            <Modal
+                opened={showModal}
+                onClose={() => setShowModal(false)}
+                title={`Cancel Course on ${selectedDate?.toLocaleDateString()}`}
             >
-                <option value={CourseStatus.ACTIVE}>Active</option>
-                <option value={CourseStatus.CANCELLED}>Cancelled</option>
-            </select>
-            <button onClick={handleCancelCourse}>Update Status</button>
-            {message && <p>{message}</p>}
+                <div>
+                    <p>Are you sure you want to cancel the course on this date?</p>
+                    <Button
+                        onClick={() => {
+                            const course = courses.find(
+                                (course) =>
+                                    course.dayOfWeek ===
+                                    selectedDate
+                                        ?.toLocaleDateString("en-US", { weekday: "long" })
+                                        .toUpperCase()
+                            );
+                            if (course && selectedDate) {
+                                handleCancelCourse(course.courseId, selectedDate);
+                            }
+                        }}
+                    >
+                        Confirm
+                    </Button>
+                </div>
+            </Modal> */}
         </div>
     );
 };
 
-export default CancelCoursePage;
+export default CancelCourse;
