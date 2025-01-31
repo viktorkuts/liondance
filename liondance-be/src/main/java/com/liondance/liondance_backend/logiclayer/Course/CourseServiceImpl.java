@@ -1,6 +1,7 @@
 package com.liondance.liondance_backend.logiclayer.Course;
 
 import com.liondance.liondance_backend.datalayer.Course.CourseRepository;
+import com.liondance.liondance_backend.datalayer.Course.CourseStatus;
 import com.liondance.liondance_backend.datalayer.User.UserRepository;
 import com.liondance.liondance_backend.presentationlayer.Course.CourseResponseModel;
 import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
@@ -36,5 +37,17 @@ public class CourseServiceImpl implements CourseService {
                             return responseModel;
                         })
                 );
+    }
+
+    @Override
+    public Mono<CourseResponseModel> cancelCourse(String courseId, Mono<CourseStatus> status) {
+        return courseRepository.findById(courseId)
+                .switchIfEmpty(Mono.error(new NotFoundException("Course with ID " + courseId + " not found")))
+                .flatMap(course -> status.map(courseStatus -> {
+                    course.setStatus(courseStatus);
+                    return course;
+                }))
+                .flatMap(courseRepository::save)
+                .map(CourseResponseModel::from);
     }
 }

@@ -28,4 +28,5 @@ public class Course {
     private List<String> userIds;
     private String instructorId;
     private List<LocalDate> cancelledDates;
+    private CourseStatus status;
 }

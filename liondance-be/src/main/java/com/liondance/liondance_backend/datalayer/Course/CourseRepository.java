@@ -10,5 +10,6 @@ public interface CourseRepository extends ReactiveMongoRepository<Course, String
     @Query("{ 'userIds': ?0 }")
     Flux<Course> getCoursesByUserIds(String userId);
     Flux<Course> findCoursesByDayOfWeek(DayOfWeek dayOfWeek);
+    Flux<Course> findCoursesByCourseId(String courseId);
 
 }
