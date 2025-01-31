@@ -1,5 +1,7 @@
 package com.liondance.liondance_backend.logiclayer.ClassFeedback;
 
+import com.liondance.liondance_backend.datalayer.ClassFeedback.ClassFeedback;
+import com.liondance.liondance_backend.datalayer.ClassFeedback.ClassFeedbackRepository;
 import com.liondance.liondance_backend.datalayer.Course.Course;
 import com.liondance.liondance_backend.datalayer.Course.CourseRepository;
 import com.liondance.liondance_backend.datalayer.Notification.NotificationType;
@@ -7,18 +9,19 @@ import com.liondance.liondance_backend.datalayer.User.Role;
 import com.liondance.liondance_backend.datalayer.User.User;
 import com.liondance.liondance_backend.datalayer.User.UserRepository;
 import com.liondance.liondance_backend.logiclayer.Notification.NotificationService;
+import com.liondance.liondance_backend.presentationlayer.ClassFeedback.ClassFeedbackReportResponseModel;
+import com.liondance.liondance_backend.presentationlayer.ClassFeedback.ClassFeedbackRequestModel;
+import com.liondance.liondance_backend.presentationlayer.ClassFeedback.ClassFeedbackResponseModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static reactor.core.publisher.Flux.just;
 @Slf4j
@@ -29,12 +32,14 @@ public class ClassFeedbackServiceImpl implements ClassFeedbackService{
     private final UserRepository userRepository;
     private final TaskScheduler taskScheduler;
     private final NotificationService notificationService;
+    private final ClassFeedbackRepository classFeedbackRepository;
 
-    public ClassFeedbackServiceImpl(CourseRepository courseRepository, UserRepository userRepository, TaskScheduler taskScheduler, NotificationService notificationService) {
+    public ClassFeedbackServiceImpl(CourseRepository courseRepository, UserRepository userRepository, TaskScheduler taskScheduler, NotificationService notificationService, ClassFeedbackRepository classFeedbackRepository) {
         this.courseRepository = courseRepository;
         this.userRepository = userRepository;
         this.taskScheduler = taskScheduler;
         this.notificationService = notificationService;
+        this.classFeedbackRepository = classFeedbackRepository;
     }
 
     @Scheduled(cron = "0 0 0 * * *")
@@ -101,4 +106,11 @@ public void sendScheduledFeedbackRequests(Course course) {
     }
 
 
+    @Override
+    public Mono<ClassFeedbackResponseModel> addClassFeedback(Mono<ClassFeedbackRequestModel> classFeedbackRequestModel) {
+        return classFeedbackRequestModel
+                .map(ClassFeedbackRequestModel::from)
+                .flatMap(classFeedbackRepository::save)
+                .map(ClassFeedbackResponseModel::from);
+    }
 }
