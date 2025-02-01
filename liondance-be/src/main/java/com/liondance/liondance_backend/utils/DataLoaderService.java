@@ -882,7 +882,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .middleName("Ray")
                         .lastName("Lee")
                         .dob(LocalDate.parse("2001-04-22"))
-                        .email("bob.lee@someplace.com")
+                        .email("jhondoesnthack@gmail.com")
                         .phone("345-678-9012")
                         .address(Address.builder()
                                 .streetAddress("9101 Birch Rd")

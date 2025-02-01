@@ -71,7 +71,7 @@ background-color: #d32f2f;
 
 /* Popup Modal Styles */
 .mantine-Modal-modal {
-background-color: #fff7eb;
+background-color: #b8b1a8;
 border-radius: 10px;
 padding: 20px;
 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -95,7 +95,7 @@ margin-bottom: 20px;
 
 .mantine-Button-root {
 background-color: #f44336;
-color: white;
+color: rgb(202, 183, 183);
 padding: 10px 20px;
 border: none;
 border-radius: 4px;
