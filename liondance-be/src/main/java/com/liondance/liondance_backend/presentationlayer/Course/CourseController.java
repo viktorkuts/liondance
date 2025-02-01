@@ -26,13 +26,13 @@ public class CourseController {
     }
 
     @GetMapping
-//    @PreAuthorize("hasAuthority('STAFF')")
+    @PreAuthorize("hasAuthority('STAFF')")
     public Flux<CourseResponseModel> getAllCourses() {
         return courseService.getAllCourses();
     }
 
     @PatchMapping("/{courseId}/dates")
-//    @PreAuthorize("hasAuthority('STAFF')")
+    @PreAuthorize("hasAuthority('STAFF')")
     public Mono<ResponseEntity<CourseResponseModel>> patchCancelledDates(
             @PathVariable String courseId,
             @RequestBody Map<String, List<Instant>> requestBody) {
