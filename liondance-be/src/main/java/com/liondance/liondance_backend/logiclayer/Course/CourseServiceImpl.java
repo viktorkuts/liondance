@@ -14,8 +14,11 @@ import reactor.core.publisher.Mono;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -68,17 +71,6 @@ public class CourseServiceImpl implements CourseService {
                 );
     }
 
-//    @Override
-//    public Mono<CourseResponseModel> patchCancelledDates(String courseId, List<Instant> cancelledDates) {
-//        return courseRepository.findCourseByCourseId(courseId)
-//                .switchIfEmpty(Mono.error(new NotFoundException("Course with ID " + courseId + " not found")))
-//                .flatMap(course -> {
-//                    course.setCancelledDates(cancelledDates);
-//                    return courseRepository.save(course);
-//                })
-//                .map(CourseResponseModel::from);
-//    }
-
     @Override
     public Mono<CourseResponseModel> patchCancelledDates(String courseId, List<Instant> cancelledDates) {
         return courseRepository.findCourseByCourseId(courseId)
@@ -89,11 +81,15 @@ public class CourseServiceImpl implements CourseService {
                             .collectList()
                             .flatMapMany(Flux::fromIterable)
                             .flatMap(student -> {
+                                String formattedDates = cancelledDates.stream()
+                                        .map(date -> date.atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("MMMM dd, yyyy 'at' hh:mm a")))
+                                        .collect(Collectors.joining(", "));
+
                                 String message = new StringBuilder()
-                                        .append("Your class has been cancelled on the following dates: ")
-                                        .append(cancelledDates.toString())
+                                        .append("Your class has been cancelled on the following date: ")
+                                        .append(formattedDates)
                                         .append(".")
-                                        .append("\n\nThank you for your understanding!")
+                                        .append("\n\nThank you for your understanding and see you next class!")
                                         .toString();
 
                                 Boolean success = notificationService.sendMail(

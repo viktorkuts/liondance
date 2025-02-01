@@ -19,7 +19,7 @@ interface Course {
 }
 
 const CancelCourse: React.FC = () => {
-    const {getAllCourses, cancelCourse } = useCourseService();
+    const { getAllCourses, cancelCourse } = useCourseService();
     const [courses, setCourses] = useState<Course[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -44,7 +44,7 @@ const CancelCourse: React.FC = () => {
     const handleCancelCourse = async (courseId: string, date: Date) => {
         try {
             const cancelledDate = dayjs(date).toISOString();
-            await cancelCourse(courseId, [cancelledDate]);
+            await cancelCourse(courseId, [new Date(cancelledDate)]);
             setCourses((prevCourses) =>
                 prevCourses.map((course) =>
                     course.courseId === courseId
@@ -75,6 +75,10 @@ const CancelCourse: React.FC = () => {
         return hasCourse ? "course-day" : "";
     };
 
+    const tileDisabled = ({ date }: { date: Date }) => {
+        return date.getDay() !== 0; // Disable all days except Sundays (0 is Sunday)
+    };
+
     if (loading) return <Text style={{ textAlign: "center" }}>Loading...</Text>;
     if (error)
         return <Text style={{ textAlign: "center", color: "red" }}>{error}</Text>;
@@ -102,7 +106,7 @@ const CancelCourse: React.FC = () => {
                                     <td>{course.name}</td>
                                     <td>{course.dayOfWeek}</td>
                                     <td>
-                                        {course.startTime} - {course.endTime}
+                                        10:00 AM - 12:00 AM
                                     </td>
                                     <td>
                                         {course.instructorFirstName}{" "}
@@ -129,13 +133,14 @@ const CancelCourse: React.FC = () => {
                 <Calendar
                     onClickDay={handleDayClick}
                     tileClassName={getTileClassName}
+                    tileDisabled={tileDisabled}
                 />
             </div>
 
             <Modal
                 opened={showModal}
                 onClose={() => setShowModal(false)}
-                title={`Cancel Course on ${selectedDate?.toLocaleDateString()}`}
+                title={`Cancel Course on ${selectedDate ? dayjs(selectedDate).format("MMMM D, YYYY") : ""}`}
             >
                 <div>
                     <p>Are you sure you want to cancel the course on this date?</p>
@@ -151,6 +156,7 @@ const CancelCourse: React.FC = () => {
                             if (course && selectedDate) {
                                 handleCancelCourse(course.courseId, selectedDate);
                             }
+                            setShowModal(false);
                         }}
                     >
                         Confirm
