@@ -8,8 +8,8 @@ export const useCourseService = () => {
     return response.data;
   }
 
-  const cancelCourse = async (courseId: string, cancelledDates: string[]): Promise<void> => {
-    const response = await axiosInstance.patch(`/courses/${courseId}/date`, { cancelledDates });
+  const cancelCourse = async (courseId: string, cancelledDates: Date[]): Promise<void> => {
+    const response = await axiosInstance.patch(`/courses/${courseId}/dates`, { cancelledDates });
     return response.data;
   };
 

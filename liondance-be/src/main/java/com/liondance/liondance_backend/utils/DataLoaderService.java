@@ -1243,29 +1243,29 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                 .courseId("40374c92-6c55-417e-b8bc-9dfb38740255")
                 .name("Martial Arts")
                 .userIds(userIds)
-                .startTime(LocalTime.parse("10:00", DateTimeFormatter.ofPattern("HH:mm")))
-                .endTime(LocalTime.NOON)
+                .startTime(Instant.parse("2023-12-25T10:00:00Z"))
+                .endTime(Instant.parse("2023-12-25T12:00:00Z"))
                 .dayOfWeek(DayOfWeek.SUNDAY)
                 .instructorId("eb07c6c6-dc48-489f-aa20-0d7d6fb12448")
-                .cancelledDates(new ArrayList<>())
-                .build();
-        Course coursetest = Course.builder()
-                .courseId("40374c92-6c55-417e-b8bc-9dfb38740255")
-                .name("Martial Arts")
-                .userIds(userIds)
-                .startTime(LocalTime.parse("10:00", DateTimeFormatter.ofPattern("HH:mm")))
-                .endTime(LocalTime.now().plusMinutes(5))
-                .dayOfWeek(LocalDate.now().getDayOfWeek())
-                .instructorId("eb07c6c6-dc48-489f-aa20-0d7d6fb12448")
-                .cancelledDates(new ArrayList<>())
-                .build();
+//                .cancelledDates(new ArrayList<>())
+                .cancelledDates(List.of(Instant.parse("2023-12-25T00:00:00Z"), Instant.parse("2024-01-01T00:00:00Z"), Instant.parse("2024-02-14T00:00:00Z")))                .build();
+//        Course coursetest = Course.builder()
+//                .courseId("40374c92-6c55-417e-b8bc-9dfb38740255")
+//                .name("Martial Arts")
+//                .userIds(userIds)
+//                .startTime(LocalTime.parse("10:00", DateTimeFormatter.ofPattern("HH:mm")))
+//                .endTime(LocalTime.now().plusMinutes(5))
+//                .dayOfWeek(LocalDate.now().getDayOfWeek())
+//                .instructorId("eb07c6c6-dc48-489f-aa20-0d7d6fb12448")
+//                .cancelledDates(new ArrayList<>())
+//                .build();
 
         tearDown();
 
         eventRepository.insert(events).subscribe();
         userRepository.insert(students).subscribe();
         courseRepository.insert(course).subscribe();
-        courseRepository.insert(coursetest).subscribe();
+//        courseRepository.insert(coursetest).subscribe();
         promotionRepository.insert(promotions).subscribe();
         feedbackRepository.insert(feedbacks).subscribe();
     }

@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Text } from "@mantine/core";
-// import { Modal, Button } from "@mantine/core";
-// import Calendar from "react-calendar";
-// import "react-calendar/dist/Calendar.css";
+import { Modal, Button, Text } from "@mantine/core";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
 import { useCourseService } from "@/services/courseService";
-// import dayjs from "dayjs";
+import dayjs from "dayjs";
 import "./CancelCourse.css";
 
 interface Course {
@@ -16,16 +15,16 @@ interface Course {
     instructorFirstName: string;
     instructorMiddleName?: string;
     instructorLastName: string;
-    cancelledDates: string[];
+    cancelledDates: Date[];
 }
 
 const CancelCourse: React.FC = () => {
-    const { getAllCourses } = useCourseService(); // Removed cancelCourse from destructuring
+    const {getAllCourses, cancelCourse } = useCourseService();
     const [courses, setCourses] = useState<Course[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    // const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-    // const [showModal, setShowModal] = useState<boolean>(false);
+    const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+    const [showModal, setShowModal] = useState<boolean>(false);
 
     useEffect(() => {
         const fetchCourses = async () => {
@@ -42,39 +41,39 @@ const CancelCourse: React.FC = () => {
         fetchCourses();
     }, []);
 
-    // const handleCancelCourse = async (courseId: string, date: Date) => {
-    //     try {
-    //         const cancelledDate = dayjs(date).toISOString();
-    //         await cancelCourse(courseId, [cancelledDate]);
-    //         setCourses((prevCourses) =>
-    //             prevCourses.map((course) =>
-    //                 course.courseId === courseId
-    //                     ? {
-    //                             ...course,
-    //                             cancelledDates: [...course.cancelledDates, cancelledDate],
-    //                         }
-    //                     : course
-    //             )
-    //         );
-    //         setShowModal(false);
-    //     } catch {
-    //         setError("Failed to cancel course. Please try again later.");
-    //     }
-    // };
+    const handleCancelCourse = async (courseId: string, date: Date) => {
+        try {
+            const cancelledDate = dayjs(date).toISOString();
+            await cancelCourse(courseId, [cancelledDate]);
+            setCourses((prevCourses) =>
+                prevCourses.map((course) =>
+                    course.courseId === courseId
+                        ? {
+                                ...course,
+                                cancelledDates: [...course.cancelledDates, new Date(cancelledDate)],
+                            }
+                        : course
+                )
+            );
+            setShowModal(false);
+        } catch {
+            setError("Failed to cancel course. Please try again later.");
+        }
+    };
 
-    // const handleDayClick = (date: Date) => {
-    //     setSelectedDate(date);
-    //     setShowModal(true);
-    // };
+    const handleDayClick = (date: Date) => {
+        setSelectedDate(date);
+        setShowModal(true);
+    };
 
-    // const getTileClassName = ({ date }: { date: Date }) => {
-    //     const hasCourse = courses.some(
-    //         (course) =>
-    //             course.dayOfWeek ===
-    //             date.toLocaleDateString("en-US", { weekday: "long" }).toUpperCase()
-    //     );
-    //     return hasCourse ? "course-day" : "";
-    // };
+    const getTileClassName = ({ date }: { date: Date }) => {
+        const hasCourse = courses.some(
+            (course) =>
+                course.dayOfWeek ===
+                date.toLocaleDateString("en-US", { weekday: "long" }).toUpperCase()
+        );
+        return hasCourse ? "course-day" : "";
+    };
 
     if (loading) return <Text style={{ textAlign: "center" }}>Loading...</Text>;
     if (error)
@@ -94,7 +93,7 @@ const CancelCourse: React.FC = () => {
                                 <th>Day</th>
                                 <th>Time</th>
                                 <th>Instructor</th>
-                                {/* <th>Action</th> */}
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -111,13 +110,13 @@ const CancelCourse: React.FC = () => {
                                             course.instructorMiddleName + " "}
                                         {course.instructorLastName}
                                     </td>
-                                    {/* <td>
+                                    <td>
                                         <Button
                                             onClick={() => handleDayClick(new Date(course.startTime))}
                                         >
                                             Cancel
                                         </Button>
-                                    </td> */}
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>
@@ -125,7 +124,7 @@ const CancelCourse: React.FC = () => {
                 )}
             </div>
 
-            {/* <div className="calendar-container">
+            <div className="calendar-container">
                 <h2>Course Calendar</h2>
                 <Calendar
                     onClickDay={handleDayClick}
@@ -157,7 +156,7 @@ const CancelCourse: React.FC = () => {
                         Confirm
                     </Button>
                 </div>
-            </Modal> */}
+            </Modal>
         </div>
     );
 };

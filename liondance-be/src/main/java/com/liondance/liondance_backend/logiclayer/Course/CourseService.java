@@ -4,11 +4,13 @@ import com.liondance.liondance_backend.presentationlayer.Course.CourseResponseMo
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.util.List;
 
 public interface CourseService {
 
-    Flux<CourseResponseModel> getAllCoursesByCourseId(String courseId);
+    Flux<CourseResponseModel> getAllCourses();
     Flux<CourseResponseModel> getAllCoursesByStudentId(String studentId);
-    Mono<CourseResponseModel> cancelCourse(String courseId, LocalDate cancelledDates);
+    Mono<CourseResponseModel> patchCancelledDates(String courseId, List<Instant> cancelledDates);
 }

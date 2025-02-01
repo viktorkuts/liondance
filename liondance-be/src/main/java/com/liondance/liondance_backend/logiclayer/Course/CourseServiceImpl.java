@@ -4,12 +4,18 @@ import com.liondance.liondance_backend.datalayer.Course.CourseRepository;
 import com.liondance.liondance_backend.datalayer.User.UserRepository;
 import com.liondance.liondance_backend.presentationlayer.Course.CourseResponseModel;
 import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
+
+@Slf4j
 @Service
 public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
@@ -20,12 +26,11 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Flux<CourseResponseModel> getAllCoursesByCourseId(String courseId) {
-        System.out.println("Fetching courses for course ID: " + courseId);
+    public Flux<CourseResponseModel> getAllCourses() {
+        System.out.println("Fetching all courses");
 
-        return courseRepository.getCoursesByCourseId(courseId)
+        return courseRepository.findAll()
                 .doOnNext(course -> System.out.println("Found course: " + course))
-                .switchIfEmpty(Mono.error(new NotFoundException("No courses found with id " + courseId)))
                 .flatMap(course -> userRepository.findUserByUserId(course.getInstructorId())
                         .map(instructor -> {
                             System.out.println("Instructor found: " + instructor);
@@ -58,14 +63,13 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Mono<CourseResponseModel> cancelCourse(String courseId,  LocalDate cancelledDates) {
+    public Mono<CourseResponseModel> patchCancelledDates(String courseId, List<Instant> cancelledDates) {
         return courseRepository.findCourseByCourseId(courseId)
-                .switchIfEmpty(Mono.error(new NotFoundException("Course not found with ID: " + courseId)))
-                .map(course -> {
-                    course.getCancelledDates().add(cancelledDates);
-                    return course;
+                .switchIfEmpty(Mono.error(new NotFoundException("Course with ID " + courseId + " not found")))
+                .flatMap(course -> {
+                    course.setCancelledDates(cancelledDates);
+                    return courseRepository.save(course);
                 })
-                .flatMap(courseRepository::save)
                 .map(CourseResponseModel::from);
     }
 

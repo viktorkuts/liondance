@@ -8,6 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.DayOfWeek;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -22,10 +23,10 @@ public class Course {
     private String id;
     private String courseId;
     private String name;
-    private LocalTime startTime;
-    private LocalTime endTime;
+    private Instant startTime;
+    private Instant endTime;
     private DayOfWeek dayOfWeek;
     private List<String> userIds;
     private String instructorId;
-    private List<LocalDate> cancelledDates;
+    private List<Instant> cancelledDates;
 }
