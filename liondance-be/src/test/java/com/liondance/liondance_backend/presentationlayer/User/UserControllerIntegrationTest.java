@@ -56,8 +56,8 @@ class UserControllerIntegrationTest {
             .userIds(List.of("7876ea26-3f76-4e50-870f-5e5dad6d63d1"))
             .cancelledDates(new ArrayList<>())
             .dayOfWeek(DayOfWeek.SUNDAY)
-            .startTime(LocalTime.parse("10:00", DateTimeFormatter.ofPattern("HH:mm")))
-            .endTime(LocalTime.NOON)
+            .startTime(LocalTime.parse("10:00", DateTimeFormatter.ofPattern("HH:mm")).atDate(LocalDate.now()).atZone(ZoneId.systemDefault()).toInstant())
+            .endTime(LocalTime.NOON.atDate(LocalDate.now()).atZone(ZoneId.systemDefault()).toInstant())
             .build();
 
     User user1 = User.builder()

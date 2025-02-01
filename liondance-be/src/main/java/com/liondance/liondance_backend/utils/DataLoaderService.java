@@ -1247,7 +1247,6 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                 .endTime(Instant.parse("2025-12-25T12:00:00Z"))
                 .dayOfWeek(DayOfWeek.SUNDAY)
                 .instructorId("eb07c6c6-dc48-489f-aa20-0d7d6fb12448")
-//                .cancelledDates(new ArrayList<>())
                 .cancelledDates(List.of(Instant.parse("2025-12-25T00:00:00Z"), Instant.parse("2025-01-01T00:00:00Z"), Instant.parse("2025-02-14T00:00:00Z")))
                 .build();
 //        Course coursetest = Course.builder()
