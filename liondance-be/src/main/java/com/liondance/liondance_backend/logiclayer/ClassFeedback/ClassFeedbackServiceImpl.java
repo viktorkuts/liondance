@@ -74,10 +74,10 @@ public void sendScheduledFeedbackRequests(Course course) {
 
     List<String> studentEmails = studentEmails();
     log.debug("Fetched {} student emails for course: {}", studentEmails.size(), course.getName());
-
+    LocalDate date = LocalDate.now();
     String message = new StringBuilder()
             .append("Hello, you can fill out feedback for today's class from the link below. \n")
-            .append("https://placeholder.com").toString();
+            .append("https://fe.dev.kleff.io/classfeedback/"+date).toString();
 
     for (String email : studentEmails) {
         log.debug("Sending feedback email to: {}", email);
