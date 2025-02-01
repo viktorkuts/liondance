@@ -4,7 +4,7 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { useCourseService } from "@/services/courseService";
 import dayjs from "dayjs";
-import "./CancelCourse.css";
+import "./cancelCourse.css";
 
 interface Course {
     courseId: string;
@@ -39,6 +39,7 @@ const CancelCourse: React.FC = () => {
         };
 
         fetchCourses();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleCancelCourse = async (courseId: string, date: Date) => {
