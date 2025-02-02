@@ -94,12 +94,12 @@ class ClassFeedbackServiceImplUnitTest {
 
 
             feedbackService.sendScheduledFeedbackRequests(course1);
-
+            LocalDate date = LocalDate.now();
 
             Mockito.verify(notificationService, Mockito.times(1)).sendMail(
                     Mockito.eq("student1@example.com"),
                     Mockito.eq("Class Feedback"),
-                    Mockito.contains(""),
+                    Mockito.contains("https://fe.dev.kleff.io/classfeedback/"+date),
                     Mockito.eq(NotificationType.STUDENT_AFTER_SESSION)
             );
         }
