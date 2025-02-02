@@ -140,6 +140,22 @@
     "Valentine's Day Sale": "Valentine's Day Sale",
     "Nothing to see here": "Nothing to see here",
     "Page you are trying to open does not exist. You may have mistyped the address, or the page has been moved to another URL. If you think this is an error contact support.": "Page you are trying to open does not exist. You may have mistyped the address, or the page has been moved to another URL. If you think this is an error contact support.",
-    "Take me back to home page": "Take me back to home page"
-    
+    "Take me back to home page": "Take me back to home page",
+    "You aren't in any courses.": "You aren't in any courses.",
+    "Failed to load courses. Please try again later.": "Failed to load courses. Please try again later.",
+    "Loading...": "Loading...",
+    "My Courses": "My Courses",
+    "No courses assigned yet.": "No courses assigned yet.",
+    "Courses on": "Courses on",
+    "Failed to fetch pending registrations.": "Failed to fetch pending registrations.",
+    "Error fetching student details:": "Error fetching student details:",
+    "No pending registrations found.": "No pending registrations found.",
+    "Montrel Youth LVH Lion Dance Wushu Team": "Montrel Youth LVH Lion Dance Wushu Team",
+    "The Montreal Youth LVH Lion Dance Wushu Team is a non-profit team that promotes martial arts (Wushu and Hung Gar Kung Fu) and Lion Dance. We have over 20 years and 300 events experience! Contact us if you want to train with us or book us for any event.": "The Montreal Youth LVH Lion Dance Wushu Team is a non-profit team that promotes martial arts (Wushu and Hung Gar Kung Fu) and Lion Dance. We have over 20 years and 300 events experience! Contact us if you want to train with us or book us for any event.",
+    "Event ID is not defined": "Event ID is not defined",
+    "Failed to fetch feedback": "Failed to fetch feedback",
+    "Feedback for Event": "Feedback for Event",
+    "Comment": "Comment",
+    "Rating": "Rating",
+    "Back to Events": "Back to Events"
 }

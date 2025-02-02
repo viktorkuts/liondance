@@ -3,6 +3,7 @@ import axios, { AxiosError } from "axios";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { Modal, Text } from "@mantine/core";
+import { useTranslation } from "react-i18next";
 import "./StudentCourses.css";
 
 interface Course {
@@ -18,6 +19,7 @@ interface Course {
 }
 
 const StudentCourses: React.FC = () => {
+  const { t } = useTranslation();
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -38,16 +40,16 @@ const StudentCourses: React.FC = () => {
       } catch (err) {
         const axiosError = err as AxiosError;
         if (axiosError.response?.status === 404) {
-          setError("You aren't in any courses.");
+          setError(t("You aren't in any courses."));
         } else {
-          setError("Failed to load courses. Please try again later.");
+          setError(t("Failed to load courses. Please try again later."));
         }
         setLoading(false);
       }
     };
 
     fetchCourses();
-  }, []);
+  }, [t]);
 
   const handleDayClick = (date: Date) => {
     const clickedCourses = courses.filter(
@@ -70,7 +72,7 @@ const StudentCourses: React.FC = () => {
     return hasCourse ? "course-day" : "";
   };
 
-  if (loading) return <Text style={{ textAlign: "center" }}>Loading...</Text>;
+  if (loading) return <Text style={{ textAlign: "center" }}>{t("Loading...")}</Text>;
   if (error)
     return <Text style={{ textAlign: "center", color: "red" }}>{error}</Text>;
 
@@ -78,24 +80,24 @@ const StudentCourses: React.FC = () => {
     <div className="student-courses-container">
       {/* Course List Section */}
       <div className="course-list">
-        <h1>My Courses</h1>
+        <h1>{t("My Courses")}</h1>
         {courses.length === 0 ? (
-          <p className="no-courses">No courses assigned yet.</p>
+          <p className="no-courses">{t("No courses assigned yet.")}</p>
         ) : (
           <table className="courses-table">
             <thead>
               <tr>
-                <th>Course Name</th>
-                <th>Day</th>
-                <th>Time</th>
-                <th>Instructor</th>
+                <th>{t("Course Name")}</th>
+                <th>{t("Day")}</th>
+                <th>{t("Time")}</th>
+                <th>{t("Instructor")}</th>
               </tr>
             </thead>
             <tbody>
               {courses.map((course) => (
                 <tr key={course.courseId}>
-                  <td>{course.name}</td>
-                  <td>{course.dayOfWeek}</td>
+                  <td>{t(course.name)}</td>
+                  <td>{t(course.dayOfWeek)}</td>
                   <td>
                     {course.startTime} - {course.endTime}
                   </td>
@@ -114,7 +116,7 @@ const StudentCourses: React.FC = () => {
 
       {/* Calendar Section */}
       <div className="calendar-container">
-        <h2>Course Calendar</h2>
+        <h2>{t("Course Calendar")}</h2>
         <Calendar
           onClickDay={handleDayClick}
           tileClassName={getTileClassName}
@@ -125,16 +127,16 @@ const StudentCourses: React.FC = () => {
       <Modal
         opened={showModal}
         onClose={() => setShowModal(false)}
-        title={`Courses on ${selectedDate?.toLocaleDateString()}`}
+        title={`${t("Courses on")} ${selectedDate?.toLocaleDateString()}`}
       >
         {selectedCourses.map((course) => (
           <div key={course.courseId}>
             <p>
-              <strong>{course.name}</strong>
+              <strong>{t(course.name)}</strong>
               <br />
-              Time: {course.startTime} - {course.endTime}
+              {t("Time")}: {course.startTime} - {course.endTime}
               <br />
-              Instructor: {course.instructorFirstName}{" "}
+              {t("Instructor")}: {course.instructorFirstName}{" "}
               {course.instructorMiddleName && course.instructorMiddleName + " "}
               {course.instructorLastName}
             </p>

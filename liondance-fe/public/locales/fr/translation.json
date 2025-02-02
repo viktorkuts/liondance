@@ -140,5 +140,22 @@
     "Valentine's Day Sale": "Soldes de la Saint-Valentin",
     "Nothing to see here": "Rien à voir ici",
     "Page you are trying to open does not exist. You may have mistyped the address, or the page has been moved to another URL. If you think this is an error contact support.": "La page que vous essayez d'ouvrir n'existe pas. Vous avez peut-être mal tapé l'adresse ou la page a été déplacée vers une autre URL. Si vous pensez qu'il s'agit d'une erreur, contactez le support.",
-    "Take me back to home page": "Ramenez-moi à la page d'accueil"
-  }
+    "Take me back to home page": "Ramenez-moi à la page d'accueil",
+    "You aren't in any courses.": "Vous n'êtes inscrit à aucun cours.",
+    "Failed to load courses. Please try again later.": "Échec du chargement des cours. Veuillez réessayer plus tard.",
+    "Loading...": "Chargement...",
+    "My Courses": "Mes cours",
+    "No courses assigned yet.": "Aucun cours assigné pour le moment.",
+    "Courses on": "Cours le",
+    "Failed to fetch pending registrations.": "Échec de la récupération des inscriptions en attente.",
+    "Error fetching student details:": "Erreur lors de la récupération des détails de l'étudiant :",
+    "No pending registrations found.": "Aucune inscription en attente trouvée.",
+    "Montrel Youth LVH Lion Dance Wushu Team": "Équipe de danse du lion et de Wushu des jeunes de Montréal LVH",
+    "The Montreal Youth LVH Lion Dance Wushu Team is a non-profit team that promotes martial arts (Wushu and Hung Gar Kung Fu) and Lion Dance. We have over 20 years and 300 events experience! Contact us if you want to train with us or book us for any event.": "L'équipe de danse du lion et de Wushu des jeunes de Montréal LVH est une équipe à but non lucratif qui promeut les arts martiaux (Wushu et Hung Gar Kung Fu) et la danse du lion. Nous avons plus de 20 ans et 300 événements d'expérience ! Contactez-nous si vous souhaitez vous entraîner avec nous ou nous réserver pour un événement.",
+    "Event ID is not defined": "L'ID de l'événement n'est pas défini",
+    "Failed to fetch feedback": "Échec de la récupération des commentaires",
+    "Feedback for Event": "Commentaires pour l'événement",
+    "Comment": "Commentaire",
+    "Rating": "Évaluation",
+    "Back to Events": "Retour aux événements"
+}

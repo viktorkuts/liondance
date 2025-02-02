@@ -5,8 +5,10 @@ import { useAxiosInstance } from "../../utils/axiosInstance.ts";
 import { Student } from "@/models/Users.ts";
 import "./PendingRegistrations.css";
 import StudentDetailsOverlay from "../../components/StudentDetailsOverlay.tsx";
+import { useTranslation } from "react-i18next";
 
 function PendingRegistrations() {
+  const { t } = useTranslation();
   const axiosInstance = useAxiosInstance();
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -23,13 +25,13 @@ function PendingRegistrations() {
         console.log(response.data);
         setLoading(false);
       } catch (error) {
-        setError("Failed to fetch pending registrations. " + error);
+        setError(t("Failed to fetch pending registrations. ") + error);
         setLoading(false);
       }
     };
 
     fetchPendingStudents();
-  }, [axiosInstance]);
+  }, [axiosInstance, t]);
 
   const handleRowClick = async (userId: string) => {
     try {
@@ -38,7 +40,7 @@ function PendingRegistrations() {
       );
       setSelectedStudent(response.data);
     } catch (err) {
-      console.error("Error fetching student details:", err);
+      console.error(t("Error fetching student details:"), err);
     }
   };
 
@@ -51,21 +53,21 @@ function PendingRegistrations() {
     setSelectedStudent(null);
   };
 
-  if (loading) return <div className="loading">Loading...</div>;
+  if (loading) return <div className="loading">{t("Loading...")}</div>;
   if (error) return <div className="error">{error}</div>;
 
   return (
     <div className="pending-registrations">
-      <h1>Pending Registrations</h1>
+      <h1>{t("Pending Registrations")}</h1>
       {students.length === 0 ? (
-        <p className="no-data">No pending registrations found.</p>
+        <p className="no-data">{t("No pending registrations found.")}</p>
       ) : (
         <table className="students-table">
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Date of Birth</th>
+              <th>{t("Name")}</th>
+              <th>{t("Email")}</th>
+              <th>{t("Date of Birth")}</th>
             </tr>
           </thead>
           <tbody>
