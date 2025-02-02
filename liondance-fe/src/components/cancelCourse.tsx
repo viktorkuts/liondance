@@ -139,7 +139,6 @@ const CancelCourse: React.FC = () => {
                     onClickDay={handleDayClick}
                     tileClassName={getTileClassName}
                     tileDisabled={tileDisabled}
-                    locale={locale}
                     formatMonth={(_, date) => t(`calendar:monthNames.${date.getMonth()}`)}
                     formatShortWeekday={(_, date) => t(`calendar:dayNamesShort.${date.getDay()}`)}
                     formatWeekday={(_, date) => t(`calendar:dayNames.${date.getDay()}`)}
