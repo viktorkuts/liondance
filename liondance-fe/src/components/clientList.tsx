@@ -3,9 +3,11 @@ import { Link } from "react-router-dom";
 import { Button, Title, Input } from "@mantine/core";
 import { useUserService } from "@/services/userService";
 import { Client } from "@/models/Users";
+import { useTranslation } from "react-i18next";
 import "./clientList.css";
 
 const ClientList: React.FC = () => {
+  const { t } = useTranslation();
   const userService = useUserService();
   const [clients, setClients] = useState<Client[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -24,23 +26,23 @@ const ClientList: React.FC = () => {
 
   return (
     <div className="clientListContainer">
-      <Title order={1}>Client List</Title>
+      <Title order={1}>{t('Client List')}</Title>
       <Input
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        placeholder="Search by name"
+        placeholder={t('Search by name')}
         className="searchInput"
       />
       {filteredClients.length === 0 ? (
-        <p className="noData">No clients found.</p>
+        <p className="noData">{t('No clients found.')}</p>
       ) : (
         <table className="clientsTable">
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Phone</th>
-              <th>Actions</th>
+              <th>{t('Name')}</th>
+              <th>{t('Email')}</th>
+              <th>{t('Phone')}</th>
+              <th>{t('Actions')}</th>
             </tr>
           </thead>
           <tbody>
@@ -54,7 +56,7 @@ const ClientList: React.FC = () => {
                 <td>
                   <Link to={`/client-profile/${client.userId}`}>
                     <Button className="viewProfileButton" variant="outline">
-                      View Profile
+                      {t('View Profile')}
                     </Button>
                   </Link>
                 </td>

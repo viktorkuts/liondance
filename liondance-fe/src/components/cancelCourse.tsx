@@ -4,6 +4,7 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { useCourseService } from "@/services/courseService";
 import dayjs from "dayjs";
+import "dayjs/locale/fr";
 import "./cancelCourse.css";
 import { useTranslation } from 'react-i18next';
 
@@ -20,13 +21,13 @@ interface Course {
 }
 
 const CancelCourse: React.FC = () => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const { getAllCourses, cancelCourse } = useCourseService();
     const [courses, setCourses] = useState<Course[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-    const locale = "en-US";
+    const locale = i18n.language;
     const [showModal, setShowModal] = useState<boolean>(false);
 
     useEffect(() => {
@@ -120,7 +121,7 @@ const CancelCourse: React.FC = () => {
                                     </td>
                                     <td>
                                         <Button
-                                            onClick={() => handleDayClick(new Date(course.startTime))}
+                                            onClick={() => handleDayClick(new Date(t(course.startTime)))}
                                         >
                                             {t("Cancel")}
                                         </Button>
@@ -142,13 +143,14 @@ const CancelCourse: React.FC = () => {
                     formatMonth={(locale, date) => t(`calendar:monthNames.${date.getMonth()}`)}
                     formatShortWeekday={(locale, date) => t(`calendar:dayNamesShort.${date.getDay()}`)}
                     formatWeekday={(locale, date) => t(`calendar:dayNames.${date.getDay()}`)}
+                    formatMonthYear={(locale, date) => `${t(`calendar:monthNames.${date.getMonth()}`)} ${date.getFullYear()}`}
                 />
             </div>
 
             <Modal
                 opened={showModal}
                 onClose={() => setShowModal(false)}
-                title={`${t("Cancel Course on")} ${selectedDate ? dayjs(selectedDate).format("MMMM D, YYYY") : ""}`}
+                title={`${t("Cancel Course on")} ${selectedDate ? dayjs(selectedDate).locale(locale).format("MMMM D, YYYY") : ""}`}
             >
                 <div>
                     <p>{t("Are you sure you want to cancel the course on this date?")}</p>
@@ -162,7 +164,7 @@ const CancelCourse: React.FC = () => {
                                         .toUpperCase()
                             );
                             if (course && selectedDate) {
-                                handleCancelCourse(course.courseId, selectedDate);
+                                handleCancelCourse(course.courseId, (selectedDate));
                             }
                             setShowModal(false);
                         }}
