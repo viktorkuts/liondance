@@ -1,6 +1,5 @@
 package com.liondance.liondance_backend.presentationlayer.Promotion;
 
-import com.liondance.liondance_backend.TestSecurityConfig;
 import com.liondance.liondance_backend.datalayer.Promotion.Promotion;
 import com.liondance.liondance_backend.datalayer.Promotion.PromotionRepository;
 import com.liondance.liondance_backend.datalayer.Promotion.PromotionStatus;
@@ -17,10 +16,8 @@ import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
 import java.time.LocalDate;
-import java.util.concurrent.Flow;
 
-import static org.junit.jupiter.api.Assertions.*;
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"spring.data.mongodb.port= 0"}, classes = TestSecurityConfig.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"spring.data.mongodb.port= 0"})
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @AutoConfigureWebTestClient

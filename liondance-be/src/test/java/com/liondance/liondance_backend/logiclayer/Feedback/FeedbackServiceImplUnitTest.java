@@ -22,7 +22,7 @@ import java.time.Instant;
 
 import static org.mockito.Mockito.when;
 
-@Disabled
+
 class FeedbackServiceImplUnitTest {
     @Mock
     private FeedbackRepository feedbackRepository;
@@ -49,14 +49,14 @@ class FeedbackServiceImplUnitTest {
                 .eventId(eventId)
                 .build();
         Event event = Event.builder()
-                .id(eventId)
+                .eventId(eventId)
                 .eventDateTime(Instant.now())
                 .eventType(EventType.BIRTHDAY)
                 .eventStatus(EventStatus.PENDING)
                 .build();
 
         when(feedbackRepository.findAll()).thenReturn(Flux.just(feedback));
-        when(eventRepository.findById(eventId)).thenReturn(Mono.just(event));
+        when(eventRepository.findEventByEventId(eventId)).thenReturn(Mono.just(event));
 
         Flux<FeedbackResponseModel> result = feedbackService.getFeedbackByEventId(eventId);
 
@@ -79,7 +79,7 @@ class FeedbackServiceImplUnitTest {
                 .build();
 
         when(feedbackRepository.findAll()).thenReturn(Flux.just(feedback));
-        when(eventRepository.findById(eventId)).thenReturn(Mono.empty());
+        when(eventRepository.findEventByEventId(eventId)).thenReturn(Mono.empty());
 
         Flux<FeedbackResponseModel> result = feedbackService.getFeedbackByEventId(eventId);
 

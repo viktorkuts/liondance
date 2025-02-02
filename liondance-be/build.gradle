@@ -45,7 +45,7 @@ dependencies {
 	testAnnotationProcessor 'org.projectlombok:lombok'
 	testImplementation "de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring3x:${flapdoodle}"
 	testImplementation "org.awaitility:awaitility"
-	testImplementation 'org.springframework.security:spring-security-test:5.8.0'
+	testImplementation 'org.springframework.security:spring-security-test'
 }
 
 jacocoTestReport {

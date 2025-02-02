@@ -46,7 +46,6 @@ import java.util.stream.Collectors;
 @Configuration
 @EnableWebFluxSecurity
 @EnableReactiveMethodSecurity
-@Profile("!test")
 public class SecurityConfig {
     @Value("${spring.security.oauth2.client.provider.okta.issuer-uri}")
     private String issuer;
@@ -97,32 +96,6 @@ public class SecurityConfig {
 
     private Mono<Map<String, String>> getUserInfo(String accessToken) {
         return Mono.just(new HashMap<>());
-    }
-
-    @Bean
-    public ReactiveOAuth2UserService<OidcUserRequest, OidcUser> oidcUserService(){
-        final OidcReactiveOAuth2UserService delegate = new OidcReactiveOAuth2UserService();
-
-        return userRequest -> delegate.loadUser(userRequest)
-                .flatMap(oidcUser -> {
-                    OAuth2AccessToken token = userRequest.getAccessToken();
-
-                    Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
-
-                    mappedAuthorities.add(new SimpleGrantedAuthority("USER"));
-
-                    return userService.validate(oidcUser.getName())
-                            .flatMap(user -> {
-                                user.getRoles().forEach(role -> {
-                                    mappedAuthorities.add(new SimpleGrantedAuthority(role.name()));
-                                });
-
-                                OidcUser finalOidcUser = new DefaultOidcUser(mappedAuthorities, oidcUser.getIdToken(), "sub");
-
-
-                                return Mono.just(finalOidcUser);
-                            });
-                });
     }
 
     private ServerLogoutSuccessHandler logoutHandler(){

@@ -16,13 +16,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EventResponseModel {
-    private String id;
-    private String firstName;
-    private String middleName;
-    private String lastName;
-    private String email;
-    private String phone;
-    private Address address;
+    private String eventId;
+    private Address venue;
     private Instant eventDateTime;
     private EventType eventType;
     private PaymentMethod paymentMethod;
