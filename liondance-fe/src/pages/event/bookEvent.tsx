@@ -21,6 +21,7 @@ import { useEventService } from "@/services/eventService";
 import { useTranslation } from "react-i18next";
 
 function BookEvent() {
+
   const { t, i18n } = useTranslation();
   const eventService = useEventService();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);

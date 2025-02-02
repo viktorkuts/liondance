@@ -48,6 +48,18 @@ function UpcomingEvents() {
     <div className="events-container">
       {events.length > 0 ? events.map((event, index) => (
         <div key={event.eventId || `event-${index}`} className="event-card">
+          <div className="event-info"> 
+            <div className="event-header">{t("Event Type")}: {t(event.eventType)}</div>
+            <div className="event-details">
+              <div className="event-detail">{t("Date")}: {new Date(event.eventDateTime).toLocaleString()}</div>
+              <div className="event-detail event-privacy">{t("Privacy")}: {t(event.eventPrivacy)}</div>
+              {event.eventPrivacy === "PUBLIC" && (
+                <div className="event-detail">
+                  {t("Address")}: {event.eventAddress.streetAddress}, {event.eventAddress.city}, {event.eventAddress.state} {event.eventAddress.zip}
+                </div>
+              )}
+            </div>
+          </div>
           <div className="event-image">
             <img 
               src={eventTypeImages[event.eventType] || eventTypeImages.OTHER}

@@ -247,6 +247,6 @@
     "DEBIT": "DÉBIT",
     "ETRANSFER": "VIREMENT ÉLECTRONIQUE",
     "CASH": "COMPTANT",
-    "Field is required": "Ce champ est requis"
-
+    "Field is required": "Ce champ est requis",
+    "Back to Home": "Retour à l'accueil"
 }
