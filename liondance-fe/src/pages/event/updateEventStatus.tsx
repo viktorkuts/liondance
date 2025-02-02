@@ -3,6 +3,7 @@ import { Modal, Button, Select } from "@mantine/core";
 import { useAxiosInstance } from "@/utils/axiosInstance";
 import { Event, EventStatus } from "@/models/Event";
 import "@/components/studentProfile.css";
+import { useTranslation } from "react-i18next";
 
 interface UpdateEventStatusProps {
   event: Event;
@@ -15,9 +16,11 @@ const UpdateEventStatus: React.FC<UpdateEventStatusProps> = ({
   onClose,
   onUpdate,
 }) => {
+  const { t } = useTranslation();
   const axiosInstance = useAxiosInstance();
   const [newStatus, setNewStatus] = useState<EventStatus>(event.eventStatus);
   const [loading, setLoading] = useState<boolean>(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [error, setError] = useState<string>("");
 
   const handleUpdateStatus = async () => {
@@ -31,7 +34,7 @@ const UpdateEventStatus: React.FC<UpdateEventStatusProps> = ({
       onClose();
     } catch (error) {
       setError(
-        "Failed to update event status, please provide a valid choice." + error
+        t("Failed to update event status, please provide a valid choice.") + error
       );
     } finally {
       setLoading(false);
@@ -39,19 +42,18 @@ const UpdateEventStatus: React.FC<UpdateEventStatusProps> = ({
   };
 
   return (
-    <Modal opened={true} onClose={onClose} title="Update Event Status">
-      {error && <div className="error">{error}</div>}
+    <Modal opened={true} onClose={onClose} title={t("Update Event Status")}>
       <Select
-        label="Event Status"
+        label={t("Event Status")}
         value={newStatus}
         onChange={(value) => setNewStatus(value as EventStatus)}
         data={Object.values(EventStatus).map((status) => ({
           value: status,
-          label: status,
+          label: t(status),
         }))}
       />
       <Button onClick={handleUpdateStatus} loading={loading}>
-        Update Status
+        {t("Update Status")}
       </Button>
     </Modal>
   );

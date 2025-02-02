@@ -4,7 +4,7 @@ import { useAxiosInstance } from "@/utils/axiosInstance";
 import { Event } from "@/models/Event";
 import '@/components/studentProfile.css';
 import { EventType, PaymentMethod } from "@/models/Event";
-
+import { useTranslation } from "react-i18next";
 
 interface UpdateEventDetailsProps {
     event: Event;
@@ -13,6 +13,7 @@ interface UpdateEventDetailsProps {
 }
 
 const UpdateEventDetails: React.FC<UpdateEventDetailsProps> = ({ event, onClose, onUpdate }) => {
+    const { t } = useTranslation();
     const [loading, setLoading] = useState<boolean>(false);
     const [firstName, setFirstName] = useState<string>(event.firstName);
     const [middleName, setMiddleName] = useState<string>(event.middleName || "");
@@ -30,7 +31,7 @@ const UpdateEventDetails: React.FC<UpdateEventDetailsProps> = ({ event, onClose,
     const axiosInstance = useAxiosInstance();
     const handleUpdate = async () => {
         if (!firstName || !lastName || !email || !phone || !streetAddress || !city || !state || !zip || !eventType || !paymentMethod) {
-            setError("Please fill in all fields.");
+            setError(t("Please fill in all fields."));
             return;
         }
         setLoading(true);
@@ -40,17 +41,17 @@ const UpdateEventDetails: React.FC<UpdateEventDetailsProps> = ({ event, onClose,
             onUpdate(response.data);
             onClose();
         } catch {
-            setError("Failed to update event, please try again.");
+            setError(t("Failed to update event, please try again."));
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <Modal opened={true} onClose={onClose} title="Update Event Details">
+        <Modal opened={true} onClose={onClose} title={t("Update Event Details")}>
             {error && <div className="error">{error}</div>}
             <div>
-                <label>First Name</label>
+                <label>{t("First Name")}</label>
                 <TextInput
                     value={firstName}
                     onChange={(e) => {
@@ -60,7 +61,7 @@ const UpdateEventDetails: React.FC<UpdateEventDetailsProps> = ({ event, onClose,
                 />
             </div>
             <div>
-                <label>Middle Name</label>
+                <label>{t("Middle Name")}</label>
                 <TextInput
                     value={middleName}
                     onChange={(e) => {
@@ -70,7 +71,7 @@ const UpdateEventDetails: React.FC<UpdateEventDetailsProps> = ({ event, onClose,
                 />
             </div>
             <div>
-                <label>Last Name</label>
+                <label>{t("Last Name")}</label>
                 <TextInput
                     value={lastName}
                     onChange={(e) => {
@@ -80,7 +81,7 @@ const UpdateEventDetails: React.FC<UpdateEventDetailsProps> = ({ event, onClose,
                 />
             </div>
             <div>
-                <label>Email</label>
+                <label>{t("Email")}</label>
                 <TextInput
                     value={email}
                     onChange={(e) => {
@@ -90,7 +91,7 @@ const UpdateEventDetails: React.FC<UpdateEventDetailsProps> = ({ event, onClose,
                 />
             </div>
             <div>
-                <label>Phone</label>
+                <label>{t("Phone")}</label>
                 <TextInput
                     value={phone}
                     onChange={(e) => {
@@ -100,7 +101,7 @@ const UpdateEventDetails: React.FC<UpdateEventDetailsProps> = ({ event, onClose,
                 />
             </div>
             <div>
-                <label>Street Address</label>
+                <label>{t("Street Address")}</label>
                 <TextInput
                     value={streetAddress}
                     onChange={(e) => {
@@ -110,7 +111,7 @@ const UpdateEventDetails: React.FC<UpdateEventDetailsProps> = ({ event, onClose,
                 />
             </div>
             <div>
-                <label>City</label>
+                <label>{t("City")}</label>
                 <TextInput
                     value={city}
                     onChange={(e) => {
@@ -120,7 +121,7 @@ const UpdateEventDetails: React.FC<UpdateEventDetailsProps> = ({ event, onClose,
                 />
             </div>
             <div>
-                <label>State</label>
+                <label>{t("State")}</label>
                 <TextInput
                     value={state}
                     onChange={(e) => {
@@ -130,7 +131,7 @@ const UpdateEventDetails: React.FC<UpdateEventDetailsProps> = ({ event, onClose,
                 />
             </div>
             <div>
-                <label>Zip</label>
+                <label>{t("Zip")}</label>
                 <TextInput
                     value={zip}
                     onChange={(e) => {
@@ -140,7 +141,7 @@ const UpdateEventDetails: React.FC<UpdateEventDetailsProps> = ({ event, onClose,
                 />
             </div>
             <div>
-                <label>Event Type</label>
+                <label>{t("Event Type")}</label>
                 <Select
                     data={Object.values(EventType)}
                     value={eventType}
@@ -153,7 +154,7 @@ const UpdateEventDetails: React.FC<UpdateEventDetailsProps> = ({ event, onClose,
                 />
             </div>
             <div>
-                <label>Payment Method</label>
+                <label>{t("Payment Method")}</label>
                 <Select
                     data={Object.values(PaymentMethod)}
                     value={paymentMethod}
@@ -166,7 +167,7 @@ const UpdateEventDetails: React.FC<UpdateEventDetailsProps> = ({ event, onClose,
                 />
             </div>
             <div>
-                <label>Special Request</label>
+                <label>{t("Special Request")}</label>
                 <TextInput
                     value={specialRequest}
                     onChange={(e) => {
@@ -176,7 +177,7 @@ const UpdateEventDetails: React.FC<UpdateEventDetailsProps> = ({ event, onClose,
                 />
             </div>
             <Button onClick={handleUpdate} loading={loading}>
-                Update
+                {t("Update")}
             </Button>
         </Modal>
     );

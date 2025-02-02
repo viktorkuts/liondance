@@ -39,7 +39,7 @@ function GetAllEvents() {
       }
     };
     fetchEvents();
-  }, []);
+  }, [axiosInstance]); //wathc out for this
 
   const handleStatusClick = (event: Event) => {
     setSelectedEvent(event);
