@@ -45,10 +45,17 @@ function UpcomingEvents() {
   };
 
   return (
-    <div className="events-container"> {/* New wrapper */}
+    <div className="events-container">
       {events.length > 0 ? events.map((event, index) => (
         <div key={event.eventId || `event-${index}`} className="event-card">
-          <div className="event-info"> 
+          <div className="event-image">
+            <img 
+              src={eventTypeImages[event.eventType] || eventTypeImages.OTHER}
+              alt={`${event.eventType} event`}
+              className="event-type-image"
+            />
+          </div>
+          <div className="event-info">
             <div className="event-header">{t("Event Type")}: {t(event.eventType)}</div>
             <div className="event-details">
               <div className="event-detail">{t("Date")}: {new Date(event.eventDateTime).toLocaleString()}</div>
@@ -59,13 +66,6 @@ function UpcomingEvents() {
                 </div>
               )}
             </div>
-          </div>
-          <div className="event-image">
-            <img 
-              src={eventTypeImages[event.eventType] || eventTypeImages.OTHER}
-              alt={`${event.eventType} event`}
-              className="event-type-image"
-            />
           </div>
         </div>
       )) : (
