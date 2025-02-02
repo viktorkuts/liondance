@@ -96,6 +96,9 @@ function Navbar() {
                 <Anchor href="/clients" fw={1000} fz="h2">
                   Client List
                 </Anchor>
+                <Anchor href="/courses" fw={1000} fz="h2">
+                  Cancel a Course
+                </Anchor>
               </div>
             )}
           </div>

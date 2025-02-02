@@ -1,6 +1,5 @@
 package com.liondance.liondance_backend.logiclayer.ClassFeedback;
 
-import com.liondance.liondance_backend.datalayer.ClassFeedback.ClassFeedback;
 import com.liondance.liondance_backend.datalayer.ClassFeedback.ClassFeedbackRepository;
 import com.liondance.liondance_backend.datalayer.Course.Course;
 import com.liondance.liondance_backend.datalayer.Course.CourseRepository;
@@ -16,10 +15,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -61,7 +64,7 @@ public class ClassFeedbackServiceImpl implements ClassFeedbackService{
                     return true;
                 })
                 .doOnNext(course -> {
-                    LocalDateTime taskTime = LocalDateTime.of(today, course.getEndTime());
+                    LocalDateTime taskTime = LocalDateTime.of(today, LocalTime.from(course.getEndTime()));
                     log.debug("Scheduling feedback for course {} at {}", course.getName(), taskTime);
                     taskScheduler.schedule(() -> sendScheduledFeedbackRequests(course), java.sql.Timestamp.valueOf(taskTime));
                 })

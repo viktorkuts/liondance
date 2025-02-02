@@ -19,9 +19,7 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.Trigger;
 import reactor.core.publisher.Flux;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -52,8 +50,8 @@ class ClassFeedbackServiceImplUnitTest {
                     .courseId("1")
                     .name("Sample Course")
                     .dayOfWeek(DayOfWeek.SUNDAY)
-                    .startTime(LocalTime.of(10, 0))
-                    .endTime(LocalTime.of(12, 0))
+                    .startTime(Instant.parse("2025-12-25T10:00:00Z"))
+                    .endTime(Instant.parse("2025-12-25T12:00:00Z"))
                     .cancelledDates(new ArrayList<>())
                     .userIds(List.of("student-id-1"))
                     .instructorId("instructor-id-1")
@@ -73,7 +71,7 @@ class ClassFeedbackServiceImplUnitTest {
         @Test
         void whenCourseCancelled_thenNoTasksScheduled() {
 
-            course1.getCancelledDates().add(LocalDate.now());
+            course1.getCancelledDates().add(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
 
             Mockito.when(courseRepository.findCoursesByDayOfWeek(LocalDate.now().getDayOfWeek()))
                     .thenReturn(Flux.just(course1));

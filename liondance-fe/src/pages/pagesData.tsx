@@ -17,6 +17,7 @@ import FeedbackList from "./feedback/feedbackList";
 import UpcomingEvents from "./event/upcomingEvents";
 import ClientList from "@/components/clientList";
 import ClassFeedbackForm from "./feedback/ClassFeedbackForm";
+import CancelCourse from "@/components/cancelCourse";
 
 const pagesData: routerType[] = [
   {
@@ -109,6 +110,11 @@ const pagesData: routerType[] = [
     path: "classfeedback/:date",
     element: <ClassFeedbackForm/>,
     title: "Class Feedback Form",
+  },
+  {
+    path: "courses",
+    element: <CancelCourse />,
+    title: "Courses",
   }
 
 ];
