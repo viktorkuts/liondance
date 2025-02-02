@@ -16,6 +16,7 @@ import PromotionDetails from "./admin/promotionDetails";
 import FeedbackList from "./feedback/feedbackList";
 import UpcomingEvents from "./event/upcomingEvents";
 import ClientList from "@/components/clientList";
+import CancelCourse from "@/components/cancelCourse";
 
 const pagesData: routerType[] = [
   {
@@ -103,6 +104,11 @@ const pagesData: routerType[] = [
     path: "clients",
     element: <ClientList />,
     title: "Client List",
+  },
+  {
+    path: "courses",
+    element: <CancelCourse />,
+    title: "Courses",
   }
 
 ];

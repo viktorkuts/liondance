@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.beans.BeanUtils;
 
 import java.time.DayOfWeek;
+import java.time.Instant;
 import java.time.LocalTime;
 
 @Data
@@ -15,8 +16,8 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CourseRequestModel {
-    private LocalTime startTime;
-    private LocalTime endTime;
+    private Instant startTime;
+    private Instant endTime;
     private DayOfWeek dayOfWeek;
     private String instructorId;
 
