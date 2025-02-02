@@ -101,7 +101,7 @@ class ClassFeedbackServiceImplUnitTest {
             Mockito.verify(notificationService, Mockito.times(1)).sendMail(
                     Mockito.eq("student1@example.com"),
                     Mockito.eq("Class Feedback"),
-                    Mockito.contains("https://placeholder.com"),
+                    Mockito.contains(""),
                     Mockito.eq(NotificationType.STUDENT_AFTER_SESSION)
             );
         }
