@@ -6,10 +6,8 @@ import UpdateEventStatus from "./updateEventStatus.tsx";
 import RescheduleEvent from "./rescheduleEvent.tsx";
 import UpdateEventDetails from "./updateEventDetails.tsx";
 import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 
 function GetAllEvents() {
-  const { t } = useTranslation();
   const navigate = useNavigate();
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -39,7 +37,7 @@ function GetAllEvents() {
       }
     };
     fetchEvents();
-  }, [axiosInstance]); //wathc out for this
+  }, []);
 
   const handleStatusClick = (event: Event) => {
     setSelectedEvent(event);
@@ -56,8 +54,8 @@ function GetAllEvents() {
     setShowUpdateDetailsModal(true);
   };
 
-  if (loading) return <div className="loading">{t("Loading...")}</div>;
-  if (error) return <div className="error">{t(error)}</div>;
+  if (loading) return <div className="loading">Loading...</div>;
+  if (error) return <div className="error">{error}</div>;
 
   const handleModalClose = () => {
     setShowModal(false);
@@ -92,57 +90,59 @@ function GetAllEvents() {
 
   return (
     <div className="events-list">
-      <h1>{t("All Events")}</h1>
+      <h1>All Events</h1>
       {events.length === 0 ? (
-        <p className="no-data">{t("No events found.")}</p>
+        <p className="no-data">No events found.</p>
       ) : (
         <table className="events-table">
           <thead>
             <tr>
-              <th>{t("Name")}</th>
-              <th>{t("Email")}</th>
-              <th>{t("Phone")}</th>
-              <th>{t("Location")}</th>
-              <th>{t("Event Date & Time")}</th>
-              <th>{t("Event Type")}</th>
-              <th>{t("Special Request")}</th>
-              <th>{t("Event Privacy")}</th>
-              <th>{t("Event Status")}</th>
-              <th>{t("Actions")}</th>
+              <th>#</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Location</th>
+              <th>Event Date & Time</th>
+              <th>Event Type</th>
+              <th>Special Request</th>
+              <th>Event Privacy</th>
+              <th>Event Status</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {events.map((event) => (
+            {events.map((event, index) => (
               <tr key={event.id}>
+                <td>{index + 1}</td>
                 <td>{event.firstName} {event.lastName}</td>
                 <td>{event.email}</td>
                 <td>{event.phone}</td>
                 <td>
-                  {event.address?.streetAddress ?? t("N/A")}
+                  {event.address?.streetAddress ?? "N/A"}
                   {event.address?.city ? `, ${event.address.city}` : ""}
                 </td>
                 <td>{new Date(event.eventDateTime).toLocaleString("en-CA", { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}</td>
-                <td>{t(event.eventType)}</td>
+                <td>{event.eventType}</td>
                 <td>
                   {event.specialRequest && event.specialRequest.trim()
-                  ? event.specialRequest
-                  : t("No special requests")}
+                    ? event.specialRequest
+                    : "No special requests"}
                 </td>
-                <td>{t(event.eventPrivacy)}</td>
+                <td>{event.eventPrivacy}</td>
                 <td>
                   <button onClick={() => handleStatusClick(event)}>
-                  {t(event.eventStatus) ?? t("N/A")}
+                    {event.eventStatus ?? "N/A"}
                   </button>
                 </td>
                 <td>
                   <button onClick={() => handleRescheduleClick(event)}>
-                    {t("Reschedule")}
+                    Reschedule
                   </button>
                   <button onClick={() => event.id && handleViewFeedback(event.id)} className="button_view_feedback">
-                    {t("View Feedback")}
+                    View Feedback
                   </button>
                   <button onClick={() => handleUpdateDetailsClick(event)} className="button_view_feedback">
-                    {t("Update Details")}
+                    Update Details
                   </button>
                 </td>
               </tr>
