@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button, Title } from "@mantine/core";
-import { useUserService } from "../services/userService";
-import { User } from "../models/Users";
+import { useUserService } from "@/services/userService";
+import { User } from "@/models/Users";
 import { useTranslation } from "react-i18next";
 import "./userList.css";
-import "./loader.css";
 
 const UserList: React.FC = () => {
   const { t } = useTranslation();
@@ -34,6 +33,7 @@ const UserList: React.FC = () => {
         <table className="users-table">
           <thead>
             <tr>
+              <th>#</th>
               <th>{t('Name')}</th>
               <th>{t('Email')}</th>
               <th>{t('Date of Birth')}</th>
@@ -41,8 +41,9 @@ const UserList: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {users.map(user => (
+            {users.map((user, index) => (
               <tr key={user.userId}>
+                <td>{index + 1}</td>
                 <td>{user.firstName} {user.middleName} {user.lastName}</td>
                 <td>{user.email}</td>
                 <td>{new Date(user.dob).toLocaleDateString()}</td>

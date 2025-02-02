@@ -99,6 +99,7 @@ function GetAllEvents() {
         <table className="events-table">
           <thead>
             <tr>
+              <th>#</th>
               <th>{t("Name")}</th>
               <th>{t("Email")}</th>
               <th>{t("Phone")}</th>
@@ -112,8 +113,9 @@ function GetAllEvents() {
             </tr>
           </thead>
           <tbody>
-            {events.map((event) => (
+            {events.map((event, index) => (
               <tr key={event.id}>
+                <td>{index + 1}</td>
                 <td>{event.firstName} {event.lastName}</td>
                 <td>{event.email}</td>
                 <td>{event.phone}</td>
