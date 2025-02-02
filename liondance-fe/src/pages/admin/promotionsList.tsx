@@ -3,9 +3,11 @@ import { Loader } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import { usePromotionService } from "@/services/promotionService";
 import { Promotion } from "@/models/Promotions";
+import { useTranslation } from "react-i18next";
 import "./promotions.css";
 
 const PromotionsList: React.FC = () => {
+  const { t } = useTranslation();
   const promotionService = usePromotionService();
   const [promotions, setPromotions] = useState<Promotion[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -22,21 +24,21 @@ const PromotionsList: React.FC = () => {
           throw new Error("Unexpected response format");
         }
       } catch (err) {
-        setError("Failed to fetch promotions. Please try again later." + err);
+        setError(t("Failed to fetch promotions. Please try again later.") + err);
       } finally {
         setLoading(false);
       }
     };
 
     fetchPromotions();
-  }, [promotionService]);
+  }, [promotionService, t]);
 
   if (loading) return <Loader />;
   if (error) return <div className="error">{error}</div>;
 
   return (
     <div className="promotions-container">
-     <h1 className="promotions-title">All Promotions</h1>
+      <h1 className="promotions-title">{t("All Promotions")}</h1>
       {promotions.length > 0 ? promotions.map((promotion, index) => (
         <div 
           key={promotion.promotionId || `promotion-${index}`} 
@@ -45,19 +47,19 @@ const PromotionsList: React.FC = () => {
           style={{ cursor: 'pointer' }}
         >
           <div className="promotion-info">
-            <div className="promotion-header">{promotion.promotionName}</div>
+            <div className="promotion-header">{t(promotion.promotionName)}</div>
             <div className="promotion-details">
               <div className="promotion-detail">
-                Discount: {(promotion.discountRate * 100)}%
+                {t("Discount")}: {(promotion.discountRate * 100)}%
               </div>
               <div className="promotion-detail promotion-status">
-                Status: {promotion.promotionStatus}
+                {t("Status")}: {t(promotion.promotionStatus)}
               </div>
             </div>
           </div>
         </div>
       )) : (
-        <div className="promotions-list">No promotions found.</div>
+        <div className="promotions-list">{t("No promotions found.")}</div>
       )}
     </div>
   );

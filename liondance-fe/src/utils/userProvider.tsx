@@ -2,6 +2,7 @@ import { User } from "@/models/Users";
 import { useAuth0 } from "@auth0/auth0-react";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useUserService } from "@/services/userService";
+import { useTranslation } from "react-i18next";
 
 interface UserContextInterface {
   user: User | undefined;
@@ -10,9 +11,10 @@ interface UserContextInterface {
 const UserContext = createContext<UserContextInterface | undefined>(undefined);
 
 export const useUserContext = () => {
+  const { t } = useTranslation();
   const context = useContext(UserContext);
   if (context === undefined) {
-    throw new Error("useUserContext got no context!");
+    throw new Error(t("useUserContext got no context!"));
   }
   return context;
 };
@@ -22,6 +24,7 @@ type Props = {
 };
 
 export const UserProvider = ({ children }: Props) => {
+  const { t } = useTranslation();
   const userService = useUserService();
   const { user, isAuthenticated } = useAuth0();
   const [lvhUser, setLvhUser] = useState<User | undefined>();
@@ -31,13 +34,13 @@ export const UserProvider = ({ children }: Props) => {
       userService
         .getSessionUser()
         .then((res) => {
-          console.log("Setting user");
+          console.log(t("Setting user"));
           console.log(lvhUser);
           setLvhUser(res.data);
         })
         .catch(() => {
           console.log(user);
-          console.log("Error fetching session user");
+          console.log(t("Error fetching session user"));
         });
     }
     // only run the call if the auth0 state changes

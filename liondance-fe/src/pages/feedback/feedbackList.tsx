@@ -3,12 +3,14 @@ import { useFeedbackService } from "../../services/feedbackService";
 import { Feedback } from "../../models/Feedback";
 import "./feedbackList.css";
 import { useParams, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 interface FeedbackListProps {
   eventId: string;
 }
 
 const FeedbackList: React.FC<FeedbackListProps> = () => {
+  const { t } = useTranslation();
   const feedbackService = useFeedbackService();
   const { eventId } = useParams<{ eventId: string }>();
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
@@ -23,20 +25,20 @@ const FeedbackList: React.FC<FeedbackListProps> = () => {
           const data = await feedbackService.getFeedbacksByEventId(eventId);
           setFeedbacks(data);
         } else {
-          setError("Event ID is not defined");
+          setError(t("Event ID is not defined"));
         }
       } catch {
-        setError("Failed to fetch feedback");
+        setError(t("Failed to fetch feedback"));
       } finally {
         setLoading(false);
       }
     };
 
     fetchFeedbacks();
-  }, [eventId, feedbackService]);
+  }, [eventId, feedbackService, t]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div>{t("Loading...")}</div>;
   }
 
   if (error) {
@@ -45,17 +47,17 @@ const FeedbackList: React.FC<FeedbackListProps> = () => {
 
   return (
     <div className="feedback-list">
-      <h2>Feedback for Event</h2>
+      <h2>{t("Feedback for Event")}</h2>
       <ul>
         {feedbacks.map((feedback) => (
           <li key={feedback.feedbackId}>
-            <p>Comment: {feedback.feedback}</p>
-            <p>Rating: {feedback.rating}</p>
-            <p>Time: {new Date(feedback.timestamp).toLocaleString()}</p>
+            <p>{t("Comment")}: {feedback.feedback}</p>
+            <p>{t("Rating")}: {feedback.rating}</p>
+            <p>{t("Time")}: {new Date(feedback.timestamp).toLocaleString()}</p>
           </li>
         ))}
       </ul>
-      <button onClick={() => navigate("/events")}>Back to Events</button>
+      <button onClick={() => navigate("/events")}>{t("Back to Events")}</button>
     </div>
   );
 };

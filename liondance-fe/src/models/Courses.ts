@@ -5,7 +5,7 @@ export interface Course {
     name: string;
     startTime: string;
     endTime: string;
-    dayOfWeek: DayOfWeek; //look at
+    dayOfWeek: DayOfWeek;
     userIds: string[];
     instructorId: string;
     cancelledDates: Date[];

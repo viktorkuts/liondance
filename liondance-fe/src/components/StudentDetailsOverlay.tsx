@@ -3,6 +3,7 @@ import "./StudentDetailsOverlay.css";
 import { Button } from "@mantine/core";
 import { useUserService } from "@/services/userService";
 import { RegistrationStatus } from "@/models/Users";
+import { useTranslation } from "react-i18next";
 
 interface StudentDetailsOverlayProps {
   student: {
@@ -39,6 +40,7 @@ const StudentDetailsOverlay: React.FC<StudentDetailsOverlayProps> = ({
   student,
   onClose,
 }) => {
+  const { t } = useTranslation();
   const userService = useUserService();
   const submitRegistrationStatus = async (isApproved: boolean) => {
     userService.updateRegistrationStatus(student.userId, {
@@ -52,21 +54,21 @@ const StudentDetailsOverlay: React.FC<StudentDetailsOverlayProps> = ({
   return (
     <div className="overlay">
       <div className="overlay-content">
-        <h2 className="overlay-title">Student Details</h2>
+        <h2 className="overlay-title">{t("Student Details")}</h2>
 
         <div className="overlay-details">
           {/* Row 1: First Name, Middle Name, Last Name */}
           <div className="detail-row">
             <div className="detail-item">
-              <label>First Name</label>
+              <label>{t("First Name")}</label>
               <div>{student.firstName}</div>
             </div>
             <div className="detail-item">
-              <label>Middle Name</label>
-              <div>{student.middleName ?? "N/A"}</div>
+              <label>{t("Middle Name")}</label>
+              <div>{student.middleName ?? t("N/A")}</div>
             </div>
             <div className="detail-item">
-              <label>Last Name</label>
+              <label>{t("Last Name")}</label>
               <div>{student.lastName}</div>
             </div>
           </div>
@@ -74,51 +76,51 @@ const StudentDetailsOverlay: React.FC<StudentDetailsOverlayProps> = ({
           {/* Row 2: Date of Birth and Phone Number */}
           <div className="detail-row">
             <div className="detail-item">
-              <label>Date of Birth</label>
+              <label>{t("Date of Birth")}</label>
               <div>{student.dob}</div>
             </div>
             <div className="detail-item">
-              <label>Phone Number</label>
-              <div>{student.phone ?? "N/A"}</div>
+              <label>{t("Phone Number")}</label>
+              <div>{student.phone ?? t("N/A")}</div>
             </div>
           </div>
 
           {/* Row 3: Email Address */}
           <div className="detail-item">
-            <label>Email Address</label>
+            <label>{t("Email Address")}</label>
             <div>{student.email}</div>
           </div>
 
           {/* Row 4: Address */}
           <div className="detail-item">
-            <label>Address</label>
-            <div>{student.address?.streetAddress ?? "N/A"}</div>
+            <label>{t("Address")}</label>
+            <div>{student.address?.streetAddress ?? t("N/A")}</div>
           </div>
 
           {/* Row 5: City, Province, ZIP */}
           <div className="detail-row">
             <div className="detail-item">
-              <label>City</label>
-              <div>{student.address?.city ?? "N/A"}</div>
+              <label>{t("City")}</label>
+              <div>{student.address?.city ?? t("N/A")}</div>
             </div>
             <div className="detail-item">
-              <label>Province</label>
-              <div>{student.address?.state ?? "N/A"}</div>
+              <label>{t("Province")}</label>
+              <div>{student.address?.state ?? t("N/A")}</div>
             </div>
             <div className="detail-item">
-              <label>ZIP Code</label>
-              <div>{student.address?.zip ?? "N/A"}</div>
+              <label>{t("ZIP Code")}</label>
+              <div>{student.address?.zip ?? t("N/A")}</div>
             </div>
           </div>
 
           {/* Row 6: Join Date and Registration Status */}
           <div className="detail-row">
             <div className="detail-item">
-              <label>Join Date</label>
+              <label>{t("Join Date")}</label>
               <div>{formatDate(student.joinDate)}</div>
             </div>
             <div className="detail-item">
-              <label>Registration Status</label>
+              <label>{t("Registration Status")}</label>
               <div>{student.registrationStatus}</div>
             </div>
           </div>
@@ -130,13 +132,13 @@ const StudentDetailsOverlay: React.FC<StudentDetailsOverlayProps> = ({
             variant="default"
             onClick={() => submitRegistrationStatus(false)}
           >
-            Deny
+            {t("Deny")}
           </Button>
           <Button onClick={() => submitRegistrationStatus(true)}>
-            Approve
+            {t("Approve")}
           </Button>
           <button className="close-button" onClick={() => onClose(false)}>
-            Close
+            {t("Close")}
           </button>
         </div>
       </div>

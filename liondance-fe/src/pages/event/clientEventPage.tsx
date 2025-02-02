@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useEventService } from "@/services/eventService";
 import { Event } from "@/models/Event.ts";
+import { useTranslation } from "react-i18next";
 import "./eventsList.css";
 
 const GetEventsByEmail: React.FC<{ email: string }> = ({ email }) => {
+  const { t } = useTranslation();
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
@@ -18,15 +20,15 @@ const GetEventsByEmail: React.FC<{ email: string }> = ({ email }) => {
         if (response && Array.isArray(response)) {
           setEvents(response);
         } else if (response?.error === "notfound") {
-          setError("You have No Events");
+          setError(t("You have No Events"));
         } else {
           console.error("Unexpected response structure:", response);
-          setError("Failed to fetch events: Unexpected response format.");
+          setError(t("Failed to fetch events: Unexpected response format."));
         }
       } catch (err: unknown) {
         console.error("Error fetching events:", err);
         setError(
-          "Failed to fetch events. " +
+          t("Failed to fetch events. ") +
             (err instanceof Error ? err.message : String(err))
         );
       } finally {
@@ -35,26 +37,26 @@ const GetEventsByEmail: React.FC<{ email: string }> = ({ email }) => {
     };
 
     fetchEvents();
-  }, [email, eventService]);
+  }, [email, eventService, t]);
 
-  if (loading) return <div className="loading">Loading...</div>;
+  if (loading) return <div className="loading">{t("Loading...")}</div>;
   if (error) return <div className="error">{error}</div>;
 
   return (
     <div className="events-list">
-      <h1>Your Events</h1>
+      <h1>{t("Your Events")}</h1>
       {events.length === 0 ? (
-        <p className="no-data">No events found.</p>
+        <p className="no-data">{t("No events found.")}</p>
       ) : (
         <table className="events-table">
           <thead>
             <tr>
-              <th>Phone</th>
-              <th>Location</th>
-              <th>Event Date & Time</th>
-              <th>Event Type</th>
-              <th>Special Request</th>
-              <th>Event Status</th>
+              <th>{t("Phone")}</th>
+              <th>{t("Location")}</th>
+              <th>{t("Event Date & Time")}</th>
+              <th>{t("Event Type")}</th>
+              <th>{t("Special Request")}</th>
+              <th>{t("Event Status")}</th>
             </tr>
           </thead>
           <tbody>
@@ -62,7 +64,7 @@ const GetEventsByEmail: React.FC<{ email: string }> = ({ email }) => {
               <tr key={event.id}>
                 <td>{event.phone}</td>
                 <td>
-                  {event.address?.streetAddress ?? "N/A"}
+                  {event.address?.streetAddress ?? t("N/A")}
                   {event.address?.city ? `, ${event.address.city}` : ""}
                 </td>
                 <td>{new Date(event.eventDateTime).toLocaleString()}</td>
@@ -70,9 +72,9 @@ const GetEventsByEmail: React.FC<{ email: string }> = ({ email }) => {
                 <td>
                   {event.specialRequest && event.specialRequest.trim()
                     ? event.specialRequest
-                    : "No special requests"}
+                    : t("No special requests")}
                 </td>
-                <td>{event.eventStatus ?? "N/A"}</td>
+                <td>{event.eventStatus ?? t("N/A")}</td>
               </tr>
             ))}
           </tbody>

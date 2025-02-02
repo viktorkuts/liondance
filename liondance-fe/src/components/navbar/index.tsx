@@ -1,5 +1,6 @@
 import { Anchor, Image } from "@mantine/core";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import classes from "./navbar.module.css";
 import logo from "../../assets/logo.png";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -7,6 +8,7 @@ import { useUserContext } from "@/utils/userProvider";
 import { Role } from "@/models/Users";
 
 function Navbar() {
+  const { t } = useTranslation();
   const [adminDropdownOpen, setAdminDropdownOpen] = useState(false);
 
   const toggleAdminDropdown = () => {
@@ -24,37 +26,37 @@ function Navbar() {
     <div className={classes.navbar}>
       <a className={classes.mainSection} href="/">
         <Image src={logo} className={classes.logo} />
-        <h2>Welcome!</h2>
+        <h2>{t('Welcome!')}</h2>
       </a>
       <div className={classes.rightSection}>
         <Anchor href="/reviews" fw={1000} fz="h2">
-          Reviews
+          {t('Reviews')}
         </Anchor>
         <Anchor href="/contact-us" fw={1000} fz="h2">
-          Contact
+          {t('Contact')}
         </Anchor>
         {user && user.roles?.includes(Role.STUDENT) ? (
           <Anchor href="/student-courses" fw={1000} fz={"h2"}>
-            Courses
+            {t('Courses')}
           </Anchor>
         ) : null}
         <Anchor href="/filtered-events" fw={1000} fz="h2">
-          Upcoming Events
+          {t('Upcoming Events')}
         </Anchor>
         <Anchor href="/booking" fw={1000} fz="h2">
-          Book Event
+          {t('Book Event')}
         </Anchor>
         {user && user.roles?.includes(Role.CLIENT) ? (
           <Anchor href="/events/email/:email" fw={1000} fz="h2">
-            Your Events
+            {t('Your Events')}
           </Anchor>
         ) : null}
         <Anchor href="/registration" fw={1000} fz="h2">
-          Registration
+          {t('Registration')}
         </Anchor>
         {user && user.roles?.includes(Role.STAFF) ? (
           <Anchor href="/pending-registrations" fw={1000} fz="h2">
-            Pending Registrations
+            {t('Pending Registrations')}
           </Anchor>
         ) : null}
         <Anchor
@@ -72,32 +74,32 @@ function Navbar() {
           fw={1000}
           fz="h2"
         >
-          {isAuthenticated ? "Logout" : "Login"}
+          {isAuthenticated ? t('Logout') : t('Login')}
         </Anchor>
         {user && user.roles?.includes(Role.STAFF) ? (
           <div className={classes.dropdown}>
             <Anchor onClick={toggleAdminDropdown} fw={1000} fz="h2">
-              Admin
+              {t('Admin')}
             </Anchor>
             {adminDropdownOpen && (
               <div className={classes.dropdownContent}>
                 <Anchor href="/users" fw={1000} fz="h2">
-                  Users
+                  {t('Users')}
                 </Anchor>
                 <Anchor href="/students" fw={1000} fz="h2">
-                  Students
+                  {t('Students')}
                 </Anchor>
                 <Anchor href="/events" fw={1000} fz="h2">
-                  Events
+                  {t('Events')}
                 </Anchor>
                 <Anchor href="/promotions" fw={1000} fz="h2">
-                  Promotions
+                  {t('Promotions')}
                 </Anchor>
                 <Anchor href="/clients" fw={1000} fz="h2">
-                  Client List
+                  {t('Client List')}
                 </Anchor>
                 <Anchor href="/courses" fw={1000} fz="h2">
-                  Cancel a Course
+                  {t('Cancel Course')}
                 </Anchor>
               </div>
             )}

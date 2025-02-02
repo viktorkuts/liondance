@@ -11,6 +11,7 @@ import { useForm } from "@mantine/form";
 import { Province } from "@/types/geo";
 import { Calendar } from "react-feather";
 import { DateInput } from "@mantine/dates";
+import { useTranslation } from "react-i18next";
 
 interface StudentResponseModel {
   userId: string;
@@ -24,14 +25,13 @@ interface StudentResponseModel {
 }
 
 const StudentProfile: React.FC = () => {
+  const { t } = useTranslation();
   const userService = useUserService();
   const { studentId } = useParams<{ studentId: string }>();
   const [student, setStudent] = useState<StudentResponseModel | null>(null);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const [provinces, setProvinces] = useState<Province[]>(
-    geoService.provincesCache
-  );
+  const [provinces, setProvinces] = useState<Province[]>(geoService.provincesCache);
   const [cityData, setCityData] = useState<string[]>([]);
   const [cityDataLoading, setCityDataLoading] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -93,28 +93,28 @@ const StudentProfile: React.FC = () => {
       },
     },
     validate: {
-      firstName: (value) => (value.length <= 50 ? null : "First name too long"),
-      lastName: (value) => (value.length <= 50 ? null : "Last name too long"),
+      firstName: (value) => (value.length <= 50 ? null : t("First name too long")),
+      lastName: (value) => (value.length <= 50 ? null : t("Last name too long")),
       // eslint-disable-next-line
       // @ts-ignore
       dob: (value) =>
-        value instanceof Date && value <= new Date() ? null : "Invalid date",
+        value instanceof Date && value <= new Date() ? null : t("Invalid date"),
       email: (value) =>
         /^\S+@\S+\.\S+$/.test(value) && value.length <= 100
           ? null
-          : "Invalid email",
+          : t("Invalid email"),
       phone: (value) =>
-        /^\d{3}-\d{3}-\d{4}$/.test(value) ? null : "Invalid phone number",
+        /^\d{3}-\d{3}-\d{4}$/.test(value) ? null : t("Invalid phone number"),
       address: {
         streetAddress: (value) =>
-          value.length <= 100 ? null : "Street address too long",
-        city: (value) => (value.length <= 50 ? null : "City name too long"),
+          value.length <= 100 ? null : t("Street address too long"),
+        city: (value) => (value.length <= 50 ? null : t("City name too long")),
         state: (value) =>
-          provincesFormatted().includes(value) ? null : "Invalid province",
+          provincesFormatted().includes(value) ? null : t("Invalid province"),
         zip: (value) =>
           /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/.test(value)
             ? null
-            : "Invalid postal code",
+            : t("Invalid postal code"),
       },
     },
   });
@@ -167,7 +167,7 @@ const StudentProfile: React.FC = () => {
   };
 
   if (error) {
-    return <div className="error">Error: {error}</div>;
+    return <div className="error">{t("Error")}: {error}</div>;
   }
 
   if (!student) {
@@ -176,56 +176,56 @@ const StudentProfile: React.FC = () => {
 
   return (
     <div className="student-profile">
-      <h1>Student Profile</h1>
+      <h1>{t("Student Profile")}</h1>
       {isEditing ? (
         <form onSubmit={handleSubmit} className="form-container">
           <TextInput
-            label="First Name"
-            placeholder="John"
+            label={t("First Name")}
+            placeholder={t("John")}
             required
             {...form.getInputProps("firstName")}
           />
           <TextInput
-            label="Middle Name"
-            placeholder="Z."
+            label={t("Middle Name")}
+            placeholder={t("Z.")}
             {...form.getInputProps("middleName")}
           />
           <TextInput
-            label="Last Name"
-            placeholder="Pork"
+            label={t("Last Name")}
+            placeholder={t("Pork")}
             required
             {...form.getInputProps("lastName")}
           />
           <DateInput
             rightSection={<Calendar />}
-            label="Date of Birth"
-            placeholder="January 1, 2000"
+            label={t("Date of Birth")}
+            placeholder={t("January 1, 2000")}
             required
             maxDate={new Date()}
             {...form.getInputProps("dob")}
           />
           <TextInput
-            label="Email"
-            placeholder="john.doe@example.com"
+            label={t("Email")}
+            placeholder={t("john.doe@example.com")}
             required
             {...form.getInputProps("email")}
           />
           <TextInput
-            label="Phone Number"
-            placeholder="123-123-1234"
+            label={t("Phone Number")}
+            placeholder={t("123-123-1234")}
             required
             {...form.getInputProps("phone")}
           />
           <TextInput
-            label="Street Address"
-            placeholder="123 Main Street"
+            label={t("Street Address")}
+            placeholder={t("123 Main Street")}
             required
             {...form.getInputProps("address.streetAddress")}
           />
           <Select
             mt="md"
-            label="Province"
-            placeholder="Quebec"
+            label={t("Province")}
+            placeholder={t("Quebec")}
             comboboxProps={{ withinPortal: true }}
             data={provincesFormatted()}
             key={form.key("address.state")}
@@ -233,43 +233,43 @@ const StudentProfile: React.FC = () => {
             {...form.getInputProps("address.state")}
           />
           <Autocomplete
-            label="City"
+            label={t("City")}
             rightSection={cityDataLoading ? <Loader size={12} /> : null}
             data={cityData}
-            placeholder="Montreal"
+            placeholder={t("Montreal")}
             key={form.key("address.city")}
             limit={10}
             required
             {...form.getInputProps("address.city")}
           />
           <TextInput
-            label="Postal Code"
-            placeholder="H1H 1H1"
+            label={t("Postal Code")}
+            placeholder={t("H1H 1H1")}
             required
             {...form.getInputProps("address.zip")}
           />
           <div className="button-container">
-            <Button type="submit">Update Student</Button>
-            <Button onClick={() => setIsEditing(false)}>Cancel</Button>
+            <Button type="submit">{t("Update Student")}</Button>
+            <Button onClick={() => setIsEditing(false)}>{t("Cancel")}</Button>
           </div>
         </form>
       ) : (
         <div className="student-details">
           <p>
-            <strong>Name:</strong> {student.firstName} {student.middleName}{" "}
+            <strong>{t("Name")}:</strong> {student.firstName} {student.middleName}{" "}
             {student.lastName}
           </p>
           <p>
-            <strong>Date of Birth:</strong> {student.dob}
+            <strong>{t("Date of Birth")}:</strong> {student.dob}
           </p>
           <p>
-            <strong>Email:</strong> {student.email}
+            <strong>{t("Email")}:</strong> {student.email}
           </p>
           <p>
-            <strong>Phone:</strong> {student.phone}
+            <strong>{t("Phone")}:</strong> {student.phone}
           </p>
           <p>
-            <strong>Address:</strong> {student.address.streetAddress},{" "}
+            <strong>{t("Address")}:</strong> {student.address.streetAddress},{" "}
             {student.address.city}, {student.address.state}{" "}
             {student.address.zip}
           </p>
@@ -278,10 +278,10 @@ const StudentProfile: React.FC = () => {
               onClick={() => navigate("/students")}
               className="back-button"
             >
-              Back to Student List
+              {t("Back to Student List")}
             </Button>
             <Button onClick={() => setIsEditing(true)} className="edit-button">
-              Edit Student
+              {t("Edit Student")}
             </Button>
           </div>
         </div>
