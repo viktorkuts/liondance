@@ -5,14 +5,14 @@ import { Textarea, NumberInput, Button, Notification } from "@mantine/core";
 import useClassFeedbackService from "@/services/classFeedbackService";
 import { ClassFeedbackRequestModel } from "@/models/ClassFeedback";
 import "./ClassFeedbackForm.css";
-
+import { useTranslation } from "react-i18next";
 const ClassFeedbackForm: React.FC  = () => {
   const { date } = useParams<{ date: string }>();
   const navigate = useNavigate();
   const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const feedbackService = useClassFeedbackService();
-
+  const { t } = useTranslation;
   const form = useForm({
     initialValues: {
       classDate: date ?? "", 
@@ -21,7 +21,7 @@ const ClassFeedbackForm: React.FC  = () => {
     },
 
     validate: {
-      score: (value) => (value >= 1 && value <= 5 ? null : "Score must be between 1 and 5"),
+      score: (value) => (value >= 1 && value <= 5 ? null : t("Score must be between 1 and 5")),
     },
   });
 
@@ -46,7 +46,7 @@ const ClassFeedbackForm: React.FC  = () => {
 
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <NumberInput
-          label="Score (1-5)"
+          label={t("Score (1-5)")}
           required
           min={1}
           max={5}
@@ -54,13 +54,13 @@ const ClassFeedbackForm: React.FC  = () => {
         />
 
         <Textarea
-          label="Comments (Optional)"
-          placeholder="Share your thoughts about the class"
+          label={t("Comments (Optional)")}
+          placeholder={t("Share your thoughts about the class")}
           {...form.getInputProps("comment")}
         />
 
         <Button type="submit" mt="md">
-          Submit Feedback
+        {t("Submit Feedback")}
         </Button>
       </form>
     </div>

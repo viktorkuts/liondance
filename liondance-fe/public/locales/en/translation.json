@@ -232,7 +232,15 @@
     "Student Last Name": "Student Last Name",
     "Submission complete!": "Submission complete!",
     "Please check your inbox (sometimes in junk or spam) for a confirmation!": "Please check your inbox (sometimes in junk or spam) for a confirmation!",
-    "Back to Home": "Back to Home"
+    "Back to Home": "Back to Home",
+    "Class Feedback Form": "Class Feedback Form",
+    "Score (1-5)": "Score (1-5)",
+    "Comments (Optional)": "Comments (Optional)",
+    "Share your thoughts about the class": "Share your thoughts about the class",
+    "Submit Feedback": "Submit Feedback",
+    "Feedback submitted successfully!": "Feedback submitted successfully!",
+    "Failed to submit feedback. Please try again.": "Failed to submit feedback. Please try again.",
+    "Score must be between 1 and 5": "Score must be between 1 and 5"
         
     
 }
