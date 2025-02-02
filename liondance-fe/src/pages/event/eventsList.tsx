@@ -16,8 +16,10 @@ function GetAllEvents() {
   const [error, setError] = useState<string>("");
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [showRescheduleModal, setShowRescheduleModal] = useState<boolean>(false);
-  const [showUpdateDetailsModal, setShowUpdateDetailsModal] = useState<boolean>(false);
+  const [showRescheduleModal, setShowRescheduleModal] =
+    useState<boolean>(false);
+  const [showUpdateDetailsModal, setShowUpdateDetailsModal] =
+    useState<boolean>(false);
 
   const axiosInstance = useAxiosInstance();
 
@@ -80,13 +82,17 @@ function GetAllEvents() {
 
   const handleEventUpdate = (updatedEvent: Event) => {
     setEvents((prevEvents) =>
-      prevEvents.map((event) => (event.id === updatedEvent.id ? updatedEvent : event))
+      prevEvents.map((event) =>
+        event.eventId === updatedEvent.eventId ? updatedEvent : event
+      )
     );
   };
 
   const handleReschedule = (updatedEvent: Event) => {
     setEvents((prevEvents) =>
-      prevEvents.map((event) => (event.id === updatedEvent.id ? updatedEvent : event))
+      prevEvents.map((event) =>
+        event.eventId === updatedEvent.eventId ? updatedEvent : event
+      )
     );
   };
 
@@ -114,16 +120,22 @@ function GetAllEvents() {
           </thead>
           <tbody>
             {events.map((event, index) => (
-              <tr key={event.id}>
+              <tr key={event.eventId}>
                 <td>{index + 1}</td>
-                <td>{event.firstName} {event.lastName}</td>
-                <td>{event.email}</td>
-                <td>{event.phone}</td>
                 <td>
-                  {event.address?.streetAddress ?? t("N/A")}
-                  {event.address?.city ? `, ${event.address.city}` : ""}
+                  {event.venue?.streetAddress ?? "N/A"}
+                  {event.venue?.city ? `, ${event.venue.city}` : ""}
                 </td>
-                <td>{new Date(event.eventDateTime).toLocaleString("en-CA", { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}</td>
+                <td>
+                  {new Date(event.eventDateTime).toLocaleString("en-CA", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                  })}
+                </td>
                 <td>{t(event.eventType)}</td>
                 <td>
                   {event.specialRequest && event.specialRequest.trim()
@@ -140,7 +152,12 @@ function GetAllEvents() {
                   <button onClick={() => handleRescheduleClick(event)}>
                     {t("Reschedule")}
                   </button>
-                  <button onClick={() => event.id && handleViewFeedback(event.id)} className="button_view_feedback">
+                  <button
+                    onClick={() =>
+                      event.eventId && handleViewFeedback(event.eventId)
+                    }
+                    className="button_view_feedback"
+                  >
                     {t("View Feedback")}
                   </button>
                   <button onClick={() => handleUpdateDetailsClick(event)} className="button_view_feedback">

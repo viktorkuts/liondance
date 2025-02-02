@@ -43,7 +43,6 @@ public class EventController {
     @PostMapping(consumes = "application/json")
     public Mono<ResponseEntity<EventResponseModel>> bookEvent(@Valid @RequestBody Mono<EventRequestModel> eventRequestModel, @AuthenticationPrincipal JwtAuthenticationToken jwt) {
         return userService.validate(jwt.getName())
-                .switchIfEmpty(Mono.error(new NotFoundException("User could not be found associated with this token")))
                 .flatMap(user ->
                     eventService.bookEvent(eventRequestModel, user)
                             .map(eventResponseModel -> ResponseEntity.status(HttpStatus.CREATED).body(eventResponseModel))

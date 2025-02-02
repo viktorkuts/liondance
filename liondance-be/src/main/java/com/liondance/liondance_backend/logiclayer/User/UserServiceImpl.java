@@ -19,6 +19,7 @@ import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
 import com.liondance.liondance_backend.utils.exceptions.StudentNotPending;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.MailSendException;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -188,12 +189,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Mono<UserResponseModel> addNewUser(String role, Mono<UserRequestModel> userRequestModel) {
+    public Mono<UserResponseModel> addNewUser(String role, Mono<UserRequestModel> userRequestModel, JwtAuthenticationToken jwt) {
         return userRequestModel
                 .map(UserRequestModel::from)
                 .map(user -> {
                     user.setUserId(UUID.randomUUID().toString());
                     user.setRoles(EnumSet.of(Role.valueOf(role)));
+                    if(jwt != null){
+                        user.setAssociatedId(jwt.getName());
+                    }
                     return user;
                 })
                 .doOnNext(user -> {

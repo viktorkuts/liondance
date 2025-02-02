@@ -57,7 +57,7 @@ const RescheduleEvent: React.FC<RescheduleEventStatusProps> = ({
     setLoading(true);
     try {
       const response = await axiosInstance.patch<Event>(
-        `/events/${event.id}/date`,
+        `/events/${event.eventId}/date`,
         { eventDateTime: newDateTime }
       );
       onReschedule(response.data);

@@ -1,6 +1,7 @@
 package com.liondance.liondance_backend.utils.security;
 
 import com.liondance.liondance_backend.logiclayer.User.UserService;
+import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -89,6 +90,7 @@ public class SecurityConfig {
         return (jwt) -> getUserInfo(jwt.getTokenValue())
                 .flatMapMany((userInfo) -> {
                     return userService.validate(jwt.getClaim("sub"))
+                            .onErrorResume(NotFoundException.class, e -> Mono.empty())
                             .flatMapMany(user -> Flux.fromStream(user.getRoles().stream()
                                     .map(role -> new SimpleGrantedAuthority(role.name()))));
                 });

@@ -5,6 +5,7 @@ import com.liondance.liondance_backend.logiclayer.Event.EventService;
 import com.liondance.liondance_backend.logiclayer.User.UserService;
 import com.liondance.liondance_backend.presentationlayer.Event.EventResponseModel;
 import com.liondance.liondance_backend.utils.exceptions.EmailInUse;
+import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
 import com.liondance.liondance_backend.utils.exceptions.Unauthorized;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -38,7 +39,8 @@ public class ClientController {
     public Mono<UserResponseModel> addClient(@AuthenticationPrincipal JwtAuthenticationToken jwt, @RequestBody Mono<UserRequestModel> userRequestModel) {
         return userService.validate(jwt.getName())
                 .flatMap(user -> Mono.just(user).map(UserResponseModel::from))
-                .switchIfEmpty(userService.addNewUser(Role.CLIENT.toString(), userRequestModel));
+                .onErrorResume(NotFoundException.class, ex -> Mono.empty())
+                .switchIfEmpty(userService.addNewUser(Role.CLIENT.toString(), userRequestModel, jwt));
     }
 
     @PreAuthorize("isAuthenticated()")

@@ -4,6 +4,7 @@ import {
   User,
   RegistrationStatusModel,
   Role,
+  Client,
 } from "@/models/Users.ts";
 import { useAxiosInstance } from "@/utils/axiosInstance";
 import { AxiosResponse } from "axios";
@@ -111,6 +112,12 @@ export const useUserService = () => {
     return response.data;
   };
 
+  const registerClient = async (
+    client: Client
+  ): Promise<AxiosResponse<Client>> => {
+    return await axiosInstance.post<Student>("/clients", client);
+  };
+
   return {
     getAllUsers,
     getUserProfile,
@@ -127,5 +134,6 @@ export const useUserService = () => {
     getSessionUser,
     getSessionRoles,
     getAllClients,
+    registerClient,
   };
 };
