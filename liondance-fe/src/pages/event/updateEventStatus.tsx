@@ -20,8 +20,7 @@ const UpdateEventStatus: React.FC<UpdateEventStatusProps> = ({
   const axiosInstance = useAxiosInstance();
   const [newStatus, setNewStatus] = useState<EventStatus>(event.eventStatus);
   const [loading, setLoading] = useState<boolean>(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [error, setError] = useState<string>("");
+  const [, setError] = useState<string>("");
 
   const handleUpdateStatus = async () => {
     setLoading(true);
