@@ -5,6 +5,7 @@ import "react-calendar/dist/Calendar.css";
 import { useCourseService } from "@/services/courseService";
 import dayjs from "dayjs";
 import "./cancelCourse.css";
+import { useTranslation } from 'react-i18next';
 
 interface Course {
     courseId: string;
@@ -19,11 +20,13 @@ interface Course {
 }
 
 const CancelCourse: React.FC = () => {
+    const { t } = useTranslation();
     const { getAllCourses, cancelCourse } = useCourseService();
     const [courses, setCourses] = useState<Course[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+    const locale = "en-US";
     const [showModal, setShowModal] = useState<boolean>(false);
 
     useEffect(() => {
@@ -33,7 +36,7 @@ const CancelCourse: React.FC = () => {
                 setCourses(data);
                 setLoading(false);
             } catch {
-                setError("Failed to load courses. Please try again later.");
+                setError(t("Failed to load courses. Please try again later."));
                 setLoading(false);
             }
         };
@@ -58,7 +61,7 @@ const CancelCourse: React.FC = () => {
             );
             setShowModal(false);
         } catch {
-            setError("Failed to cancel course. Please try again later.");
+            setError(t("Failed to cancel course. Please try again later."));
         }
     };
 
@@ -80,34 +83,34 @@ const CancelCourse: React.FC = () => {
         return date.getDay() !== 0; // Disable all days except Sundays (0 is Sunday)
     };
 
-    if (loading) return <Text style={{ textAlign: "center" }}>Loading...</Text>;
+    if (loading) return <Text style={{ textAlign: "center" }}>{t("Loading...")}</Text>;
     if (error)
         return <Text style={{ textAlign: "center", color: "red" }}>{error}</Text>;
 
     return (
         <div className="cancel-course-container">
             <div className="course-list">
-                <h1>Upcoming Courses</h1>
+                <h1>{t("Upcoming Courses")}</h1>
                 {courses.length === 0 ? (
-                    <p className="no-courses">No courses available.</p>
-                ) : (
-                    <table className="courses-table">
-                        <thead>
+                    <p className="no-courses">{t("No courses available.")}</p>
+                    ) : (
+                        <table className="courses-table">
+                            <thead>
                             <tr>
-                                <th>Course Name</th>
-                                <th>Day</th>
-                                <th>Time</th>
-                                <th>Instructor</th>
-                                <th>Action</th>
+                                <th>{t("Course Name")}</th>
+                                <th>{t("Day")}</th>
+                                <th>{t("Time")}</th>
+                                <th>{t("Instructor")}</th>
+                                <th>{t("Action")}</th>
                             </tr>
                         </thead>
                         <tbody>
                             {courses.map((course) => (
                                 <tr key={course.courseId}>
-                                    <td>{course.name}</td>
-                                    <td>{course.dayOfWeek}</td>
+                                    <td>{t(course.name)}</td>
+                                    <td>{t(course.dayOfWeek)}</td>
                                     <td>
-                                        10:00 AM - 12:00 AM
+                                        {t("10:00 AM - 12:00 AM")}
                                     </td>
                                     <td>
                                         {course.instructorFirstName}{" "}
@@ -119,7 +122,7 @@ const CancelCourse: React.FC = () => {
                                         <Button
                                             onClick={() => handleDayClick(new Date(course.startTime))}
                                         >
-                                            Cancel
+                                            {t("Cancel")}
                                         </Button>
                                     </td>
                                 </tr>
@@ -130,21 +133,25 @@ const CancelCourse: React.FC = () => {
             </div>
 
             <div className="calendar-container">
-                <h2>Course Calendar</h2>
+                <h2>{t("Course Calendar")}</h2>
                 <Calendar
                     onClickDay={handleDayClick}
                     tileClassName={getTileClassName}
                     tileDisabled={tileDisabled}
+                    locale={locale}
+                    formatMonth={(locale, date) => t(`calendar:monthNames.${date.getMonth()}`)}
+                    formatShortWeekday={(locale, date) => t(`calendar:dayNamesShort.${date.getDay()}`)}
+                    formatWeekday={(locale, date) => t(`calendar:dayNames.${date.getDay()}`)}
                 />
             </div>
 
             <Modal
                 opened={showModal}
                 onClose={() => setShowModal(false)}
-                title={`Cancel Course on ${selectedDate ? dayjs(selectedDate).format("MMMM D, YYYY") : ""}`}
+                title={`${t("Cancel Course on")} ${selectedDate ? dayjs(selectedDate).format("MMMM D, YYYY") : ""}`}
             >
                 <div>
-                    <p>Are you sure you want to cancel the course on this date?</p>
+                    <p>{t("Are you sure you want to cancel the course on this date?")}</p>
                     <Button
                         onClick={() => {
                             const course = courses.find(
@@ -160,7 +167,7 @@ const CancelCourse: React.FC = () => {
                             setShowModal(false);
                         }}
                     >
-                        Confirm
+                        {t("Confirm")}
                     </Button>
                 </div>
             </Modal>
