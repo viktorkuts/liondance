@@ -8,6 +8,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Auth0Provider } from "@auth0/auth0-react";
 import { UserProvider } from "./utils/userProvider";
+import LanguageSwitcher from "./components/LanguageSwitcher";
 
 const theme = createTheme({
   colors: {
@@ -57,6 +58,7 @@ function App() {
           <MantineProvider theme={theme}>
             <UserProvider>
               <BrowserRouter>
+                <LanguageSwitcher />
                 <Navbar />
                 <Router />
               </BrowserRouter>

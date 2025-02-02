@@ -16,8 +16,10 @@ import geoService from "@/services/geoService";
 import { Province } from "@/types/geo";
 import { Student } from "@/models/Users";
 import { useUserService } from "@/services/userService";
+import { useTranslation } from "react-i18next";
 
 function Registration() {
+  const { t } = useTranslation();
   const userService = useUserService();
   const [emailData, setEmailData] = useState<string[]>([]);
   const [emailDataLoading, setEmailDataLoading] = useState<boolean>(false);
@@ -68,26 +70,26 @@ function Registration() {
     },
 
     validate: {
-      firstName: (value) => (value.length > 0 ? null : "Field is required"),
-      lastName: (value) => (value.length > 0 ? null : "Field is required"),
+      firstName: (value) => (value.length > 0 ? null : t("Field is required")),
+      lastName: (value) => (value.length > 0 ? null : t("Field is required")),
       dob: (value) => {
         if (typeof value !== "object") {
-          return "Field is required";
+          return t("Field is required");
         } else if ((value as Date) > new Date()) {
-          return "Cannot be set in the future!";
+          return t("Cannot be set in the future!");
         }
       },
-      email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
+      email: (value) => (/^\S+@\S+$/.test(value) ? null : t("Invalid email")),
       address:
         (activeStep === 1 && {
           streetAddress: (value) =>
-            value.length > 0 ? null : "Field is required",
-          state: (value) => (value.length > 0 ? null : "Field is required"),
-          city: (value) => (value.length > 0 ? null : "Field is required"),
+            value.length > 0 ? null : t("Field is required"),
+          state: (value) => (value.length > 0 ? null : t("Field is required")),
+          city: (value) => (value.length > 0 ? null : t("Field is required")),
           zip: (value) =>
             /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/.test(value)
               ? null
-              : "Field is invalid",
+              : t("Field is invalid"),
         }) ||
         undefined,
     },
@@ -188,24 +190,24 @@ function Registration() {
 
   return (
     <div className={classes.registrationForm}>
-      <h1>Student Registration Form</h1>
+      <h1>{t("Student Registration Form")}</h1>
       <Stepper active={activeStep}>
-        <Stepper.Step label="Student Information">
+        <Stepper.Step label={t("Student Information")}>
           <TextInput
-            label="Student First Name"
+            label={t("Student First Name")}
             placeholder="John"
             key={form.key("firstName")}
             required
             {...form.getInputProps("firstName")}
           />
           <TextInput
-            label="Student Middle Name"
+            label={t("Student Middle Name")}
             placeholder="Z."
             key={form.key("middleName")}
             {...form.getInputProps("middleName")}
           />
           <TextInput
-            label="Student Last Name"
+            label={t("Student Last Name")}
             placeholder="Doe"
             key={form.key("lastName")}
             required
@@ -214,21 +216,21 @@ function Registration() {
           <Autocomplete
             rightSection={emailDataLoading ? <Loader size={12} /> : null}
             data={emailData}
-            label="Primary E-Mail"
+            label={t("Primary E-Mail")}
             placeholder="john.doe@example.com"
             key={form.key("email")}
             required
             {...form.getInputProps("email")}
           />
           <TextInput
-            label="Student Phone Number"
+            label={t("Student Phone Number")}
             placeholder="514-123-1234"
             key={form.key("phone")}
             {...form.getInputProps("phone")}
           />
           <DateInput
             rightSection={<Calendar />}
-            label="Student Date of Birth"
+            label={t("Student Date of Birth")}
             placeholder="January 1, 2000"
             maxDate={new Date()}
             key={form.key("dob")}
@@ -236,9 +238,9 @@ function Registration() {
             {...form.getInputProps("dob")}
           />
         </Stepper.Step>
-        <Stepper.Step label="Address Information">
+        <Stepper.Step label={t("Address Information")}>
           <TextInput
-            label="Address Line"
+            label={t("Address Line")}
             placeholder="123 Main Street"
             key={form.key("address.streetAddress")}
             required
@@ -246,7 +248,7 @@ function Registration() {
           />
           <Select
             mt="md"
-            label="Province"
+            label={t("Province")}
             placeholder="Quebec"
             comboboxProps={{ withinPortal: true }}
             data={provincesFormatted()}
@@ -255,7 +257,7 @@ function Registration() {
             {...form.getInputProps("address.state")}
           />
           <Autocomplete
-            label="City"
+            label={t("City")}
             rightSection={cityDataLoading ? <Loader size={12} /> : null}
             data={cityData}
             placeholder="Montreal"
@@ -265,28 +267,28 @@ function Registration() {
             {...form.getInputProps("address.city")}
           />
           <TextInput
-            label="Postal Code"
+            label={t("Postal Code")}
             placeholder="H1H 1H1"
             key={form.key("address.zip")}
             required
             {...form.getInputProps("address.zip")}
           />
         </Stepper.Step>
-        <Stepper.Step label="Parent Information" description="Optional">
+        <Stepper.Step label={t("Parent Information")} description={t("Optional")}>
           <TextInput
-            label="Parent First Name"
+            label={t("Parent First Name")}
             placeholder="Jack"
             key={form.key("parentFirstName")}
             {...form.getInputProps("parentFirstName")}
           />
           <TextInput
-            label="Parent Middle Name"
+            label={t("Parent Middle Name")}
             placeholder="A."
             key={form.key("parentMiddleName")}
             {...form.getInputProps("parentMiddleName")}
           />
           <TextInput
-            label="Parent Last Name"
+            label={t("Parent Last Name")}
             placeholder="Dode"
             key={form.key("parentLastName")}
             {...form.getInputProps("parentLastName")}
@@ -294,13 +296,13 @@ function Registration() {
           <Autocomplete
             rightSection={emailParentDataLoading ? <Loader size={12} /> : null}
             data={emailParentData}
-            label="Parent E-Mail"
+            label={t("Parent E-Mail")}
             placeholder="jack.dode@example.com"
             key={form.key("parentEmail")}
             {...form.getInputProps("parentEmail")}
           />
           <TextInput
-            label="Parent Phone Number"
+            label={t("Parent Phone Number")}
             placeholder="514-123-1234"
             key={form.key("parentPhone")}
             {...form.getInputProps("parentPhone")}
@@ -308,20 +310,19 @@ function Registration() {
         </Stepper.Step>
         <Stepper.Completed>
           <div className={classes.completedForm}>
-            <h2>Welcome, {form.getValues().firstName}!</h2>
-            The primary e-mail that will be used for communications:
+            <h2>{t("Welcome,")} {form.getValues().firstName}!</h2>
+            {t("The primary e-mail that will be used for communications:")}
             <h2>{form.getValues().email}</h2>
-            Please make sure all information is correct.
+            {t("Please make sure all information is correct.")}
           </div>
           {activeStep === 4 && (
             <div className={classes.completedForm}>
-              <h2>Submission complete!</h2>
+              <h2>{t("Submission complete!")}</h2>
               <p>
-                Please check your inbox (sometimes in junk or spam) for a
-                confirmation!
+                {t("Please check your inbox (sometimes in junk or spam) for a confirmation!")}
               </p>
               <Button component="a" href="/">
-                Back to Home
+                {t("Back to Home")}
               </Button>
             </div>
           )}
@@ -331,11 +332,11 @@ function Registration() {
       <Group justify="flex-end" mt="xl">
         {activeStep > 0 && activeStep < 4 && (
           <Button variant="default" onClick={previousStep}>
-            Back
+            {t("Back")}
           </Button>
         )}
-        {activeStep < 3 && <Button onClick={nextStep}>Next</Button>}
-        {activeStep === 3 && <Button onClick={submit}>Submit</Button>}
+        {activeStep < 3 && <Button onClick={nextStep}>{t("Next")}</Button>}
+        {activeStep === 3 && <Button onClick={submit}>{t("Submit")}</Button>}
       </Group>
     </div>
   );

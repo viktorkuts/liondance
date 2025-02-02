@@ -3,9 +3,11 @@ import { useParams, Link } from "react-router-dom";
 import { Loader } from "@mantine/core";
 import { usePromotionService } from "@/services/promotionService";
 import { Promotion } from "@/models/Promotions";
+import { useTranslation } from "react-i18next";
 import "./promotions.css";
 
 const PromotionDetails: React.FC = () => {
+  const { t } = useTranslation();
   const promotionService = usePromotionService();
   const { promotionId } = useParams<{ promotionId: string }>();
   const [promotion, setPromotion] = useState<Promotion | null>(null);
@@ -19,7 +21,7 @@ const PromotionDetails: React.FC = () => {
         setPromotion(data);
       } catch (err) {
         setError(
-          "Failed to load promotion details. Please try again later. " + err
+          t("Failed to load promotion details. Please try again later.") + " " + err
         );
       } finally {
         setLoading(false);
@@ -27,43 +29,43 @@ const PromotionDetails: React.FC = () => {
     };
 
     fetchPromotion();
-  }, [promotionId, promotionService]);
+  }, [promotionId, promotionService, t]);
 
   if (loading) return <Loader />;
   if (error) return <div className="error">{error}</div>;
 
   return (
     <div className="promotions-container">
-      <h1 className="promotions-title">Promotion Details</h1>
+      <h1 className="promotions-title">{t("Promotion Details")}</h1>
       {promotion && (
         <div className="promotion-card">
           <div className="promotion-info">
-            <div className="promotion-header">{promotion.promotionName}</div>
-            <div className="promotion-details">
-              <div className="promotion-detail">
-                <strong>Discount Rate:</strong> {promotion.discountRate * 100}%
-              </div>
-              <div className="promotion-detail">
-                <strong>Start Date:</strong>{' '}
-                {new Date(promotion.startDate).toLocaleDateString('en-CA')}
-              </div>
-              <div className="promotion-detail">
-                <strong>End Date:</strong>{' '}
-                {new Date(promotion.endDate).toLocaleDateString('en-CA')}
-              </div>
-              <div className="promotion-detail promotion-status">
-                <strong>Status:</strong> {promotion.promotionStatus}
-              </div>
-              <div className="promotion-actions">
-                <button 
-                  className="action-button edit-button"
-                  onClick={() => console.log('Edit clicked')}
-                >
-                  Edit
-                </button>
-                <Link to="/promotions" className="action-button back-button">
-                  Back
-                </Link>
+        <div className="promotion-header">{t(promotion.promotionName)}</div>
+        <div className="promotion-details">
+          <div className="promotion-detail">
+        <strong>{t("Discount Rate")}:</strong> {promotion.discountRate * 100}%
+          </div>
+          <div className="promotion-detail">
+        <strong>{t("Start Date")}:</strong>{' '}
+        {new Date(promotion.startDate).toLocaleDateString('en-CA')}
+          </div>
+          <div className="promotion-detail">
+        <strong>{t("End Date")}:</strong>{' '}
+        {new Date(promotion.endDate).toLocaleDateString('en-CA')}
+          </div>
+          <div className="promotion-detail promotion-status">
+        <strong>{t("Status")}:</strong> {t(promotion.promotionStatus)}
+          </div>
+          <div className="promotion-actions">
+        <button 
+          className="action-button edit-button"
+          onClick={() => console.log('Edit clicked')}
+        >
+          {t("Edit")}
+        </button>
+        <Link to="/promotions" className="action-button back-button">
+          {t("Back")}
+        </Link>
               </div>
             </div>
           </div>

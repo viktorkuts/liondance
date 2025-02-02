@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 import { useAxiosInstance } from "@/utils/axiosInstance";
 import { Event } from "@/models/Event";
 import "@/pages/event/rescheduleEvent.css";
-
+import { useTranslation } from "react-i18next";
 
 interface RescheduleEventStatusProps {
   event: Event;
@@ -18,6 +18,7 @@ const RescheduleEvent: React.FC<RescheduleEventStatusProps> = ({
   onClose,
   onReschedule,
 }) => {
+  const { t } = useTranslation();
   const axiosInstance = useAxiosInstance();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
@@ -43,13 +44,13 @@ const RescheduleEvent: React.FC<RescheduleEventStatusProps> = ({
 
   const handleReschedule = async () => {
     if (!selectedDate || !selectedTime) {
-      setError("Please select both a new date and time.");
+      setError(t("Please select both a new date and time."));
       return;
     }
     const newDateTime = combineDateTime(selectedDate, selectedTime);
     if (newDateTime && dayjs(newDateTime).isBefore(dayjs())) {
       setError(
-        "The new date and time cannot be before the current date and time."
+        t("The new date and time cannot be before the current date and time.")
       );
       return;
     }
@@ -62,17 +63,17 @@ const RescheduleEvent: React.FC<RescheduleEventStatusProps> = ({
       onReschedule(response.data);
       onClose();
     } catch (error) {
-      setError("Failed to reschedule event, please try again." + error);
+      setError(t("Failed to reschedule event, please try again.") + error);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Modal opened={true} onClose={onClose} title="Reschedule Event">
+    <Modal opened={true} onClose={onClose} title={t("Reschedule Event")}>
       {error && <div className="error">{error}</div>}
       <div>
-        <label>New Date</label>
+        <label>{t("New Date")}</label>
         <DateInput
           value={selectedDate}
           onChange={(date) => {
@@ -83,7 +84,7 @@ const RescheduleEvent: React.FC<RescheduleEventStatusProps> = ({
         />
       </div>
       <div>
-        <label>New Time</label>
+        <label>{t("New Time")}</label>
         <Select
           data={timeOptions}
           value={selectedTime}
@@ -94,7 +95,7 @@ const RescheduleEvent: React.FC<RescheduleEventStatusProps> = ({
         />
       </div>
       <Button onClick={handleReschedule} loading={loading}>
-        Reschedule
+        {t("Reschedule")}
       </Button>
     </Modal>
   );

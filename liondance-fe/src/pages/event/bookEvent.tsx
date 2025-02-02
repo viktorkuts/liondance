@@ -18,8 +18,10 @@ import { IMaskInput } from "react-imask";
 import { InputBase } from "@mantine/core";
 import { EventType, Event, PaymentMethod, EventStatus, EventPrivacy } from "@/models/Event";
 import { useEventService } from "@/services/eventService";
+import { useTranslation } from "react-i18next";
 
 function BookEvent() {
+  const { t } = useTranslation();
   const eventService = useEventService();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
@@ -29,9 +31,7 @@ function BookEvent() {
   const [cityDataLoading, setCityDataLoading] = useState<boolean>(false);
   const [activeStep, setActiveStep] = useState(0);
   const [selectedProvince, setSelectedProvince] = useState<string>("");
-  const [provinces, setProvinces] = useState<Province[]>(
-    geoService.provincesCache
-  );
+  const [provinces, setProvinces] = useState<Province[]>(geoService.provincesCache);
 
   const provincesFormatted = () => {
     return provinces.map((val) => {
@@ -202,24 +202,24 @@ function BookEvent() {
 
   return (
     <div className={classes.registrationForm}>
-      <h1>Event Registration Form</h1>
+      <h1>{t("Event Registration Form")}</h1>
       <Stepper active={activeStep}>
-        <Stepper.Step label="Event Information">
+        <Stepper.Step label={t("Event Information")}>
           <TextInput
-            label="First Name"
+            label={t("First Name")}
             placeholder="John"
             key={form.key("firstName")}
             required
             {...form.getInputProps("firstName")}
           />
           <TextInput
-            label="Middle Name"
+            label={t("Middle Name")}
             placeholder="Z."
             key={form.key("middleName")}
             {...form.getInputProps("middleName")}
           />
           <TextInput
-            label="Last Name"
+            label={t("Last Name")}
             placeholder="Doe"
             key={form.key("lastName")}
             required
@@ -303,7 +303,7 @@ function BookEvent() {
             {...form.getInputProps("eventPrivacy")}
           />
         </Stepper.Step>
-        <Stepper.Step label="Location Information">
+        <Stepper.Step label={t("Location Information")}>
           <TextInput
             label="Address Line"
             placeholder="123 Main Street"
@@ -338,7 +338,7 @@ function BookEvent() {
             {...form.getInputProps("address.zip")}
           />
         </Stepper.Step>
-        <Stepper.Step label="Confirmation">
+        <Stepper.Step label={t("Confirmation")}>
           <div className={classes.completedForm}>
             <h2>Does this information look correct?</h2>
             <p>

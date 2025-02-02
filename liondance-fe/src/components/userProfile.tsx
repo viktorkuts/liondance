@@ -20,6 +20,7 @@ import { useForm } from "@mantine/form";
 import { Province } from "@/types/geo";
 import { Calendar } from "react-feather";
 import { DateInput } from "@mantine/dates";
+import { useTranslation } from "react-i18next";
 
 interface UserResponseModel {
   userId: string;
@@ -33,14 +34,13 @@ interface UserResponseModel {
 }
 
 const UserProfile: React.FC = () => {
+  const { t } = useTranslation();
   const userService = useUserService();
   const { userId } = useParams<{ userId: string }>();
   const [user, setUser] = useState<UserResponseModel | null>(null);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const [provinces, setProvinces] = useState<Province[]>(
-    geoService.provincesCache
-  );
+  const [provinces, setProvinces] = useState<Province[]>(geoService.provincesCache);
   const [cityData, setCityData] = useState<string[]>([]);
   const [cityDataLoading, setCityDataLoading] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -108,28 +108,28 @@ const UserProfile: React.FC = () => {
       },
     },
     validate: {
-      firstName: (value) => (value.length <= 50 ? null : "First name too long"),
-      lastName: (value) => (value.length <= 50 ? null : "Last name too long"),
+      firstName: (value) => (value.length <= 50 ? null : t("First name too long")),
+      lastName: (value) => (value.length <= 50 ? null : t("Last name too long")),
       // eslint-disable-next-line
       // @ts-ignore
       dob: (value) =>
-        value instanceof Date && value <= new Date() ? null : "Invalid date",
+        value instanceof Date && value <= new Date() ? null : t("Invalid date"),
       email: (value) =>
         /^\S+@\S+\.\S+$/.test(value) && value.length <= 100
           ? null
-          : "Invalid email",
+          : t("Invalid email"),
       phone: (value) =>
-        /^\d{3}-\d{3}-\d{4}$/.test(value) ? null : "Invalid phone number",
+        /^\d{3}-\d{3}-\d{4}$/.test(value) ? null : t("Invalid phone number"),
       address: {
         streetAddress: (value) =>
-          value.length <= 100 ? null : "Street address too long",
-        city: (value) => (value.length <= 50 ? null : "City name too long"),
+          value.length <= 100 ? null : t("Street address too long"),
+        city: (value) => (value.length <= 50 ? null : t("City name too long")),
         state: (value) =>
-          provincesFormatted().includes(value) ? null : "Invalid province",
+          provincesFormatted().includes(value) ? null : t("Invalid province"),
         zip: (value) =>
           /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/.test(value)
             ? null
-            : "Invalid postal code",
+            : t("Invalid postal code"),
       },
     },
   });
@@ -182,7 +182,7 @@ const UserProfile: React.FC = () => {
   };
 
   if (error) {
-    return <div className="error">Error: {error}</div>;
+    return <div className="error">{t("Error")}: {error}</div>;
   }
 
   if (!user) {
@@ -194,69 +194,69 @@ const UserProfile: React.FC = () => {
       await userService.updateUserRoles(userId!, roles);
       setNotification({
         type: "success",
-        message: "Roles updated successfully.",
+        message: t("Roles updated successfully."),
       });
       setRoleModalOpened(false);
     } catch {
       setNotification({
         type: "error",
-        message: "Failed to update roles. Please try again.",
+        message: t("Failed to update roles. Please try again."),
       });
     }
   };
 
   return (
     <div className="user-profile">
-      <h1>User Profile</h1>
+      <h1>{t("User Profile")}</h1>
       {isEditing ? (
         <form onSubmit={handleSubmit} className="form-container">
           <TextInput
-            label="First Name"
-            placeholder="John"
+            label={t("First Name")}
+            placeholder={t("John")}
             required
             {...form.getInputProps("firstName")}
           />
           <TextInput
-            label="Middle Name"
-            placeholder="Z."
+            label={t("Middle Name")}
+            placeholder={t("Z.")}
             {...form.getInputProps("middleName")}
           />
           <TextInput
-            label="Last Name"
-            placeholder="Pork"
+            label={t("Last Name")}
+            placeholder={t("Pork")}
             required
             {...form.getInputProps("lastName")}
           />
           <DateInput
             rightSection={<Calendar />}
-            label="Date of Birth"
-            placeholder="January 1, 2000"
+            label={t("Date of Birth")}
+            placeholder={t("January 1, 2000")}
             required
             maxDate={new Date()}
             {...form.getInputProps("dob")}
           />
           <TextInput
-            label="Email"
-            placeholder="john.doe@example.com"
+            label={t("Email")}
+            placeholder={t("john.doe@example.com")}
             required
             {...form.getInputProps("email")}
           />
           <TextInput
-            label="Phone Number"
-            placeholder="123-123-1234"
+            label={t("Phone Number")}
+            placeholder={t("123-123-1234")}
             required
             {...form.getInputProps("phone")}
           />
           <TextInput
-            label="Street Address"
-            placeholder="123 Main Street"
+            label={t("Street Address")}
+            placeholder={t("123 Main Street")}
             required
             {...form.getInputProps("address.streetAddress")}
           />
           <Select
             mt="md"
-            label="Province"
-            placeholder="Quebec"
+            label={t("Province")}
+            placeholder={t("Quebec")}
             comboboxProps={{ withinPortal: true }}
             data={provincesFormatted()}
             key={form.key("address.state")}
@@ -264,69 +264,69 @@ const UserProfile: React.FC = () => {
             {...form.getInputProps("address.state")}
           />
           <Autocomplete
-            label="City"
+            label={t("City")}
             rightSection={cityDataLoading ? <Loader size={12} /> : null}
             data={cityData}
-            placeholder="Montreal"
+            placeholder={t("Montreal")}
             key={form.key("address.city")}
             limit={10}
             required
             {...form.getInputProps("address.city")}
           />
           <TextInput
-            label="Postal Code"
-            placeholder="H1H 1H1"
+            label={t("Postal Code")}
+            placeholder={t("H1H 1H1")}
             required
             {...form.getInputProps("address.zip")}
           />
           <div className="button-container">
-            <Button type="submit">Update User</Button>
-            <Button onClick={() => setIsEditing(false)}>Cancel</Button>
+            <Button type="submit">{t("Update User")}</Button>
+            <Button onClick={() => setIsEditing(false)}>{t("Cancel")}</Button>
           </div>
         </form>
       ) : (
         <div className="user-details">
           <p>
-            <strong>Name:</strong> {user.firstName} {user.middleName}{" "}
+            <strong>{t("Name")}:</strong> {user.firstName} {user.middleName}{" "}
             {user.lastName}
           </p>
           <p>
-            <strong>Date of Birth:</strong> {user.dob}
+            <strong>{t("Date of Birth")}:</strong> {user.dob}
           </p>
           <p>
-            <strong>Email:</strong> {user.email}
+            <strong>{t("Email")}:</strong> {user.email}
           </p>
           <p>
-            <strong>Phone:</strong> {user.phone}
+            <strong>{t("Phone")}:</strong> {user.phone}
           </p>
           <p>
-            <strong>Address:</strong> {user.address.streetAddress},{" "}
+            <strong>{t("Address")}:</strong> {user.address.streetAddress},{" "}
             {user.address.city}, {user.address.state} {user.address.zip}
           </p>
           <div className="button-container">
             <Button onClick={() => navigate("/users")} className="back-button">
-              Back to User List
+              {t("Back to User List")}
             </Button>
             <Button onClick={() => setIsEditing(true)} className="edit-button">
-              Edit User
+              {t("Edit User")}
             </Button>
             <Button onClick={() => setRoleModalOpened(true)}>
-              Change Roles
+              {t("Change Roles")}
             </Button>
           </div>
           <Modal
             opened={roleModalOpened}
             onClose={() => setRoleModalOpened(false)}
-            title="Change Roles"
+            title={t("Change Roles")}
           >
             <MultiSelect
-              label="Select Roles"
-              data={["STAFF", "CLIENT", "ADMIN", "STUDENT"]}
+              label={t("Select Roles")}
+              data={[t("STAFF"), t("CLIENT"), t("ADMIN"), t("STUDENT")]}
               value={roles}
               onChange={setRoles}
             />
             <Button mt="md" onClick={handleRoleUpdate}>
-              Save Roles
+              {t("Save Roles")}
             </Button>
           </Modal>
           {notification && (
