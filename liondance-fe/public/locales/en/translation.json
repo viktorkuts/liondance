@@ -179,6 +179,7 @@
     "BIRTHDAY": "BIRTHDAY",
     "WEDDING": "WEDDING",
     "FESTIVAL": "FESTIVAL",
+    "PARADE": "PARADE",
     "PUBLIC": "PUBLIC",
     "PRIVATE": "PRIVATE",
     "CONFIRMED": "CONFIRMED",
@@ -232,7 +233,20 @@
     "Student Last Name": "Student Last Name",
     "Submission complete!": "Submission complete!",
     "Please check your inbox (sometimes in junk or spam) for a confirmation!": "Please check your inbox (sometimes in junk or spam) for a confirmation!",
+    "Back to Home": "Back to Home",
+    "E-Mail": "E-Mail",
+    "Event Date": "Event Date",
+    "Event Time": "Event Time",
+    "Pick a date": "Pick a date",
+    "Select a time": "Select a time",
+    "Wedding": "Wedding",
+    "Cash": "Cash",
+    "Request...": "Request...",
+    "PAYPAL": "PAYPAL",
+    "CREDIT": "CREDIT",
+    "DEBIT": "DEBIT",
+    "ETRANSFER": "ETRANSFER",
+    "CASH": "CASH",
+    "Field is required": "Field is required",
     "Back to Home": "Back to Home"
-        
-    
 }

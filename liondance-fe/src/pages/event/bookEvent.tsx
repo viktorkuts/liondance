@@ -21,7 +21,8 @@ import { useEventService } from "@/services/eventService";
 import { useTranslation } from "react-i18next";
 
 function BookEvent() {
-  const { t } = useTranslation();
+
+  const { t, i18n } = useTranslation();
   const eventService = useEventService();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
@@ -228,27 +229,27 @@ function BookEvent() {
           <Autocomplete
             rightSection={emailDataLoading ? <Loader size={12} /> : null}
             data={emailData}
-            label="E-Mail"
+            label={t("E-Mail")}
             placeholder="john.doe@example.com"
             key={form.key("email")}
             required
             {...form.getInputProps("email")}
           />
           <InputBase
-            label="Phone Number"
+            label={t("Phone Number")}
             placeholder="(123) 456-7890"
             component={IMaskInput}
             mask="(000) 000-0000"
             {...form.getInputProps("phone", { withError: true })} 
             onAccept={(value: string) => {
               form.setFieldValue("phone", value); 
-              form.validateField("phone"); 
-            }}
-            required
-          />
-          <DateInput
-            label="Event Date"
-            placeholder="Pick a date"
+                form.validateField("phone"); 
+              }}
+              required
+            />
+            <DateInput
+            label={t("Event Date")}
+            placeholder={t("Pick a date")}
             minDate={dayjs().add(14, "day").toDate()} 
             value={selectedDate}
             onChange={(date) => {
@@ -257,47 +258,58 @@ function BookEvent() {
             }}
             error={form.errors.eventDateTime}
             required
-          />
+            locale={i18n.language}
+            />
 
-          <Select
-            label="Event Time"
-            placeholder="Select a time"
+            <Select
+            label={t("Event Time")}
+            placeholder={t("Select a time")}
             data={timeOptions}
             value={selectedTime}
             onChange={(time) => {
               setSelectedTime(time);
-              combineDateTime(selectedDate, time); 
-            }}
-            error={form.errors.eventDateTime}
-            required
-          />
+                combineDateTime(selectedDate, time); 
+              }}
+              error={form.errors.eventDateTime}
+              required
+              />
 
-          <Select
-            label="Event Type"
-            placeholder="Wedding"
-            data={Object.values(EventType)}
-            key={form.key("eventType")}
-            required
+              <Select
+              label={t("Event Type")}
+              placeholder={t("Wedding")}
+              data={Object.values(EventType).map((type) => ({
+                value: type,
+                label: t(type),
+              }))}
+              key={form.key("eventType")}
+              required
             {...form.getInputProps("eventType")}
-          />
-          <Select
-            label="Payment Method"
-            placeholder="Cash"
-            data={Object.values(PaymentMethod)}
+            />
+            
+            <Select
+            label={t("Payment Method")}
+            placeholder={t("Cash")}
+            data={Object.values(PaymentMethod).map((method) => ({
+              value: method,
+              label: t(method),
+            }))}
             key={form.key("paymentMethod")}
             required
             {...form.getInputProps("paymentMethod")}
-          />
-          <TextInput
-            label="Special Request"
-            placeholder="Request..."
+            />
+            <TextInput
+            label={t("Special Request")}
+            placeholder={t("Request...")}
             key={form.key("specialRequest")}
             {...form.getInputProps("specialRequest")}
-          />
-          <Select
-            label="Event Privacy"
-            placeholder="PRIVATE"
-            data={Object.values(EventPrivacy)}
+            />
+            <Select
+            label={t("Event Privacy")}
+            placeholder={t("PRIVATE")}
+            data={Object.values(EventPrivacy).map((privacy) => ({
+              value: privacy,
+              label: t(privacy),
+            }))}
             key={form.key("eventPrivacy")}
             required
             {...form.getInputProps("eventPrivacy")}
@@ -305,14 +317,14 @@ function BookEvent() {
         </Stepper.Step>
         <Stepper.Step label={t("Location Information")}>
           <TextInput
-            label="Address Line"
+            label={t("Address Line")}
             placeholder="123 Main Street"
             key={form.key("address.streetAddress")}
             required
             {...form.getInputProps("address.streetAddress")}
           />
           <Select
-            label="Province"
+            label={t("Province")}
             placeholder="Quebec"
             comboboxProps={{ withinPortal: true }}
             data={provincesFormatted()}
@@ -321,7 +333,7 @@ function BookEvent() {
             {...form.getInputProps("address.state")}
           />
           <Autocomplete
-            label="City"
+            label={t("City")}
             rightSection={cityDataLoading ? <Loader size={12} /> : null}
             data={cityData}
             placeholder="Montreal"
@@ -331,7 +343,7 @@ function BookEvent() {
             {...form.getInputProps("address.city")}
           />
           <TextInput
-            label="Postal Code"
+            label={t("Postal Code")}
             placeholder="H1H 1H1"
             key={form.key("address.zip")}
             required
