@@ -47,6 +47,7 @@ const StudentList: React.FC = () => {
         <table className="users-table">
           <thead>
             <tr>
+              <th>#</th>
               <th>{t('Name')}</th>
               <th>{t('Email')}</th>
               <th>{t('Date of Birth')}</th>
@@ -55,8 +56,9 @@ const StudentList: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {students.map((student) => (
+            {students.map((student, index) => (
               <tr key={student.userId}>
+                <td>{index + 1}</td>
                 <td>
                   {student.firstName} {student.middleName} {student.lastName}
                 </td>
