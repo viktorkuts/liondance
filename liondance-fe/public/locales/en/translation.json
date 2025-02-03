@@ -261,5 +261,12 @@
     "Inactive": "Inactive",
     "Save Changes": "Save Changes",
     "Failed to update promotion. Please try again.": "Failed to update promotion. Please try again.",
-    "Edit Promotion": "Edit Promotion"
+    "Edit Promotion": "Edit Promotion",
+    "Pending Events": "Pending Events",
+    "No pending events found.": "No pending events found.",
+    "Confirmed Events": "Confirmed Events",
+    "No confirmed events found.": "No confirmed events found.",
+    "Cancelled Events": "Cancelled Events",
+    "No cancelled events found.": "No cancelled events found.",
+    "Search events...": "Search events..."
 }

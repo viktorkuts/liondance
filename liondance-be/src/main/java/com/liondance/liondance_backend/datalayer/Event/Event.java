@@ -23,6 +23,7 @@ public class Event {
     @Id
     private String id;
     private String eventId;
+    private String clientId;
     private Address venue;
     private Instant eventDateTime;
     private EventType eventType;
@@ -30,5 +31,4 @@ public class Event {
     private String specialRequest;
     private EventStatus eventStatus;
     private EventPrivacy eventPrivacy;
-    private String clientId;
 }

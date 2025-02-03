@@ -34,6 +34,7 @@ export enum EventPrivacy {
 
 export interface Event {
   eventId?: string;
+  clientId?: string;
   venue: Address;
   eventDateTime: Date;
   eventType: EventType;

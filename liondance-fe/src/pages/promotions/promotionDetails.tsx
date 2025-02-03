@@ -4,7 +4,7 @@ import { Loader } from "@mantine/core";
 import { usePromotionService } from "@/services/promotionService";
 import { Promotion } from "@/models/Promotion";
 import { useTranslation } from "react-i18next";
-import EditPromotionForm from "./editPromotionForm"; // Import the EditPromotionForm
+import EditPromotionForm from "./editPromotionForm";
 import "./promotions.css";
 
 const PromotionDetails: React.FC = () => {
@@ -43,7 +43,8 @@ const PromotionDetails: React.FC = () => {
 
   const handleEditSuccess = () => {
     setIsEditing(false);
-    fetchPromotion(); // Refresh the promotion data
+    fetchPromotion(); 
+
   };
 
   if (loading) return <Loader />;
