@@ -1,6 +1,6 @@
 package com.liondance.liondance_backend.presentationlayer.ClassFeedback;
 
-import com.liondance.liondance_backend.TestSecurityConfig;
+
 import com.liondance.liondance_backend.datalayer.ClassFeedback.ClassFeedbackRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"spring.data.mongodb.port= 0"}, classes = TestSecurityConfig.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"spring.data.mongodb.port= 0"})
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @AutoConfigureWebTestClient
