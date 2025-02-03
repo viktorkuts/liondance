@@ -12,7 +12,7 @@ const ClassFeedbackForm: React.FC  = () => {
   const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const feedbackService = useClassFeedbackService();
-  const { t } = useTranslation;
+  const { t } = useTranslation();
   const form = useForm({
     initialValues: {
       classDate: date ?? "", 
