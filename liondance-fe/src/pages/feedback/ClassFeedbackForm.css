@@ -1,0 +1,22 @@
+.feedback-form-container {
+    width: 50%;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: #ECBA4B;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  h1 {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  button {
+    margin-top: 1rem;
+  }

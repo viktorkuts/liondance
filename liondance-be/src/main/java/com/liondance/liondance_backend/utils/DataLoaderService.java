@@ -916,16 +916,16 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                 .instructorId("eb07c6c6-dc48-489f-aa20-0d7d6fb12448")
                 .cancelledDates(List.of(Instant.parse("2025-12-25T00:00:00Z"), Instant.parse("2025-01-01T00:00:00Z"), Instant.parse("2025-02-14T00:00:00Z")))
                 .build();
-//        Course coursetest = Course.builder()
-//                .courseId("40374c92-6c55-417e-b8bc-9dfb38740255")
-//                .name("Martial Arts")
-//                .userIds(userIds)
-//                .startTime(LocalTime.parse("10:00", DateTimeFormatter.ofPattern("HH:mm")))
-//                .endTime(LocalTime.now().plusMinutes(5))
-//                .dayOfWeek(LocalDate.now().getDayOfWeek())
-//                .instructorId("eb07c6c6-dc48-489f-aa20-0d7d6fb12448")
-//                .cancelledDates(new ArrayList<>())
-//                .build();
+        Course coursetest = Course.builder()
+                .courseId("40374c92-6c55-417e-b8bc-9dfb38740255")
+                .name("Martial Arts")
+                .userIds(userIds)
+                .startTime(Instant.now())
+                .endTime(Instant.now().plus(Duration.ofMinutes(5)))
+                .dayOfWeek(LocalDate.now().getDayOfWeek())
+                .instructorId("eb07c6c6-dc48-489f-aa20-0d7d6fb12448")
+                .cancelledDates(new ArrayList<>())
+                .build();
 
         ArrayList<Event> events = new ArrayList<>();
         events.add(
@@ -1218,7 +1218,7 @@ ArrayList<Promotion> promotions = new ArrayList<>();
         eventRepository.insert(events).subscribe();
         userRepository.insert(students).subscribe();
         courseRepository.insert(course).subscribe();
-//        courseRepository.insert(coursetest).subscribe();
+       courseRepository.insert(coursetest).subscribe();
         promotionRepository.insert(promotions).subscribe();
         feedbackRepository.insert(feedbacks).subscribe();
     }

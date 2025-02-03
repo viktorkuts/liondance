@@ -16,6 +16,7 @@ import PromotionDetails from "./admin/promotionDetails";
 import FeedbackList from "./feedback/feedbackList";
 import UpcomingEvents from "./event/upcomingEvents";
 import ClientList from "@/components/clientList";
+import ClassFeedbackForm from "./feedback/ClassFeedbackForm";
 import ClientRegistration from "./registration/client-registration";
 import CancelCourse from "@/components/cancelCourse";
 
@@ -104,6 +105,11 @@ const pagesData: routerType[] = [
     path: "clients",
     element: <ClientList />,
     title: "Client List",
+  },
+  {
+    path: "classfeedback/:date",
+    element: <ClassFeedbackForm/>,
+    title: "Class Feedback Form",
   },
   {
     path: "courses",

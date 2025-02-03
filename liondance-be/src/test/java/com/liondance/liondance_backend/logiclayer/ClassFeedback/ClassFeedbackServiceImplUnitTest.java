@@ -1,5 +1,7 @@
 package com.liondance.liondance_backend.logiclayer.ClassFeedback;
 
+import com.liondance.liondance_backend.datalayer.ClassFeedback.ClassFeedback;
+import com.liondance.liondance_backend.datalayer.ClassFeedback.ClassFeedbackRepository;
 import com.liondance.liondance_backend.datalayer.Course.Course;
 import com.liondance.liondance_backend.datalayer.Course.CourseRepository;
 import com.liondance.liondance_backend.datalayer.Notification.NotificationType;
@@ -8,6 +10,8 @@ import com.liondance.liondance_backend.datalayer.User.User;
 import com.liondance.liondance_backend.datalayer.User.UserRepository;
 import com.liondance.liondance_backend.logiclayer.Feedback.FeedbackService;
 import com.liondance.liondance_backend.logiclayer.Notification.NotificationService;
+import com.liondance.liondance_backend.presentationlayer.ClassFeedback.ClassFeedbackRequestModel;
+import com.liondance.liondance_backend.presentationlayer.ClassFeedback.ClassFeedbackResponseModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,6 +22,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.Trigger;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import java.time.*;
 import java.util.ArrayList;
@@ -42,7 +48,14 @@ class ClassFeedbackServiceImplUnitTest {
         @InjectMocks
         private ClassFeedbackServiceImpl feedbackService;
 
+        @Mock
+        private ClassFeedbackRepository classFeedbackRepository;
+
         private Course course1;
+
+        private ClassFeedback classFeedback;
+
+        private ClassFeedbackRequestModel requestModel;
 
         @BeforeEach
         void setUp() {
@@ -55,6 +68,18 @@ class ClassFeedbackServiceImplUnitTest {
                     .cancelledDates(new ArrayList<>())
                     .userIds(List.of("student-id-1"))
                     .instructorId("instructor-id-1")
+                    .build();
+         requestModel = ClassFeedbackRequestModel.builder()
+                    .classDate(LocalDate.now())
+                    .score(4.5)
+                    .comment("Great class!")
+                    .build();
+
+         classFeedback = ClassFeedback.builder()
+                    .feedbackId("test-feedback-id")
+                    .classDate(requestModel.getClassDate())
+                    .score(requestModel.getScore())
+                    .comment(requestModel.getComment())
                     .build();
         }
 
@@ -94,12 +119,12 @@ class ClassFeedbackServiceImplUnitTest {
 
 
             feedbackService.sendScheduledFeedbackRequests(course1);
-
+            LocalDate date = LocalDate.now();
 
             Mockito.verify(notificationService, Mockito.times(1)).sendMail(
                     Mockito.eq("student1@example.com"),
                     Mockito.eq("Class Feedback"),
-                    Mockito.contains("https://placeholder.com"),
+                    Mockito.contains("https://fe.dev.kleff.io/classfeedback/"+date),
                     Mockito.eq(NotificationType.STUDENT_AFTER_SESSION)
             );
         }
@@ -113,4 +138,17 @@ class ClassFeedbackServiceImplUnitTest {
 
             Mockito.verify(notificationService, Mockito.never()).sendMail(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
         }
+
+    @Test
+    void addClassFeedback() {
+        Mockito.when(classFeedbackRepository.save(Mockito.any(ClassFeedback.class))).thenReturn(Mono.just(classFeedback));
+
+        Mono<ClassFeedbackResponseModel> result = feedbackService.addClassFeedback(Mono.just(requestModel));
+
+        StepVerifier.create(result)
+                .expectNextMatches(response -> response.getScore().equals(requestModel.getScore()) &&
+                        response.getComment().equals(requestModel.getComment()))
+                .verifyComplete();
+    }
+
     }
