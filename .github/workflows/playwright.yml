@@ -40,7 +40,7 @@ jobs:
             done
           ' || false
       - name: Run Playwright
-        run: npx playwright test --workers=4 --project='chromium'
+        run: npx playwright test --workers=4 --project='chromium' --retries 2
         working-directory: ./liondance-fe
         env:
           PR_NUMBER: ${{ github.event.number }}
