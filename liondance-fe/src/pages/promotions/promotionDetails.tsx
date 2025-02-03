@@ -44,6 +44,7 @@ const PromotionDetails: React.FC = () => {
   const handleEditSuccess = () => {
     setIsEditing(false);
     fetchPromotion(); 
+
   };
 
   if (loading) return <Loader />;
