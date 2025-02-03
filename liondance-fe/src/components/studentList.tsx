@@ -43,11 +43,6 @@ const StudentList: React.FC = () => {
   return (
     <div className="user-list">
       <Title order={1}>{t('Student List')}</Title>
-      <Link to={`/add-new-student`}>
-        <Button className="view-profile-button" variant="outline">
-          {t('Add New Student')}
-        </Button>
-      </Link>
       <MultiSelect
         data={[t('ACTIVE'), t('INACTIVE')]}
         value={statuses}
