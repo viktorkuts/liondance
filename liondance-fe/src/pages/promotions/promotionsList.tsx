@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Loader } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import { usePromotionService } from "@/services/promotionService";
-import { Promotion } from "@/models/Promotions";
+import { Promotion } from "@/models/Promotion";
 import { useTranslation } from "react-i18next";
 import "./promotions.css";
 

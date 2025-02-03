@@ -1,6 +1,7 @@
 package com.liondance.liondance_backend.presentationlayer.Promotion;
 
 import com.liondance.liondance_backend.logiclayer.Promotion.PromotionService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -23,5 +24,11 @@ public class PromotionController {
     @GetMapping("/{promotionId}")
     public Mono<PromotionResponseModel> getPromotionById(@PathVariable String promotionId) {
         return promotionService.getPromotionById(promotionId);
+    }
+
+    @PreAuthorize("hasAuthority('STAFF')")
+    @PatchMapping("/{promotionId}")
+    public Mono<PromotionResponseModel> updatePromotion(@PathVariable String promotionId, @RequestBody PromotionRequestModel promotionRequestModel) {
+        return promotionService.updatePromotion(promotionId, promotionRequestModel);
     }
 }

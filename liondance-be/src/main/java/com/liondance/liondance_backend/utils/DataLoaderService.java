@@ -135,7 +135,8 @@ public class DataLoaderService implements CommandLineRunner {
                                 .state("QC")
                                 .city("Sepolia")
                                 .build())
-                        .roles(EnumSet.of(Role.STUDENT))
+                        .associatedId("google-oauth2|104075868240337554059")
+                        .roles(EnumSet.of(Role.STAFF))
                         .build()
         );
         students.add(

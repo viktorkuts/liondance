@@ -255,6 +255,11 @@
     "ETRANSFER": "VIREMENT ÉLECTRONIQUE",
     "CASH": "COMPTANT",
     "Field is required": "Ce champ est requis",
-    "Back to Home": "Retour à l'accueil"
-
+    "Back to Home": "Retour à l'accueil",
+    "Promotion Name": "Nom de la promotion",
+    "Active": "Actif",
+    "Inactive": "Inactif",
+    "Save Changes": "Enregistrer les modifications",
+    "Failed to update promotion. Please try again.": "Échec de la mise à jour de la promotion. Veuillez réessayer.",
+    "Edit Promotion": "Modification de Promotion"
 }
