@@ -17,6 +17,7 @@ import { Province } from "@/types/geo";
 import { Student } from "@/models/Users";
 import { useUserService } from "@/services/userService";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 function Registration() {
   const { t } = useTranslation();
@@ -231,10 +232,11 @@ function Registration() {
           <DateInput
             rightSection={<Calendar />}
             label={t("Student Date of Birth")}
-            placeholder="January 1, 2000"
+            placeholder={t("January 1, 2000")}
             maxDate={new Date()}
             key={form.key("dob")}
             required
+            locale={i18n.language}
             {...form.getInputProps("dob")}
           />
         </Stepper.Step>

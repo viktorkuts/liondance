@@ -15,7 +15,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Client extends User{
-
     private Instant joinDate;
     private List<String> activeEvents;
     private List<String> pastEvents;

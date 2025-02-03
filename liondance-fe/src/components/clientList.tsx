@@ -39,6 +39,7 @@ const ClientList: React.FC = () => {
         <table className="clientsTable">
           <thead>
             <tr>
+              <th>#</th>
               <th>{t('Name')}</th>
               <th>{t('Email')}</th>
               <th>{t('Phone')}</th>
@@ -46,8 +47,9 @@ const ClientList: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredClients.map((client) => (
+            {filteredClients.map((client, index) => (
               <tr key={client.userId}>
+                <td>{index + 1}</td>
                 <td>
                   {client.firstName} {client.middleName} {client.lastName}
                 </td>

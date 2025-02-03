@@ -2,10 +2,14 @@ package com.liondance.liondance_backend.presentationlayer.Event;
 
 import com.liondance.liondance_backend.datalayer.Event.EventStatus;
 import com.liondance.liondance_backend.logiclayer.Event.EventService;
+import com.liondance.liondance_backend.logiclayer.User.UserService;
+import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -23,9 +27,11 @@ import org.slf4j.LoggerFactory;
 public class EventController {
     private static final Logger logger = LoggerFactory.getLogger(EventController.class);
     private final EventService eventService;
+    private final UserService userService;
 
-    public EventController(EventService eventService) {
+    public EventController(EventService eventService, UserService userService) {
         this.eventService = eventService;
+        this.userService = userService;
     }
 
     @GetMapping
@@ -33,10 +39,14 @@ public class EventController {
         return eventService.getAllEvents();
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping(consumes = "application/json")
-    public Mono<ResponseEntity<EventResponseModel>> bookEvent(@Valid @RequestBody Mono<EventRequestModel> eventRequestModel) {
-        return eventService.bookEvent(eventRequestModel)
-                .map(eventResponseModel -> ResponseEntity.status(HttpStatus.CREATED).body(eventResponseModel));
+    public Mono<ResponseEntity<EventResponseModel>> bookEvent(@Valid @RequestBody Mono<EventRequestModel> eventRequestModel, @AuthenticationPrincipal JwtAuthenticationToken jwt) {
+        return userService.validate(jwt.getName())
+                .flatMap(user ->
+                    eventService.bookEvent(eventRequestModel, user)
+                            .map(eventResponseModel -> ResponseEntity.status(HttpStatus.CREATED).body(eventResponseModel))
+                );
     }
 
     @PreAuthorize("hasAuthority('STAFF')")
@@ -77,12 +87,6 @@ public class EventController {
                     return eventService.rescheduleEvent(eventId, date);
                 })
                 .map(eventResponseModel -> ResponseEntity.ok().body(eventResponseModel));
-    }
-
-    @PreAuthorize("hasAuthority('STAFF')")
-    @GetMapping("/email/{email}")
-    Flux<EventResponseModel> getEventsByEmail(@PathVariable String email) {
-        return eventService.getEventsByEmail(email);
     }
 
     @GetMapping("/filtered-events")

@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.beans.BeanUtils;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Data
@@ -19,24 +20,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EventRequestModel {
-    @NotBlank(message = "firstName is required")
-    private String firstName;
-    private String middleName;
-    @NotBlank(message = "lastName is required")
-    private String lastName;
-    @Email(
-            message = "email is invalid",
-            regexp = "^(?![_.])[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
-            flags = Pattern.Flag.CASE_INSENSITIVE
-    )
-    @NotBlank(message = "email is required")
-    private String email;
-    @NotBlank(message = "phone is required")
-    private String phone;
     @NotNull(message = "address is required")
-    private Address address;
+    private Address venue;
     @NotNull(message = "eventDateTime is required")
-    private LocalDateTime eventDateTime;
+    private Instant eventDateTime;
     @NotNull(message = "eventType is required")
     private EventType eventType;
     @NotNull(message = "paymentMethod is required")

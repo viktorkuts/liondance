@@ -1,12 +1,11 @@
 package com.liondance.liondance_backend.presentationlayer.User;
 
-import com.liondance.liondance_backend.TestSecurityConfig;
 import com.liondance.liondance_backend.datalayer.Course.Course;
 import com.liondance.liondance_backend.datalayer.Course.CourseRepository;
 import com.liondance.liondance_backend.datalayer.User.*;
 import com.liondance.liondance_backend.datalayer.common.Address;
-import com.liondance.liondance_backend.logiclayer.User.UserService;
 import com.liondance.liondance_backend.presentationlayer.Course.CourseResponseModel;
+import com.liondance.liondance_backend.utils.WebTestAuthConfig;
 import com.liondance.liondance_backend.utils.exceptions.EmailInUse;
 import com.liondance.liondance_backend.utils.exceptions.InvalidInputException;
 import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
@@ -18,9 +17,7 @@ import org.reactivestreams.Publisher;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
-import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -35,7 +32,7 @@ import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"spring.data.mongodb.port= 0"}, classes = TestSecurityConfig.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"spring.data.mongodb.port= 0"})
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @AutoConfigureWebTestClient
@@ -48,6 +45,23 @@ class UserControllerIntegrationTest {
 
     @Autowired
     private WebTestClient client;
+
+    User staff = Client.builder()
+            .userId(UUID.randomUUID().toString())
+            .firstName("JaneStaff")
+            .lastName("DoeStaff")
+            .email("liondance@yopmail.com")
+            .phone("1234567890")
+            .address(
+                    new Address(
+                            "1234 Main St.",
+                            "Springfield",
+                            "Quebec",
+                            "J2X 2J4")
+            )
+            .roles(EnumSet.of(Role.STAFF, Role.ADMIN))
+            .associatedId("thetesterstaff")
+            .build();
 
     Course course1 = Course.builder()
             .courseId("1")
@@ -135,7 +149,10 @@ class UserControllerIntegrationTest {
 
     @Test
     void whenGetAllUsers_thenReturnUserResponseModels() {
-        client.get()
+        client
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .get()
                 .uri("/api/v1/users")
                 .exchange()
                 .expectStatus().isOk()
@@ -163,7 +180,10 @@ class UserControllerIntegrationTest {
                 )
                 .build();
 
-        client.post()
+        client
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .post()
                 .uri("/api/v1/students")
                 .bodyValue(rq)
                 .exchange()
@@ -193,7 +213,10 @@ class UserControllerIntegrationTest {
         RegistrationStatusPatchRequestModel rq = RegistrationStatusPatchRequestModel.builder()
                 .registrationStatus(RegistrationStatus.ACTIVE)
                 .build();
-        client.patch()
+        client
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .patch()
                 .uri("/api/v1/students/7876ea26-3f76-4e50-870f-5e5dad6d63d2/registration-status")
                 .bodyValue(rq)
                 .exchange()
@@ -211,7 +234,10 @@ class UserControllerIntegrationTest {
         RegistrationStatusPatchRequestModel rq = RegistrationStatusPatchRequestModel.builder()
                 .registrationStatus(RegistrationStatus.ACTIVE)
                 .build();
-        client.patch()
+        client
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .patch()
                 .uri("/api/v1/students/7876ea26-3f76-4e50-870f-5e5dad6d63d1/registration-status")
                 .bodyValue(rq)
                 .exchange()
@@ -224,7 +250,10 @@ class UserControllerIntegrationTest {
         RegistrationStatusPatchRequestModel rq = RegistrationStatusPatchRequestModel.builder()
                 .registrationStatus(RegistrationStatus.ACTIVE)
                 .build();
-        client.patch()
+        client
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .patch()
                 .uri("/api/v1/students/{studentId}/registration-status", studentId)
                 .bodyValue(rq)
                 .exchange()
@@ -238,7 +267,10 @@ class UserControllerIntegrationTest {
         RegistrationStatusPatchRequestModel rq = RegistrationStatusPatchRequestModel.builder()
                 .registrationStatus(RegistrationStatus.ACTIVE)
                 .build();
-        client.patch()
+        client
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .patch()
                 .uri("/api/v1/students/{studentId}/registration-status", userId)
                 .bodyValue(rq)
                 .exchange()
@@ -251,7 +283,10 @@ class UserControllerIntegrationTest {
         RegistrationStatusPatchRequestModel rq = RegistrationStatusPatchRequestModel.builder()
                 .registrationStatus(RegistrationStatus.INACTIVE)
                 .build();
-        client.patch()
+        client
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .patch()
                 .uri("/api/v1/students/{studentId}/registration-status", student2.getUserId())
                 .bodyValue(rq)
                 .exchange()
@@ -264,7 +299,7 @@ class UserControllerIntegrationTest {
                     assertEquals(RegistrationStatus.INACTIVE, student.getRegistrationStatus());
                 });
         await().untilAsserted(() -> {
-            StepVerifier.create(userRepository.findById(student2.getUserId()))
+            StepVerifier.create(userRepository.findByUserId(student2.getUserId()))
                     .expectNextCount(0)
                     .verifyComplete();
         });
@@ -286,7 +321,10 @@ class UserControllerIntegrationTest {
                 )
                 .build();
 
-        client.post()
+        client
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .post()
                 .uri("/api/v1/students")
                 .bodyValue(rq)
                 .exchange()
@@ -298,7 +336,10 @@ class UserControllerIntegrationTest {
     void whenGetAllStudentsByRegistrationStatuses_thenReturnStudentResponseModels() {
 
 
-        client.get()
+        client
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .get()
                 .uri("/api/v1/students/status?statuses=PENDING")
                 .exchange()
                 .expectStatus().isOk()
@@ -320,7 +361,10 @@ class UserControllerIntegrationTest {
 
     @Test
     void whenGetCoursesByStudentIdWithValidStudent_ReturnCourses() {
-        client.get()
+        client
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .get()
                 .uri("/api/v1/students/{studentId}/courses", student1.getUserId())
                 .exchange()
                 .expectStatus().isOk()
@@ -345,7 +389,10 @@ class UserControllerIntegrationTest {
 
     @Test
     void whenGetCoursesByStudentIdWithInvalidStudent_ReturnNotFound() {
-        client.get()
+        client
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .get()
                 .uri("/api/v1/students/{studentId}/courses", "invalid")
                 .exchange()
                 .expectStatus().isNotFound();
@@ -353,7 +400,10 @@ class UserControllerIntegrationTest {
 
     @Test
     void whenGetPendingStudentById_thenReturnStudentResponseModel() {
-        client.get()
+        client
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .get()
                 .uri("/api/v1/students/pending/7876ea26-3f76-4e50-870f-5e5dad6d63d2")
                 .exchange()
                 .expectStatus().isOk()
@@ -367,7 +417,10 @@ class UserControllerIntegrationTest {
 
     @Test
     void whenGetPendingStudentByInvalidId_thenThrowNotFoundException() {
-        client.get()
+        client
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .get()
                 .uri("/api/v1/students/pending/7876ea26-3f76-4e50-870f-5e5dad6d63d1a")
                 .exchange()
                 .expectStatus().isNotFound()
@@ -395,7 +448,10 @@ class UserControllerIntegrationTest {
                         .build())
                 .build();
 
-        client.put()
+        client
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .put()
                 .uri("/api/v1/users/97e64875-97b1-4ada-b370-6609b6e518ac")
                 .bodyValue(updatedUser)
                 .exchange()
@@ -411,7 +467,10 @@ class UserControllerIntegrationTest {
     @Test
     void whenGetUserByUserIdWithValidId_thenReturnUserResponseModel() {
         String userId = "7876ea26-3f76-4e50-870f-5e5dad6d63d1";
-        client.get()
+        client
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .get()
                 .uri("/api/v1/users/{userId}", userId)
                 .exchange()
                 .expectStatus().isOk()
@@ -426,7 +485,10 @@ class UserControllerIntegrationTest {
     @Test
     void whenGetUserByUserIdWithInvalidId_thenThrowNotFoundException() {
         String userId = "7876ea26-3f76-4e50-870f-5e5dad6d63d1o";
-        client.get()
+        client
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .get()
                 .uri("/api/v1/users/{userId}", userId)
                 .exchange()
                 .expectStatus().isNotFound()
@@ -437,7 +499,10 @@ class UserControllerIntegrationTest {
     @Test
     void whenGetStudentByIdWithValidId_thenReturnStudentResponseModel() {
         String studentId = "7876ea26-3f76-4e50-870f-5e5dad6d63d1";
-        client.get()
+        client
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .get()
                 .uri("/api/v1/students/{studentId}", studentId)
                 .exchange()
                 .expectStatus().isOk()
@@ -456,7 +521,10 @@ class UserControllerIntegrationTest {
     @Test
     void whenGetStudentByIdWithInvalidId_thenThrowNotFoundException() {
         String invalidStudentId = "7876ea26-3f76-4e50-870f-5e5dad6d63da";
-        client.get()
+        client
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .get()
                 .uri("/api/v1/students/{studentId}", invalidStudentId)
                 .exchange()
                 .expectStatus().isNotFound()
@@ -482,7 +550,10 @@ class UserControllerIntegrationTest {
                         .build())
                 .build();
 
-        client.put()
+        client
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .put()
                 .uri("/api/v1/students/{studentId}", student1.getUserId())
                 .bodyValue(rq)
                 .exchange()
@@ -517,7 +588,10 @@ class UserControllerIntegrationTest {
                         .build())
                 .build();
 
-        client.put()
+        client
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .put()
                 .uri("/api/v1/students/{studentId}", userId)
                 .bodyValue(rq)
                 .exchange()
@@ -531,7 +605,10 @@ class UserControllerIntegrationTest {
                 .roles(Collections.singletonList(Role.ADMIN))
                 .build();
 
-        client.patch()
+        client
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .patch()
                 .uri("/api/v1/users/" + user1.getUserId() + "/role")
                 .bodyValue(rolePatchRequest)
                 .exchange()
@@ -553,7 +630,10 @@ class UserControllerIntegrationTest {
                 .roles(Collections.singletonList(Role.ADMIN))
                 .build();
 
-        client.patch()
+        client
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .patch()
                 .uri("/api/v1/users/nonexistent-user-id/role")
                 .bodyValue(rolePatchRequest)
                 .exchange()
@@ -579,7 +659,10 @@ class UserControllerIntegrationTest {
                 .phone("123-456-7890")
                 .build();
 
-        client.post()
+        client
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .post()
                 .uri("/api/v1/users?role=CLIENT")
                 .bodyValue(newUserRequest)
                 .exchange()
@@ -609,7 +692,10 @@ class UserControllerIntegrationTest {
                 .phone("123-456-7890")
                 .build();
 
-        client.post()
+        client
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .post()
                 .uri("/api/v1/users?role=CLIENT")
                 .bodyValue(newUserRequest)
                 .exchange()

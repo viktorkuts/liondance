@@ -1,5 +1,5 @@
 import { Anchor, Image } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import classes from "./navbar.module.css";
 import logo from "../../assets/logo.png";
@@ -17,10 +17,6 @@ function Navbar() {
 
   const { loginWithRedirect, logout, isAuthenticated } = useAuth0();
   const { user } = useUserContext();
-
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
 
   return (
     <div className={classes.navbar}>
@@ -47,7 +43,7 @@ function Navbar() {
           {t('Book Event')}
         </Anchor>
         {user && user.roles?.includes(Role.CLIENT) ? (
-          <Anchor href="/events/email/:email" fw={1000} fz="h2">
+          <Anchor href="/events" fw={1000} fz="h2">
             {t('Your Events')}
           </Anchor>
         ) : null}

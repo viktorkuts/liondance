@@ -1,63 +1,98 @@
 .events-container {
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    align-items: center;
-  }
-  
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+
+.event-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 800px;
+  padding: 30px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #ECBA4B;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); 
+  transition: box-shadow 0.3s ease; 
+  flex-direction: row; /* Ensure the content is in a row */
+}
+
+.event-card:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+.event-info {
+  flex: 1;
+  padding-right: 20px; /* Adjust padding as needed */
+}
+
+.event-header {
+  font-size: 28px;
+  color: #d10000;
+  font-weight: bold;
+}
+
+.event-details {
+  margin-top: 15px; 
+}
+
+.event-detail {
+  margin: 8px 0; 
+  font-size: 22px; 
+  color: #333; 
+}
+
+.event-privacy {
+  font-weight: bold;
+  color: #007BFF;
+}
+
+.event-image {
+  width: 320px;
+  flex-shrink: 0;
+  margin-left: 0px;
+  margin-right: 20px;
+}
+
+.event-type-image {
+  width: 320px; 
+  height: 213px; 
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+@media (max-width: 768px) {
   .event-card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 55%;
-    padding: 30px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #ECBA4B;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); 
-    transition: box-shadow 0.3s ease; 
+    flex-direction: column;
+    align-items: flex-start;
   }
-  
-  .event-card:hover {
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-  }
-  
-  .event-info {
-    flex: 1;
-    padding-right: 340px; 
-  }
-  
-  .event-header {
-    font-size: 28px;
-    color: #d10000;
-    font-weight: bold;
-  }
-  
-  .event-details {
-    margin-top: 15px; 
-  }
-  
-  .event-detail {
-    margin: 8px 0; 
-    font-size: 22px; 
-    color: #333; 
-  }
-  
-  .event-privacy {
-    font-weight: bold;
-    color: #007BFF;
-  }
-  
+
   .event-image {
-    width: 320px;
-    flex-shrink: 0;
-    margin-left: 60px; 
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 20px;
   }
-  
+
   .event-type-image {
-    width: 320px; 
-    height: 213px; 
-    object-fit: cover;
-    border-radius: 8px;
+    width: 100%;
+    height: auto;
   }
+
+  .event-info {
+    padding-right: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .event-header {
+    font-size: 24px;
+  }
+
+  .event-detail {
+    font-size: 18px;
+  }
+}

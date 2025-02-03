@@ -2,6 +2,11 @@ import { useEffect, useState } from "react";
 import { useAxiosInstance } from "../../utils/axiosInstance";
 import { UpcomingEvent } from "@/models/UpcomingEvent.ts";
 import { useTranslation } from "react-i18next";
+import weddingImage from "@/assets/Images/wedding.jpg";
+import paradeImage from "@/assets/Images/parade.jpg";
+import festivalImage from "@/assets/Images/festival.jpg";
+import birthdayImage from "@/assets/Images/birthday.jpg";
+import otherImage from "@/assets/Images/other.jpg";
 import "./upcomingEvents.css";
 
 function UpcomingEvents() {
@@ -37,15 +42,15 @@ function UpcomingEvents() {
   if (error) return <div className="error">{error}</div>;
 
   const eventTypeImages = {
-    WEDDING: "/src/assets/Images/wedding.jpg",
-    PARADE: "/src/assets/Images/parade.jpg",
-    FESTIVAL: "/src/assets/Images/festival.jpg",
-    BIRTHDAY: "/src/assets/Images/birthday.jpg",
-    OTHER: "/src/assets/Images/other.jpg"
+    WEDDING: weddingImage,
+    PARADE: paradeImage,
+    FESTIVAL: festivalImage,
+    BIRTHDAY: birthdayImage,
+    OTHER: otherImage
   };
 
   return (
-    <div className="events-container"> {/* New wrapper */}
+    <div className="events-container">
       {events.length > 0 ? events.map((event, index) => (
         <div key={event.eventId || `event-${index}`} className="event-card">
           <div className="event-info"> 

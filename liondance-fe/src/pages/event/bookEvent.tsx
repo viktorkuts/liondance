@@ -14,19 +14,27 @@ import { DateInput } from "@mantine/dates";
 import geoService from "@/services/geoService";
 import { Province } from "@/types/geo";
 import classes from "./booking.module.css";
-import { IMaskInput } from "react-imask";
-import { InputBase } from "@mantine/core";
-import { EventType, Event, PaymentMethod, EventStatus, EventPrivacy } from "@/models/Event";
+
+import {
+  EventType,
+  Event,
+  PaymentMethod,
+  EventStatus,
+  EventPrivacy,
+} from "@/models/Event";
 import { useEventService } from "@/services/eventService";
+import { useUserContext } from "@/utils/userProvider";
+import { useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
 
 function BookEvent() {
-  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { user, isLoading } = useUserContext();
+
+  const { t, i18n } = useTranslation();
   const eventService = useEventService();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
-  const [emailData, setEmailData] = useState<string[]>([]);
-  const [emailDataLoading, setEmailDataLoading] = useState<boolean>(false);
   const [cityData, setCityData] = useState<string[]>([]);
   const [cityDataLoading, setCityDataLoading] = useState<boolean>(false);
   const [activeStep, setActiveStep] = useState(0);
@@ -60,7 +68,7 @@ function BookEvent() {
       form.setFieldValue("eventDateTime", combinedDateTime);
       form.clearFieldError("eventDateTime");
     } else {
-      form.setFieldValue("eventDateTime", ""); 
+      form.setFieldValue("eventDateTime", "");
       form.setFieldError("eventDateTime", "Both date and time are required");
     }
   };
@@ -72,15 +80,17 @@ function BookEvent() {
     run();
   }, []);
 
+  useEffect(() => {
+    if (!isLoading && user == null) {
+      navigate("/client-registration");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, isLoading]);
+
   const form = useForm({
     mode: "controlled",
     initialValues: {
-      firstName: "",
-      middleName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      address: {
+      venue: {
         streetAddress: "",
         city: "",
         state: "",
@@ -94,21 +104,12 @@ function BookEvent() {
     },
 
     validate: {
-      firstName: (value) => (value.length > 0 ? null : "Field is required"),
-      lastName: (value) => (value.length > 0 ? null : "Field is required"),
-      email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
-      phone: (value) =>
-        value && value.length > 0
-          ? /\(\d{3}\) \d{3}-\d{4}$/.test(value)
-            ? null
-            : "Invalid phone number format"
-          : "Field is required",
       eventDateTime: (value) =>
         value && value.length > 0 ? null : "Both date and time are required",
       eventType: (value) => (value.length > 0 ? null : "Field is required"),
       paymentMethod: (value) => (value.length > 0 ? null : "Field is required"),
       eventPrivacy: (value) => (value.length > 0 ? null : "Field is required"),
-      address:
+      venue:
         (activeStep === 1 && {
           streetAddress: (value) =>
             value.length > 0 ? null : "Field is required",
@@ -123,28 +124,12 @@ function BookEvent() {
     },
   });
 
-  form.watch("email", ({ value }) => {
-    setEmailDataLoading(true);
-
-    if (value.trim().length === 0 || value.includes("@")) {
-      setEmailDataLoading(false);
-    } else {
-      setEmailDataLoading(true);
-      setEmailData(
-        ["gmail.com", "outlook.com", "hotmail.com", "yahoo.com"].map(
-          (prov) => `${value}@${prov}`
-        )
-      );
-      setEmailDataLoading(false);
-    }
-  });
-
-  form.watch("address.state", ({ value }) => {
+  form.watch("venue.state", ({ value }) => {
     const code = provinces.find((provinceObj) => provinceObj.name === value);
     setSelectedProvince(code ? code.code : "");
   });
 
-  form.watch("address.city", ({ value }) => {
+  form.watch("venue.city", ({ value }) => {
     setCityDataLoading(true);
 
     if (value.trim().length === 0) {
@@ -180,12 +165,7 @@ function BookEvent() {
     setActiveStep(4);
     const values = form.getValues();
     const newEvent: Event = {
-      firstName: values.firstName,
-      middleName: values.middleName,
-      lastName: values.lastName,
-      email: values.email,
-      phone: values.phone,
-      address: values.address,
+      venue: values.venue,
       eventDateTime: new Date(values.eventDateTime),
       eventType: values.eventType as EventType,
       paymentMethod: values.paymentMethod as PaymentMethod,
@@ -205,51 +185,10 @@ function BookEvent() {
       <h1>{t("Event Registration Form")}</h1>
       <Stepper active={activeStep}>
         <Stepper.Step label={t("Event Information")}>
-          <TextInput
-            label={t("First Name")}
-            placeholder="John"
-            key={form.key("firstName")}
-            required
-            {...form.getInputProps("firstName")}
-          />
-          <TextInput
-            label={t("Middle Name")}
-            placeholder="Z."
-            key={form.key("middleName")}
-            {...form.getInputProps("middleName")}
-          />
-          <TextInput
-            label={t("Last Name")}
-            placeholder="Doe"
-            key={form.key("lastName")}
-            required
-            {...form.getInputProps("lastName")}
-          />
-          <Autocomplete
-            rightSection={emailDataLoading ? <Loader size={12} /> : null}
-            data={emailData}
-            label="E-Mail"
-            placeholder="john.doe@example.com"
-            key={form.key("email")}
-            required
-            {...form.getInputProps("email")}
-          />
-          <InputBase
-            label="Phone Number"
-            placeholder="(123) 456-7890"
-            component={IMaskInput}
-            mask="(000) 000-0000"
-            {...form.getInputProps("phone", { withError: true })} 
-            onAccept={(value: string) => {
-              form.setFieldValue("phone", value); 
-              form.validateField("phone"); 
-            }}
-            required
-          />
           <DateInput
-            label="Event Date"
-            placeholder="Pick a date"
-            minDate={dayjs().add(14, "day").toDate()} 
+            label={t("Event Date")}
+            placeholder={t("Pick a date")}
+            minDate={dayjs().add(14, "day").toDate()}
             value={selectedDate}
             onChange={(date) => {
               setSelectedDate(date);
@@ -257,47 +196,58 @@ function BookEvent() {
             }}
             error={form.errors.eventDateTime}
             required
-          />
+            locale={i18n.language}
+            />
 
-          <Select
-            label="Event Time"
-            placeholder="Select a time"
+            <Select
+            label={t("Event Time")}
+            placeholder={t("Select a time")}
             data={timeOptions}
             value={selectedTime}
             onChange={(time) => {
               setSelectedTime(time);
-              combineDateTime(selectedDate, time); 
+              combineDateTime(selectedDate, time);
             }}
             error={form.errors.eventDateTime}
             required
           />
 
-          <Select
-            label="Event Type"
-            placeholder="Wedding"
-            data={Object.values(EventType)}
-            key={form.key("eventType")}
-            required
+              <Select
+              label={t("Event Type")}
+              placeholder={t("Wedding")}
+              data={Object.values(EventType).map((type) => ({
+                value: type,
+                label: t(type),
+              }))}
+              key={form.key("eventType")}
+              required
             {...form.getInputProps("eventType")}
-          />
-          <Select
-            label="Payment Method"
-            placeholder="Cash"
-            data={Object.values(PaymentMethod)}
+            />
+            
+            <Select
+            label={t("Payment Method")}
+            placeholder={t("Cash")}
+            data={Object.values(PaymentMethod).map((method) => ({
+              value: method,
+              label: t(method),
+            }))}
             key={form.key("paymentMethod")}
             required
             {...form.getInputProps("paymentMethod")}
-          />
-          <TextInput
-            label="Special Request"
-            placeholder="Request..."
+            />
+            <TextInput
+            label={t("Special Request")}
+            placeholder={t("Request...")}
             key={form.key("specialRequest")}
             {...form.getInputProps("specialRequest")}
-          />
-          <Select
-            label="Event Privacy"
-            placeholder="PRIVATE"
-            data={Object.values(EventPrivacy)}
+            />
+            <Select
+            label={t("Event Privacy")}
+            placeholder={t("PRIVATE")}
+            data={Object.values(EventPrivacy).map((privacy) => ({
+              value: privacy,
+              label: t(privacy),
+            }))}
             key={form.key("eventPrivacy")}
             required
             {...form.getInputProps("eventPrivacy")}
@@ -305,71 +255,63 @@ function BookEvent() {
         </Stepper.Step>
         <Stepper.Step label={t("Location Information")}>
           <TextInput
-            label="Address Line"
+            label={t("Address Line")}
             placeholder="123 Main Street"
-            key={form.key("address.streetAddress")}
+            key={form.key("venue.streetAddress")}
             required
-            {...form.getInputProps("address.streetAddress")}
+            {...form.getInputProps("venue.streetAddress")}
           />
           <Select
-            label="Province"
+            label={t("Province")}
             placeholder="Quebec"
             comboboxProps={{ withinPortal: true }}
             data={provincesFormatted()}
-            key={form.key("address.state")}
+            key={form.key("venue.state")}
             required
-            {...form.getInputProps("address.state")}
+            {...form.getInputProps("venue.state")}
           />
           <Autocomplete
-            label="City"
+            label={t("City")}
             rightSection={cityDataLoading ? <Loader size={12} /> : null}
             data={cityData}
             placeholder="Montreal"
-            key={form.key("address.city")}
+            key={form.key("venue.city")}
             limit={10}
             required
-            {...form.getInputProps("address.city")}
+            {...form.getInputProps("venue.city")}
           />
           <TextInput
-            label="Postal Code"
+            label={t("Postal Code")}
             placeholder="H1H 1H1"
-            key={form.key("address.zip")}
+            key={form.key("venue.zip")}
             required
-            {...form.getInputProps("address.zip")}
+            {...form.getInputProps("venue.zip")}
           />
         </Stepper.Step>
         <Stepper.Step label={t("Confirmation")}>
           <div className={classes.completedForm}>
             <h2>Does this information look correct?</h2>
             <p>
-              Name: {form.getValues().firstName} {form.getValues().lastName}
-            </p>
-            <p>Email: {form.getValues().email}</p>
-            <p>Phone: {form.getValues().phone}</p>
-            <p>
-              Location: {form.getValues().address.streetAddress},{" "}
-              {form.getValues().address.city}, {form.getValues().address.state},{" "}
-              {form.getValues().address.zip}
+              Location: {form.getValues().venue.streetAddress},{" "}
+              {form.getValues().venue.city}, {form.getValues().venue.state},{" "}
+              {form.getValues().venue.zip}
             </p>
             <p>
-              Event Date: {dayjs(form.getValues().eventDateTime).format("MMMM D, YYYY")}
-              </p>
-              <p>
-              Event Time: {dayjs(form.getValues().eventDateTime).format("h:mm A")}
-              </p>
-              <p>
-              Event Privacy: {form.getValues().eventPrivacy}
-             </p>
+              Event Date:{" "}
+              {dayjs(form.getValues().eventDateTime).format("MMMM D, YYYY")}
+            </p>
+            <p>
+              Event Time:{" "}
+              {dayjs(form.getValues().eventDateTime).format("h:mm A")}
+            </p>
+            <p>Event Privacy: {form.getValues().eventPrivacy}</p>
           </div>
         </Stepper.Step>
         <Stepper.Completed>
           {activeStep === 4 && (
             <div className={classes.completedForm}>
               <h2>Request Submitted!</h2>
-              <p>
-                Thank you for choosing the LVH Lion Dance Team,{" "}
-                {form.getValues().firstName}!
-              </p>
+              <p>Thank you for choosing the LVH Lion Dance Team!</p>
               <p>
                 We will be in touch with you shortly to confirm your booking
                 request. Please check your email inbox for updates.

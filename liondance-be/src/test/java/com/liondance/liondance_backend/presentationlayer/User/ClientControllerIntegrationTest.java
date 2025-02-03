@@ -1,10 +1,12 @@
 package com.liondance.liondance_backend.presentationlayer.User;
 
-import com.liondance.liondance_backend.TestSecurityConfig;
+import com.liondance.liondance_backend.datalayer.User.Client;
 import com.liondance.liondance_backend.datalayer.User.Role;
 import com.liondance.liondance_backend.datalayer.User.User;
 import com.liondance.liondance_backend.datalayer.User.UserRepository;
+import com.liondance.liondance_backend.datalayer.common.Address;
 import com.liondance.liondance_backend.logiclayer.User.UserService;
+import com.liondance.liondance_backend.utils.WebTestAuthConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -18,8 +20,9 @@ import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
 import java.util.EnumSet;
+import java.util.UUID;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"spring.data.mongodb.port= 0"}, classes = TestSecurityConfig.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"spring.data.mongodb.port= 0"})
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @AutoConfigureWebTestClient
@@ -28,6 +31,23 @@ public class ClientControllerIntegrationTest {
     private WebTestClient webTestClient;
     @Autowired
     private UserRepository userRepository;
+
+    User staff = Client.builder()
+            .userId(UUID.randomUUID().toString())
+            .firstName("JaneStaff")
+            .lastName("DoeStaff")
+            .email("liondance@yopmail.com")
+            .phone("1234567890")
+            .address(
+                    new Address(
+                            "1234 Main St.",
+                            "Springfield",
+                            "Quebec",
+                            "J2X 2J4")
+            )
+            .roles(EnumSet.of(Role.STAFF))
+            .associatedId("thetesterstaff")
+            .build();
 
     private final User client1 = User.builder()
             .userId("c56a8e9d-4362-42c8-965d-2b8b98f9f4d9")
@@ -43,6 +63,7 @@ public class ClientControllerIntegrationTest {
             .email("bob.lee@someplace.com")
             .roles(EnumSet.of(Role.CLIENT))
             .build();
+
     @Autowired
     private UserService userService;
 
@@ -59,6 +80,8 @@ public class ClientControllerIntegrationTest {
     void getAllClients_returnsClients_whenClientsExist() {
 
         webTestClient
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
                 .get()
                 .uri("/api/v1/clients")
                 .exchange()

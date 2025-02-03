@@ -179,6 +179,7 @@
     "BIRTHDAY": "ANNIVERSAIRE",
     "WEDDING": "MARIAGE",
     "FESTIVAL": "FESTIVAL",
+    "PARADE": "PARADE",
     "PUBLIC": "PUBLIC",
     "PRIVATE": "PRIVÉ",
     "CONFIRMED": "CONFIRMÉ",
@@ -232,7 +233,6 @@
     "Student Last Name": "Nom de famille de l'étudiant",
     "Submission complete!": "Soumission terminée !",
     "Please check your inbox (sometimes in junk or spam) for a confirmation!": "Veuillez vérifier votre boîte de réception (parfois dans les courriers indésirables ou spam) pour une confirmation !",
-    "Back to Home": "Retour à l'accueil",
     "Class Feedback Form": "Formulaire de retour sur le cours",
     "Score (1-5)": "Note (1-5)",
     "Comments (Optional)": "Commentaires (Optionnel)",
@@ -240,5 +240,21 @@
     "Submit Feedback": "Soumettre des commentaires",
     "Feedback submitted successfully!": "Retour soumis avec succès!",
     "Failed to submit feedback. Please try again.": "Échec de la soumission des commentaires. Veuillez réessayer.",
-    "Score must be between 1 and 5": "La note doit être comprise entre 1 et 5"    
+    "Score must be between 1 and 5": "La note doit être comprise entre 1 et 5",
+    "E-Mail": "E-Mail",
+    "Event Date": "Date de l'événement",
+    "Event Time": "Heure de l'événement",
+    "Pick a date": "Choisissez une date",
+    "Select a time": "Sélectionnez une heure",
+    "Wedding": "Mariage",
+    "Cash": "Comptant",
+    "Request...": "Demande...",
+    "PAYPAL": "PAYPAL",
+    "CREDIT": "CRÉDIT",
+    "DEBIT": "DÉBIT",
+    "ETRANSFER": "VIREMENT ÉLECTRONIQUE",
+    "CASH": "COMPTANT",
+    "Field is required": "Ce champ est requis",
+    "Back to Home": "Retour à l'accueil"
+
 }

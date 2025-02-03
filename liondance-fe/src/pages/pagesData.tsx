@@ -9,7 +9,7 @@ import AddNewUser from "./admin/AddNewUser";
 import StudentList from "../components/studentList";
 import StudentProfile from "../components/studentProfile";
 import GetAllEvents from "./event/eventsList";
-import GetEventsByEmail from "./event/clientEventPage";
+import ClientEventPage from "./event/clientEventPage";
 import BookEvent from "./event/bookEvent";
 import PromotionsList from "./admin/promotionsList";
 import PromotionDetails from "./admin/promotionDetails";
@@ -17,6 +17,7 @@ import FeedbackList from "./feedback/feedbackList";
 import UpcomingEvents from "./event/upcomingEvents";
 import ClientList from "@/components/clientList";
 import ClassFeedbackForm from "./feedback/ClassFeedbackForm";
+import ClientRegistration from "./registration/client-registration";
 import CancelCourse from "@/components/cancelCourse";
 
 const pagesData: routerType[] = [
@@ -66,9 +67,9 @@ const pagesData: routerType[] = [
     title: "Student Profile",
   },
   {
-    path:"add-new-user",
+    path: "add-new-user",
     element: <AddNewUser />,
-    title:"Add Users"
+    title: "Add Users",
   },
   {
     path: "events",
@@ -77,13 +78,13 @@ const pagesData: routerType[] = [
   },
   {
     path: "promotions",
-    element: <PromotionsList/>,
-    title: "Promotions"
+    element: <PromotionsList />,
+    title: "Promotions",
   },
   {
-    path:"promotions/:promotionId",
-    element: <PromotionDetails/>,
-    title: "Promotion Details"
+    path: "promotions/:promotionId",
+    element: <PromotionDetails />,
+    title: "Promotion Details",
   },
   {
     path: "filtered-events",
@@ -91,10 +92,9 @@ const pagesData: routerType[] = [
     title: "Upcoming Events",
   },
   {
-
-    path: "events/email/:email",
-    element: <GetEventsByEmail email={"Sarah.Smith@myfunnywebsite.org"} />, //hardcoded until authentication is implemented
-    title: "Events by Email"
+    path: "events",
+    element: <ClientEventPage />,
+    title: "My Events",
   },
   {
     path: "feedbacks/:eventId",
@@ -115,8 +115,12 @@ const pagesData: routerType[] = [
     path: "courses",
     element: <CancelCourse />,
     title: "Courses",
-  }
-
+  },
+  {
+    path: "client-registration",
+    element: <ClientRegistration />,
+    title: "Client Registration Form",
+  },
 ];
 
 export default pagesData;

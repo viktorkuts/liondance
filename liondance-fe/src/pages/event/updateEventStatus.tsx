@@ -26,7 +26,7 @@ const UpdateEventStatus: React.FC<UpdateEventStatusProps> = ({
     setLoading(true);
     try {
       const response = await axiosInstance.patch<Event>(
-        `/events/${event.id}/status`,
+        `/events/${event.eventId}/status`,
         { eventStatus: newStatus }
       );
       onUpdate(response.data);

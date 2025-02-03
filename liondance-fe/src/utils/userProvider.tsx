@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 
 interface UserContextInterface {
   user: User | undefined;
+  isLoading: boolean;
 }
 
 const UserContext = createContext<UserContextInterface | undefined>(undefined);
@@ -28,8 +29,10 @@ export const UserProvider = ({ children }: Props) => {
   const userService = useUserService();
   const { user, isAuthenticated } = useAuth0();
   const [lvhUser, setLvhUser] = useState<User | undefined>();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    setIsLoading(true);
     if (isAuthenticated && user) {
       userService
         .getSessionUser()
@@ -43,12 +46,13 @@ export const UserProvider = ({ children }: Props) => {
           console.log(t("Error fetching session user"));
         });
     }
+    setIsLoading(false);
     // only run the call if the auth0 state changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, isAuthenticated]);
 
   return (
-    <UserContext.Provider value={{ user: lvhUser }}>
+    <UserContext.Provider value={{ user: lvhUser, isLoading: isLoading }}>
       {children}
     </UserContext.Provider>
   );

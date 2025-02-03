@@ -21,7 +21,7 @@ public class FeedbackServiceImpl implements FeedbackService {
     public Flux<FeedbackResponseModel> getFeedbackByEventId(String eventId) {
         return feedbackRepository.findAll()
                 .filter(feedback -> feedback.getEventId().equals(eventId))
-                .flatMap(feedback -> eventRepository.findById(feedback.getEventId())
+                .flatMap(feedback -> eventRepository.findEventByEventId(feedback.getEventId())
                         .map(event -> FeedbackResponseModel.from(feedback).toBuilder().event(event).build()))
                 .cast(FeedbackResponseModel.class)
                 .switchIfEmpty(Mono.error(new NotFoundException("No feedback found for event ID: " + eventId)));
