@@ -3,6 +3,11 @@ package com.liondance.liondance_backend.presentationlayer.Promotion;
 import com.liondance.liondance_backend.datalayer.Promotion.Promotion;
 import com.liondance.liondance_backend.datalayer.Promotion.PromotionRepository;
 import com.liondance.liondance_backend.datalayer.Promotion.PromotionStatus;
+import com.liondance.liondance_backend.datalayer.User.Client;
+import com.liondance.liondance_backend.datalayer.User.Role;
+import com.liondance.liondance_backend.datalayer.User.User;
+import com.liondance.liondance_backend.datalayer.common.Address;
+import com.liondance.liondance_backend.utils.WebTestAuthConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -16,6 +21,8 @@ import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
 import java.time.LocalDate;
+import java.util.EnumSet;
+import java.util.UUID;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"spring.data.mongodb.port= 0"})
 @ActiveProfiles("test")
@@ -28,6 +35,23 @@ class PromotionControllerIntegrationTest {
 
     @Autowired
     private PromotionRepository promotionRepository;
+
+    User staff = Client.builder()
+            .userId(UUID.randomUUID().toString())
+            .firstName("JaneStaff")
+            .lastName("DoeStaff")
+            .email("liondance@yopmail.com")
+            .phone("1234567890")
+            .address(
+                    new Address(
+                            "1234 Main St.",
+                            "Springfield",
+                            "Quebec",
+                            "J2X 2J4")
+            )
+            .roles(EnumSet.of(Role.STAFF, Role.ADMIN))
+            .associatedId("thetesterstaff")
+            .build();
 
 Promotion promotion1 =  Promotion.builder()
         .promotionId("df428a05-9174-4189-aff8-d0d60bd5a530")
@@ -104,7 +128,10 @@ Promotion promotion3 =   Promotion.builder()
                 .promotionStatus(PromotionStatus.ACTIVE)
                 .build();
 
-        webTestClient.patch()
+        webTestClient
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .patch()
                 .uri("/api/v1/promotions/{promotionId}", promotion1.getPromotionId())
                 .bodyValue(updateRequest)
                 .exchange()
@@ -131,7 +158,10 @@ Promotion promotion3 =   Promotion.builder()
                 .promotionStatus(PromotionStatus.ACTIVE)
                 .build();
 
-        webTestClient.patch()
+        webTestClient
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .patch()
                 .uri("/api/v1/promotions/{promotionId}", invalidId)
                 .bodyValue(updateRequest)
                 .exchange()
@@ -149,7 +179,10 @@ Promotion promotion3 =   Promotion.builder()
                 .promotionStatus(PromotionStatus.ACTIVE)
                 .build();
 
-        webTestClient.patch()
+        webTestClient
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .patch()
                 .uri("/api/v1/promotions/{promotionId}", promotion1.getPromotionId())
                 .bodyValue(updateRequest)
                 .exchange()
