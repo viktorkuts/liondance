@@ -19,10 +19,9 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.lang.reflect.Array;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -64,7 +63,7 @@ public class ClassFeedbackServiceImpl implements ClassFeedbackService{
                     return true;
                 })
                 .doOnNext(course -> {
-                    LocalDateTime taskTime = LocalDateTime.of(today, LocalTime.from(course.getEndTime()));
+                    LocalDateTime taskTime = LocalDateTime.ofInstant(course.getEndTime(), ZoneId.systemDefault());
                     log.debug("Scheduling feedback for course {} at {}", course.getName(), taskTime);
                     taskScheduler.schedule(() -> sendScheduledFeedbackRequests(course), java.sql.Timestamp.valueOf(taskTime));
                 })
