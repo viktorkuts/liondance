@@ -16,8 +16,8 @@ public class ClassFeedbackResponseModel {
     private String comment;
 
     public static ClassFeedbackResponseModel from(ClassFeedback classFeedback){
-        ClassFeedbackResponseModel classFeedbackResponseModel = new ClassFeedbackResponseModel();
-        BeanUtils.copyProperties(classFeedback, classFeedbackResponseModel);
-        return classFeedbackResponseModel;
+        ClassFeedbackResponseModel responseModel = new ClassFeedbackResponseModel();
+        BeanUtils.copyProperties(classFeedback,responseModel);
+        return responseModel;
     }
 }
