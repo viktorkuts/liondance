@@ -94,4 +94,66 @@ Promotion promotion3 =   Promotion.builder()
                 .expectStatus().isNotFound();
     }
 
+    @Test
+    void WhenUpdateValidPromotion_ThenReturnUpdatedPromotion() {
+        PromotionRequestModel updateRequest = PromotionRequestModel.builder()
+                .promotionName("Updated Black Friday Sale")
+                .startDate(LocalDate.of(2025, 11, 1))
+                .endDate(LocalDate.of(2025, 11, 30))
+                .discountRate(0.30)
+                .promotionStatus(PromotionStatus.ACTIVE)
+                .build();
+
+        webTestClient.patch()
+                .uri("/api/v1/promotions/{promotionId}", promotion1.getPromotionId())
+                .bodyValue(updateRequest)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(PromotionResponseModel.class)
+                .isEqualTo(PromotionResponseModel.builder()
+                        .promotionId(promotion1.getPromotionId())
+                        .promotionName(updateRequest.getPromotionName())
+                        .startDate(updateRequest.getStartDate())
+                        .endDate(updateRequest.getEndDate())
+                        .discountRate(updateRequest.getDiscountRate())
+                        .promotionStatus(updateRequest.getPromotionStatus())
+                        .build());
+    }
+
+    @Test
+    void WhenUpdatePromotionWithInvalidId_ThenReturnNotFound() {
+        String invalidId = "invalid-promotion-id";
+        PromotionRequestModel updateRequest = PromotionRequestModel.builder()
+                .promotionName("Updated Promotion")
+                .startDate(LocalDate.of(2025, 11, 1))
+                .endDate(LocalDate.of(2025, 11, 30))
+                .discountRate(0.30)
+                .promotionStatus(PromotionStatus.ACTIVE)
+                .build();
+
+        webTestClient.patch()
+                .uri("/api/v1/promotions/{promotionId}", invalidId)
+                .bodyValue(updateRequest)
+                .exchange()
+                .expectStatus().isNotFound();
+    }
+
+
+    @Test
+    void WhenUpdatePromotionWithInvalidDiscountRate_ThenReturnBadRequest() {
+        PromotionRequestModel updateRequest = PromotionRequestModel.builder()
+                .promotionName("Updated Black Friday Sale")
+                .startDate(LocalDate.of(2025, 11, 1))
+                .endDate(LocalDate.of(2025, 11, 30))
+                .discountRate(120.0)
+                .promotionStatus(PromotionStatus.ACTIVE)
+                .build();
+
+        webTestClient.patch()
+                .uri("/api/v1/promotions/{promotionId}", promotion1.getPromotionId())
+                .bodyValue(updateRequest)
+                .exchange()
+                .expectStatus().isEqualTo(422);
+    }
+
 }

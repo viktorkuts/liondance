@@ -247,5 +247,11 @@
     "ETRANSFER": "ETRANSFER",
     "CASH": "CASH",
     "Field is required": "Field is required",
-    "Back to Home": "Back to Home"
+    "Back to Home": "Back to Home",
+    "Promotion Name": "Promotion Name",
+    "Active": "Active",
+    "Inactive": "Inactive",
+    "Save Changes": "Save Changes",
+    "Failed to update promotion. Please try again.": "Failed to update promotion. Please try again.",
+    "Edit Promotion": "Edit Promotion"
 }
