@@ -10,7 +10,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 55%;
+  width: 100%;
+  max-width: 800px;
   padding: 30px;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -55,7 +56,6 @@
   flex-shrink: 0;
   margin-left: 0px;
   margin-right: 20px;
-  
 }
 
 .event-type-image {
@@ -63,4 +63,36 @@
   height: 213px; 
   object-fit: cover;
   border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+  .event-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .event-image {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 20px;
+  }
+
+  .event-type-image {
+    width: 100%;
+    height: auto;
+  }
+
+  .event-info {
+    padding-right: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .event-header {
+    font-size: 24px;
+  }
+
+  .event-detail {
+    font-size: 18px;
+  }
 }
