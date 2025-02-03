@@ -2,6 +2,11 @@ import { useEffect, useState } from "react";
 import { useAxiosInstance } from "../../utils/axiosInstance";
 import { UpcomingEvent } from "@/models/UpcomingEvent.ts";
 import { useTranslation } from "react-i18next";
+import weddingImage from "@/assets/Images/wedding.jpg";
+import paradeImage from "@/assets/Images/parade.jpg";
+import festivalImage from "@/assets/Images/festival.jpg";
+import birthdayImage from "@/assets/Images/birthday.jpg";
+import otherImage from "@/assets/Images/other.jpg";
 import "./upcomingEvents.css";
 
 function UpcomingEvents() {
@@ -37,11 +42,11 @@ function UpcomingEvents() {
   if (error) return <div className="error">{error}</div>;
 
   const eventTypeImages = {
-    WEDDING: "/src/assets/Images/wedding.jpg",
-    PARADE: "/src/assets/Images/parade.jpg",
-    FESTIVAL: "/src/assets/Images/festival.jpg",
-    BIRTHDAY: "/src/assets/Images/birthday.jpg",
-    OTHER: "/src/assets/Images/other.jpg"
+    WEDDING: weddingImage,
+    PARADE: paradeImage,
+    FESTIVAL: festivalImage,
+    BIRTHDAY: birthdayImage,
+    OTHER: otherImage
   };
 
   return (
@@ -66,18 +71,6 @@ function UpcomingEvents() {
               alt={`${event.eventType} event`}
               className="event-type-image"
             />
-          </div>
-          <div className="event-info">
-            <div className="event-header">{t("Event Type")}: {t(event.eventType)}</div>
-            <div className="event-details">
-              <div className="event-detail">{t("Date")}: {new Date(event.eventDateTime).toLocaleString()}</div>
-              <div className="event-detail event-privacy">{t("Privacy")}: {t(event.eventPrivacy)}</div>
-              {event.eventPrivacy === "PUBLIC" && (
-                <div className="event-detail">
-                  {t("Address")}: {event.eventAddress.streetAddress}, {event.eventAddress.city}, {event.eventAddress.state} {event.eventAddress.zip}
-                </div>
-              )}
-            </div>
           </div>
         </div>
       )) : (
