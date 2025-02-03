@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class EventResponseModel {
     private String eventId;
+    private String clientId;
     private Address venue;
     private Instant eventDateTime;
     private EventType eventType;
