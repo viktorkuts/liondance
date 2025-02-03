@@ -13,13 +13,25 @@ export const useEventService = () => {
     return await axiosInstance.post<Event>("/events", event);
   };
 
-  const updateEventStatus = async (eventId: string, status: EventStatus): Promise<Event> => {
-    const response = await axiosInstance.patch<Event>(`/events/${eventId}/status`, { status });
+  const updateEventStatus = async (
+    eventId: string,
+    status: EventStatus
+  ): Promise<Event> => {
+    const response = await axiosInstance.patch<Event>(
+      `/events/${eventId}/status`,
+      { status }
+    );
     return response.data;
   };
 
-  const rescheduleEvent = async (eventId: string, eventDateTime: Date): Promise<Event> => {
-    const response = await axiosInstance.patch<Event>(`/events/${eventId}/date`, { eventDateTime });
+  const rescheduleEvent = async (
+    eventId: string,
+    eventDateTime: Date
+  ): Promise<Event> => {
+    const response = await axiosInstance.patch<Event>(
+      `/events/${eventId}/date`,
+      { eventDateTime }
+    );
     return response.data;
   };
 
@@ -28,21 +40,28 @@ export const useEventService = () => {
     return response.data;
   };
 
-  const getEventsByEmail = async (email: string): Promise<Event[]> => {
-    const response = await axiosInstance.get<Event[]>(`/events/email/${email}`);
+  const getSelfEvents = async (): Promise<Event[]> => {
+    const response = await axiosInstance.get<Event[]>(
+      `/clients/current-client/events`
+    );
     return response.data;
   };
 
   const fetchPublicEvents = async () => {
-    const response = await axiosInstance.get('/events/filtered-events');
+    const response = await axiosInstance.get("/events/filtered-events");
     return response.data;
   };
 
-  const updateEventDetails = async (eventId: string, event: Event): Promise<Event> => {
-    const response = await axiosInstance.put<Event>(`/events/${eventId}`, event);
+  const updateEventDetails = async (
+    eventId: string,
+    event: Event
+  ): Promise<Event> => {
+    const response = await axiosInstance.put<Event>(
+      `/events/${eventId}`,
+      event
+    );
     return response.data;
   };
-
 
   return {
     getAllEvents,
@@ -50,8 +69,8 @@ export const useEventService = () => {
     updateEventStatus,
     rescheduleEvent,
     getEventById,
-    getEventsByEmail,
+    getSelfEvents,
     fetchPublicEvents,
-    updateEventDetails
+    updateEventDetails,
   };
 };

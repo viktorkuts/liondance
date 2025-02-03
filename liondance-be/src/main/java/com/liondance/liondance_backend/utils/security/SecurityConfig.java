@@ -1,6 +1,7 @@
 package com.liondance.liondance_backend.utils.security;
 
 import com.liondance.liondance_backend.logiclayer.User.UserService;
+import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,7 +47,6 @@ import java.util.stream.Collectors;
 @Configuration
 @EnableWebFluxSecurity
 @EnableReactiveMethodSecurity
-@Profile("!test")
 public class SecurityConfig {
     @Value("${spring.security.oauth2.client.provider.okta.issuer-uri}")
     private String issuer;
@@ -90,6 +90,7 @@ public class SecurityConfig {
         return (jwt) -> getUserInfo(jwt.getTokenValue())
                 .flatMapMany((userInfo) -> {
                     return userService.validate(jwt.getClaim("sub"))
+                            .onErrorResume(NotFoundException.class, e -> Mono.empty())
                             .flatMapMany(user -> Flux.fromStream(user.getRoles().stream()
                                     .map(role -> new SimpleGrantedAuthority(role.name()))));
                 });
@@ -97,32 +98,6 @@ public class SecurityConfig {
 
     private Mono<Map<String, String>> getUserInfo(String accessToken) {
         return Mono.just(new HashMap<>());
-    }
-
-    @Bean
-    public ReactiveOAuth2UserService<OidcUserRequest, OidcUser> oidcUserService(){
-        final OidcReactiveOAuth2UserService delegate = new OidcReactiveOAuth2UserService();
-
-        return userRequest -> delegate.loadUser(userRequest)
-                .flatMap(oidcUser -> {
-                    OAuth2AccessToken token = userRequest.getAccessToken();
-
-                    Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
-
-                    mappedAuthorities.add(new SimpleGrantedAuthority("USER"));
-
-                    return userService.validate(oidcUser.getName())
-                            .flatMap(user -> {
-                                user.getRoles().forEach(role -> {
-                                    mappedAuthorities.add(new SimpleGrantedAuthority(role.name()));
-                                });
-
-                                OidcUser finalOidcUser = new DefaultOidcUser(mappedAuthorities, oidcUser.getIdToken(), "sub");
-
-
-                                return Mono.just(finalOidcUser);
-                            });
-                });
     }
 
     private ServerLogoutSuccessHandler logoutHandler(){

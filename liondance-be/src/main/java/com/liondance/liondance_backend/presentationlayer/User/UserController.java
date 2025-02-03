@@ -63,7 +63,7 @@ public class UserController {
     @PostMapping()
     public Mono<UserResponseModel> addNewUser(@Valid @RequestBody Mono<UserRequestModel> userRequestModel, @RequestParam String role) {
         role.toUpperCase();
-        return userService.addNewUser(role, userRequestModel);
+        return userService.addNewUser(role, userRequestModel, null);
     }
     @PreAuthorize("hasAuthority('STAFF')")
     @PatchMapping("{userId}/role")

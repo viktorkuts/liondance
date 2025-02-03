@@ -4,7 +4,7 @@ import { Event } from "@/models/Event.ts";
 import { useTranslation } from "react-i18next";
 import "./eventsList.css";
 
-const GetEventsByEmail: React.FC<{ email: string }> = ({ email }) => {
+const GetMyEvents: React.FC = () => {
   const { t } = useTranslation();
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -14,7 +14,7 @@ const GetEventsByEmail: React.FC<{ email: string }> = ({ email }) => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = (await eventService.getEventsByEmail(email)) as
+        const response = (await eventService.getSelfEvents()) as
           | Event[]
           | { error: string };
         if (response && Array.isArray(response)) {
@@ -37,7 +37,7 @@ const GetEventsByEmail: React.FC<{ email: string }> = ({ email }) => {
     };
 
     fetchEvents();
-  }, [email, eventService, t]);
+  }, [eventService, t]);
 
   if (loading) return <div className="loading">{t("Loading...")}</div>;
   if (error) return <div className="error">{error}</div>;
@@ -51,7 +51,6 @@ const GetEventsByEmail: React.FC<{ email: string }> = ({ email }) => {
         <table className="events-table">
           <thead>
             <tr>
-              <th>{t("Phone")}</th>
               <th>{t("Location")}</th>
               <th>{t("Event Date & Time")}</th>
               <th>{t("Event Type")}</th>
@@ -61,11 +60,10 @@ const GetEventsByEmail: React.FC<{ email: string }> = ({ email }) => {
           </thead>
           <tbody>
             {events.map((event) => (
-              <tr key={event.id}>
-                <td>{event.phone}</td>
+              <tr key={event.eventId}>
                 <td>
-                  {event.address?.streetAddress ?? t("N/A")}
-                  {event.address?.city ? `, ${event.address.city}` : ""}
+                  {event.venue?.streetAddress ?? t("N/A")}
+                  {event.venue?.city ? `, ${event.venue.city}` : ""}
                 </td>
                 <td>{new Date(event.eventDateTime).toLocaleString()}</td>
                 <td>{event.eventType}</td>
@@ -84,4 +82,4 @@ const GetEventsByEmail: React.FC<{ email: string }> = ({ email }) => {
   );
 };
 
-export default GetEventsByEmail;
+export default GetMyEvents;

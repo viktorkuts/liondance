@@ -15,29 +15,24 @@ interface UpdateEventDetailsProps {
 const UpdateEventDetails: React.FC<UpdateEventDetailsProps> = ({ event, onClose, onUpdate }) => {
     const { t } = useTranslation();
     const [loading, setLoading] = useState<boolean>(false);
-    const [firstName, setFirstName] = useState<string>(event.firstName);
-    const [middleName, setMiddleName] = useState<string>(event.middleName || "");
-    const [lastName, setLastName] = useState<string>(event.lastName);
-    const [email, setEmail] = useState<string>(event.email);
-    const [phone, setPhone] = useState<string>(event.phone);
-    const [streetAddress, setStreetAddress] = useState<string>(event.address.streetAddress);
-    const [city, setCity] = useState<string>(event.address.city);
-    const [state, setState] = useState<string>(event.address.state);
-    const [zip, setZip] = useState<string>(event.address.zip);
+    const [streetAddress, setStreetAddress] = useState<string>(event.venue.streetAddress);
+    const [city, setCity] = useState<string>(event.venue.city);
+    const [state, setState] = useState<string>(event.venue.state);
+    const [zip, setZip] = useState<string>(event.venue.zip);
     const [eventType, setEventType] = useState<EventType>(event.eventType);
     const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(event.paymentMethod);
     const [specialRequest, setSpecialRequest] = useState<string>(event.specialRequest || "");
     const [error, setError] = useState<string>("");
     const axiosInstance = useAxiosInstance();
     const handleUpdate = async () => {
-        if (!firstName || !lastName || !email || !phone || !streetAddress || !city || !state || !zip || !eventType || !paymentMethod) {
+        if (!streetAddress || !city || !state || !zip || !eventType || !paymentMethod) {
             setError(t("Please fill in all fields."));
             return;
         }
         setLoading(true);
         try {
-            const updatedEvent = { ...event, firstName: firstName, lastName: lastName, middleName, email, phone, address: { streetAddress, city, state, zip }, eventType, paymentMethod, specialRequest };
-            const response = await axiosInstance.put<Event>(`/events/${event.id}`, updatedEvent);
+            const updatedEvent = { ...event, venue: { streetAddress, city, state, zip }, eventType, paymentMethod, specialRequest };
+            const response = await axiosInstance.put<Event>(`/events/${event.eventId}`, updatedEvent);
             onUpdate(response.data);
             onClose();
         } catch {
@@ -50,56 +45,6 @@ const UpdateEventDetails: React.FC<UpdateEventDetailsProps> = ({ event, onClose,
     return (
         <Modal opened={true} onClose={onClose} title={t("Update Event Details")}>
             {error && <div className="error">{error}</div>}
-            <div>
-                <label>{t("First Name")}</label>
-                <TextInput
-                    value={firstName}
-                    onChange={(e) => {
-                        setFirstName(e.currentTarget.value);
-                        setError("");
-                    }}
-                />
-            </div>
-            <div>
-                <label>{t("Middle Name")}</label>
-                <TextInput
-                    value={middleName}
-                    onChange={(e) => {
-                        setMiddleName(e.currentTarget.value);
-                        setError("");
-                    }}
-                />
-            </div>
-            <div>
-                <label>{t("Last Name")}</label>
-                <TextInput
-                    value={lastName}
-                    onChange={(e) => {
-                        setLastName(e.currentTarget.value);
-                        setError("");
-                    }}
-                />
-            </div>
-            <div>
-                <label>{t("Email")}</label>
-                <TextInput
-                    value={email}
-                    onChange={(e) => {
-                        setEmail(e.currentTarget.value);
-                        setError("");
-                    }}
-                />
-            </div>
-            <div>
-                <label>{t("Phone")}</label>
-                <TextInput
-                    value={phone}
-                    onChange={(e) => {
-                        setPhone(e.currentTarget.value);
-                        setError("");
-                    }}
-                />
-            </div>
             <div>
                 <label>{t("Street Address")}</label>
                 <TextInput

@@ -1,49 +1,44 @@
 export interface Address {
-    streetAddress: string;
-    city: string;
-    state: string;
-    zip: string;
+  streetAddress: string;
+  city: string;
+  state: string;
+  zip: string;
 }
 
 export enum EventType {
-    WEDDING = "WEDDING",
-    PARADE = "PARADE",
-    FESTIVAL = "FESTIVAL",
-    BIRTHDAY = "BIRTHDAY",
-    OTHER = "OTHER",
+  WEDDING = "WEDDING",
+  PARADE = "PARADE",
+  FESTIVAL = "FESTIVAL",
+  BIRTHDAY = "BIRTHDAY",
+  OTHER = "OTHER",
 }
 
-export enum PaymentMethod{
-    CASH = "CASH",
-    PAYPAL = "PAYPAL",
-    CREDIT = "CREDIT",
-    DEBIT = "DEBIT",
-    ETRANSFER = "ETRANSFER",
+export enum PaymentMethod {
+  CASH = "CASH",
+  PAYPAL = "PAYPAL",
+  CREDIT = "CREDIT",
+  DEBIT = "DEBIT",
+  ETRANSFER = "ETRANSFER",
 }
 
 export enum EventStatus {
-    PENDING = "PENDING",
-    CONFIRMED = "CONFIRMED",
-    CANCELLED = "CANCELLED",
+  PENDING = "PENDING",
+  CONFIRMED = "CONFIRMED",
+  CANCELLED = "CANCELLED",
 }
 
 export enum EventPrivacy {
-    PUBLIC = "PUBLIC",
-    PRIVATE = "PRIVATE",
+  PUBLIC = "PUBLIC",
+  PRIVATE = "PRIVATE",
 }
 
 export interface Event {
-    id? : string;
-    firstName: string;
-    middleName?: string;
-    lastName: string;
-    email: string;
-    phone: string;
-    address: Address;
-    eventDateTime: Date;
-    eventType: EventType;
-    paymentMethod: PaymentMethod;
-    specialRequest?: string;
-    eventStatus: EventStatus;
-    eventPrivacy: EventPrivacy;
+  eventId?: string;
+  venue: Address;
+  eventDateTime: Date;
+  eventType: EventType;
+  paymentMethod: PaymentMethod;
+  specialRequest?: string;
+  eventStatus: EventStatus;
+  eventPrivacy: EventPrivacy;
 }

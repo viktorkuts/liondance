@@ -22,16 +22,13 @@ import java.time.LocalTime;
 public class Event {
     @Id
     private String id;
-    private String firstName;
-    private String middleName;
-    private String lastName;
-    private String email;
-    private String phone;
-    private Address address;
+    private String eventId;
+    private Address venue;
     private Instant eventDateTime;
     private EventType eventType;
     private PaymentMethod paymentMethod;
     private String specialRequest;
     private EventStatus eventStatus;
     private EventPrivacy eventPrivacy;
+    private String clientId;
 }

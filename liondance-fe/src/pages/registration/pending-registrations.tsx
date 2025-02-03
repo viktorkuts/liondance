@@ -22,7 +22,6 @@ function PendingRegistrations() {
           "/students/status?statuses=PENDING"
         );
         setStudents(response.data);
-        console.log(response.data);
         setLoading(false);
       } catch (error) {
         setError(t("Failed to fetch pending registrations. ") + error);
