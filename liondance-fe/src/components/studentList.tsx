@@ -5,7 +5,6 @@ import { useUserService } from "../services/userService";
 import { Student } from "../models/Users";
 import { useTranslation } from "react-i18next";
 import "./studentList.css";
-import "./loader.css";
 
 const StudentList: React.FC = () => {
   const { t } = useTranslation();
@@ -13,25 +12,42 @@ const StudentList: React.FC = () => {
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
   const [statuses, setStatuses] = useState<string[]>([]);
-
+  
   useEffect(() => {
-    setLoading(true);
-    if (statuses.length > 0) {
-      studentService.getStudentsByStatuses(statuses).then((data) => {
-        setStudents(data);
-        setLoading(false);
-      });
-    } else {
-      studentService.getAllStudents().then((data) => {
-        setStudents(data);
-        setLoading(false);
-      });
-    }
-  }, [statuses, studentService]);
+    let isMounted = true;
+
+    const fetchStudents = async () => {
+      setLoading(true);
+      try {
+        let data;
+        if (statuses.length > 0) {
+          data = await studentService.getStudentsByStatuses(statuses);
+        } else {
+          data = await studentService.getAllStudents();
+        }
+        if (isMounted) setStudents(data);
+      } catch (error) {
+        console.error("Failed to fetch students", error);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    fetchStudents();
+
+    return () => {
+      isMounted = false; 
+    };
+  }, [statuses]);
 
   return (
     <div className="user-list">
       <Title order={1}>{t('Student List')}</Title>
+      <Link to={`/add-new-student`}>
+        <Button className="view-profile-button" variant="outline">
+          {t('Add New Student')}
+        </Button>
+      </Link>
       <MultiSelect
         data={[t('ACTIVE'), t('INACTIVE')]}
         value={statuses}
@@ -40,7 +56,7 @@ const StudentList: React.FC = () => {
         label={t('Filter by Status')}
       />
       {loading ? (
-        <div className="custom-loader"></div>
+        <p className="no-data">{t('Loading...')}</p>
       ) : students.length === 0 ? (
         <p className="no-data">{t('No students found.')}</p>
       ) : (
@@ -51,7 +67,7 @@ const StudentList: React.FC = () => {
               <th>{t('Name')}</th>
               <th>{t('Email')}</th>
               <th>{t('Date of Birth')}</th>
-              <th>{t('Status')}</th>
+              <th>{t('Registration Status')}</th>
               <th>{t('Actions')}</th>
             </tr>
           </thead>
@@ -59,9 +75,7 @@ const StudentList: React.FC = () => {
             {students.map((student, index) => (
               <tr key={student.userId}>
                 <td>{index + 1}</td>
-                <td>
-                  {student.firstName} {student.middleName} {student.lastName}
-                </td>
+                <td>{student.firstName} {student.middleName} {student.lastName}</td>
                 <td>{student.email}</td>
                 <td>{new Date(student.dob).toLocaleDateString()}</td>
                 <td>{student.registrationStatus}</td>
