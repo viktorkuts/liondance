@@ -45,6 +45,10 @@ jobs:
         env:
           PR_NUMBER: ${{ github.event.number }}
           FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
+          PLAYWRIGHT_STAFF_USERNAME: ${{ secrets.PLAYWRIGHT_STAFF_USERNAME }}
+          PLAYWRIGHT_STAFF_PASSWORD: ${{ secrets.PLAYWRIGHT_STAFF_PASSWORD }}
+          PLAYWRIGHT_STUDENT_USERNAME: ${{ secrets.PLAYWRIGHT_STUDENT_USERNAME }}
+          PLAYWRIGHT_STUDENT_PASSWORD: ${{ secrets.PLAYWRIGHT_STUDENT_PASSWORD }}
       - name: Archive report
         uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}

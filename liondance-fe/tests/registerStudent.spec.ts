@@ -5,7 +5,12 @@ test("student can register form", async ({ page }) => {
   const randomLastName = Date.now().toString().slice(-4) + "lN";
   const randomEmail = Date.now().toString().slice(-4) + "bro@null.local";
   await page.goto("/");
-  await expect(page.getByText("ReviewsContactCalendarBook")).toBeVisible();
+  await expect(page.getByText("Welcome!")).toBeVisible();
+  if (
+    await page.getByRole("link", { name: "Logout", exact: true }).isVisible()
+  ) {
+    await page.getByRole("link", { name: "Logout", exact: true }).click();
+  }
   await page.getByRole("link", { name: "Registration", exact: true }).click();
   await expect(
     page.getByText(
@@ -45,6 +50,7 @@ test("student can register form", async ({ page }) => {
   await expect(page.getByText("Submission complete!Please")).toBeVisible();
   await page.getByRole("link", { name: "Back to Home" }).click();
   await page.waitForTimeout(1000);
+
   await page.getByRole("link", { name: "Pending Registrations" }).click();
   await expect(page.url()).toMatch("/pending-registrations");
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
