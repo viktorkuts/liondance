@@ -28,7 +28,7 @@ public class ClientController {
         this.eventService = eventService;
     }
 
-//    @PreAuthorize("hasAuthority('STAFF')")
+    @PreAuthorize("hasAuthority('STAFF')")
     @GetMapping
     public Flux<UserResponseModel> getAllClients(@AuthenticationPrincipal JwtAuthenticationToken jwt) {
         return userService.getAllUsers(Role.CLIENT);
@@ -57,7 +57,7 @@ public class ClientController {
                 .flatMapMany(eventService::getEventsByClientId);
     }
 
-//    @PreAuthorize("hasAuthority('STAFF')")
+    @PreAuthorize("hasAuthority('STAFF')")
     @GetMapping("/{clientId}")
     public Mono<UserResponseModel> getClientDetails(@PathVariable String clientId) {
         return userService.getClientDetails(clientId);

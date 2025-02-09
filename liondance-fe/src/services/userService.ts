@@ -118,6 +118,11 @@ export const useUserService = () => {
     return await axiosInstance.post<Student>("/clients", client);
   };
 
+  const getClientProfile = async (clientId: string): Promise<Client> => {
+    const response = await axiosInstance.get<Client>(`/clients/${clientId}`);
+    return response.data;
+  };
+
   return {
     getAllUsers,
     getUserProfile,
@@ -135,5 +140,6 @@ export const useUserService = () => {
     getSessionRoles,
     getAllClients,
     registerClient,
+    getClientProfile,
   };
 };

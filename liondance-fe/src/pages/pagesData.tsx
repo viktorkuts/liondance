@@ -19,6 +19,7 @@ import ClientList from "@/components/clientList";
 import ClassFeedbackForm from "./feedback/ClassFeedbackForm";
 import ClientRegistration from "./registration/client-registration";
 import CancelCourse from "@/components/cancelCourse";
+import ClientProfile from "@/components/clientProfile";
 
 const pagesData: routerType[] = [
   {
@@ -120,6 +121,11 @@ const pagesData: routerType[] = [
     path: "client-registration",
     element: <ClientRegistration />,
     title: "Client Registration Form",
+  },
+  {
+    path: "client-profile/:clientId",
+    element: <ClientProfile />,
+    title: "Client Profile",
   },
 ];
 
