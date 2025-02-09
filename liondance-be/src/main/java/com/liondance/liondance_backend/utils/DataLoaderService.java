@@ -1214,6 +1214,25 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .build()
         );
 
+        events.add(
+                Event.builder()
+                        .eventId("e5b07c6c6-dc48-489f-aa20-0d7d6fb12899")
+                        .venue(Address.builder()
+                                .streetAddress("2205 Redwood Blvd")
+                                .zip("H5H 5H5")
+                                .state("QC")
+                                .city("Quebec City")
+                                .build())
+                        .eventDateTime(Instant.parse("2029-01-01T00:00:00Z").plus(4, ChronoUnit.DAYS))
+                        .eventType(EventType.WEDDING)
+                        .paymentMethod(PaymentMethod.CREDIT)
+                        .specialRequest("Handouts needed")
+                        .eventStatus(EventStatus.COMPLETED)
+                        .eventPrivacy(EventPrivacy.PRIVATE)
+                        .clientId("c56a8e9d-4362-42c8-965d-2b8b98f9f4d9")
+                        .build()
+        );
+
         tearDown();
 
         eventRepository.insert(events).subscribe();
