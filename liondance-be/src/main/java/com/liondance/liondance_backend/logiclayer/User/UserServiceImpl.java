@@ -308,10 +308,14 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUserId(clientId)
                 .filter(user -> user.getRoles().contains(Role.CLIENT))
                 .flatMap(user -> {
-                    Mono<List<EventResponseModel>> activeEvents = eventService.getEventsByClientId(user.getUserId())
+                    // Call getEventsByClientId only once and cache the result
+                    Flux<EventResponseModel> allEvents = eventService.getEventsByClientId(user.getUserId()).cache();
+
+                    Mono<List<EventResponseModel>> activeEvents = allEvents
                             .filter(event -> event.getEventStatus() == EventStatus.CONFIRMED)
                             .collectList();
-                    Mono<List<EventResponseModel>> pastEvents = eventService.getEventsByClientId(user.getUserId())
+
+                    Mono<List<EventResponseModel>> pastEvents = allEvents
                             .filter(event -> event.getEventStatus() == EventStatus.COMPLETED)
                             .collectList();
 
@@ -329,7 +333,6 @@ public class UserServiceImpl implements UserService {
                                     .build());
                 });
     }
-
 
     @Override
     public Mono<User> validate(String subId){
