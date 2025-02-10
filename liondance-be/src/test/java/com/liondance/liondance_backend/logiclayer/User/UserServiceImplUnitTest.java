@@ -243,7 +243,6 @@ class UserServiceImplUnitTest {
 
     @Test
     void getClientDetails_ShouldReturnClientWithEvents() {
-        // Given: A client user
         String clientId = "c56a8e9d-4362-42c8-965d-2b8b98f9f4d9";
         User mockUser = new User();
         mockUser.setUserId(clientId);
@@ -254,7 +253,6 @@ class UserServiceImplUnitTest {
         mockUser.setPhone("234-567-8901");
         mockUser.setRoles(EnumSet.of(Role.CLIENT));
 
-        // Given: Mock active and past events
         EventResponseModel activeEvent = EventResponseModel.builder()
                 .eventId("active-event-1")
                 .eventStatus(EventStatus.CONFIRMED)
@@ -264,14 +262,11 @@ class UserServiceImplUnitTest {
                 .eventStatus(EventStatus.COMPLETED)
                 .build();
 
-        // Mock repository response
         when(userRepository.findByUserId(clientId)).thenReturn(Mono.just(mockUser));
 
-        // Mock event service response to return both active and past events
         when(eventService.getEventsByClientId(clientId))
                 .thenReturn(Flux.just(activeEvent, pastEvent));
 
-        // When: Calling the method
         StepVerifier.create(userService.getClientDetails(clientId))
                 .assertNext(clientResponse -> {
                     assertEquals(clientId, clientResponse.getUserId());
@@ -288,8 +283,7 @@ class UserServiceImplUnitTest {
                     assertEquals("past-event-1", clientResponseModel.getPastEvents().get(0).getEventId());
                 })
                 .verifyComplete();
-
-        // Verify interactions
+        
         verify(userRepository, times(1)).findByUserId(clientId);
         verify(eventService, times(1)).getEventsByClientId(clientId); // Expect 1 call
     }
