@@ -3,17 +3,17 @@ import { test, expect } from "@playwright/test";
 test.use({
   viewport: { width: 1920, height: 1080 },
 });
-
+test.use({ storageState: "playwright/.auth/staff.json" });
 test("can edit specific student details", async ({ page }) => {
   await page.goto("/");
   await page.getByText("Admin").click();
   await page.getByRole("link", { name: "Students" }).click();
   await page
-    .getByRole("row", { name: "Hawk Doesounow Tuah hawktuah@" })
+    .getByRole("row", { name: "Knee Doesounow Surgeon hawktuah@" })
     .getByRole("button")
     .click();
   await expect(page.locator("#root")).toContainText(
-    "Name: Hawk Doesounow Tuah"
+    "Name: Knee Doesounow Surgeon"
   );
   await expect(page.locator("#root")).toContainText(
     "Email: hawktuah@onthatthang.org"

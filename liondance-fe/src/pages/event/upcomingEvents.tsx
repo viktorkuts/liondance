@@ -39,7 +39,7 @@ function UpcomingEvents() {
       }
     };
     fetchEvents();
-  }, [axiosInstance, t]);
+  }, [t]);
 
   if (loading) return <div className="loading">{t("Loading...")}</div>;
   if (error) return <div className="error">{error}</div>;

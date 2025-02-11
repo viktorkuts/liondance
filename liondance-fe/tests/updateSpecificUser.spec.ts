@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 test.use({
   viewport: { width: 1920, height: 1080 },
 });
-
+test.use({ storageState: "playwright/.auth/staff.json" });
 test("can edit specific user details", async ({ page }) => {
   await page.goto("/");
   await page.getByText("Admin").click();

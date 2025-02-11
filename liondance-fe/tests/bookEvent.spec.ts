@@ -1,127 +1,161 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, Page } from "@playwright/test";
+import { randomBytes } from "crypto";
 
-test.use({
-  viewport: { width: 1800, height: 1080 },
-});
+const currentDate = new Date();
+const prevDate = new Date(currentDate);
+prevDate.setMonth(currentDate.getMonth() - 1);
+const nextDate = new Date(currentDate);
+nextDate.setMonth(currentDate.getMonth() + 1);
 
-test("can book event", async ({ page }) => {
-  await page.goto("/");
-  await expect(
-    page.getByText(
-      "Welcome!ReviewsContactCalendarBook EventRegistrationPending"
-    )
-  ).toBeVisible();
-  await expect(page.getByText("ReviewsContactCalendarBook")).toBeVisible();
-  await expect(page.getByRole("link", { name: "Book Event" })).toBeVisible();
-  await page.getByRole("link", { name: "Book Event" }).click();
-  await expect(page.getByText("Event Registration Form1Event")).toBeVisible();
+const { prevMonth, currentMonth, nextMonth } = {
+  prevMonth: prevDate.toLocaleString("default", {
+    year: "numeric",
+    month: "long",
+  }),
+  currentMonth: currentDate.toLocaleString("default", {
+    year: "numeric",
+    month: "long",
+  }),
+  nextMonth: nextDate.toLocaleString("default", {
+    year: "numeric",
+    month: "long",
+  }),
+};
+
+const eventBooking = async (page: Page) => {
+  const randomSeed = randomBytes(8).toString();
+  const msg = "hello world" + randomSeed;
+  const address = {
+    street: randomSeed + " grove street",
+    state: "Newfoundland and Labrador",
+    city: randomSeed + "shlag",
+    zip: "H1H1H1",
+  };
   await expect(
     page.getByRole("heading", { name: "Event Registration Form" })
   ).toBeVisible();
-  await expect(page.getByText("First Name *Middle NameLast")).toBeVisible();
-  await expect(page.getByPlaceholder("John", { exact: true })).toBeVisible();
-  await page.getByPlaceholder("John", { exact: true }).click();
-  await page.getByPlaceholder("John", { exact: true }).fill("Jameson");
-  await expect(page.getByPlaceholder("Z.")).toBeVisible();
-  await page.getByPlaceholder("Z.").click();
-  await page.getByPlaceholder("Z.").fill("Statham");
-  await expect(page.getByPlaceholder("Doe", { exact: true })).toBeVisible();
-  await page.getByPlaceholder("Doe", { exact: true }).click();
-  await page.getByPlaceholder("Doe", { exact: true }).fill("Bourne");
-  await expect(page.getByPlaceholder("john.doe@example.com")).toBeVisible();
-  await page.getByPlaceholder("john.doe@example.com").click();
-  await page
-    .getByPlaceholder("john.doe@example.com")
-    .fill("liondance@yopmail.com");
-  await expect(page.getByPlaceholder("+1 (123) 456-")).toBeVisible();
-  await page.getByPlaceholder("+1 (123) 456-").click();
-  await page.getByPlaceholder("+1 (123) 456-").fill("5149999999");
-  await expect(page.getByPlaceholder("Pick a date")).toBeVisible();
   await page.getByPlaceholder("Pick a date").click();
-  await expect(page.locator("div:nth-child(4) > .m_38a85659")).toBeVisible();
-  await expect(
-    page.locator("div").filter({ hasText: /^December 2024$/ })
-  ).toBeVisible();
   await page
     .locator("div")
-    .filter({ hasText: /^December 2024$/ })
+    .filter({ hasText: currentMonth })
     .getByRole("button")
-    .nth(2)
-    .click();
-  await expect(page.getByLabel("10 January")).toBeVisible();
-  await page.getByLabel("10 January").click();
-  await expect(page.getByPlaceholder("Select a time")).toBeVisible();
+    .nth(2);
+  await page.getByLabel(`1 ${nextMonth}`, { exact: true }).click();
   await page.getByPlaceholder("Select a time").click();
-  await expect(page.getByRole("option", { name: "12:00 PM" })).toBeVisible();
-  await page.getByRole("option", { name: "12:00 PM" }).click();
-  await expect(page.getByPlaceholder("Wedding")).toBeVisible();
+  await page.getByRole("option", { name: "1:30 PM" }).click();
   await page.getByPlaceholder("Wedding").click();
-  await expect(page.getByRole("option", { name: "WEDDING" })).toBeVisible();
   await page.getByRole("option", { name: "WEDDING" }).click();
-  await expect(page.getByPlaceholder("Cash")).toBeVisible();
   await page.getByPlaceholder("Cash").click();
-  await expect(page.getByRole("option", { name: "PAYPAL" })).toBeVisible();
-  await page.getByRole("option", { name: "PAYPAL" }).click();
-  await expect(page.getByPlaceholder("Request...")).toBeVisible();
-  await page.getByPlaceholder("Request...").click();
-  await page.getByPlaceholder("Request...").fill("Diddy Party");
-  await expect(page.getByRole("button", { name: "Next" })).toBeVisible();
+  await page.getByRole("option", { name: "CASH" }).click();
+  await page.getByPlaceholder("Request...").fill(msg);
+  await page.getByPlaceholder("PRIVATE").click();
+  await page.getByRole("option", { name: "PUBLIC" }).click();
   await page.getByRole("button", { name: "Next" }).click();
-  await expect(page.getByText("Address Line *Province *City")).toBeVisible();
-  await expect(page.getByPlaceholder("Main Street")).toBeVisible();
-  await page.getByPlaceholder("Main Street").click();
-  await page.getByPlaceholder("Main Street").fill("123 main st");
-  await expect(page.getByPlaceholder("Quebec")).toBeVisible();
+  await page.getByPlaceholder("Main Street").fill(address.street);
   await page.getByPlaceholder("Quebec").click();
-  await expect(page.getByRole("option", { name: "Quebec" })).toBeVisible();
-  await page.getByRole("option", { name: "Quebec" }).click();
-
-  await expect(page.getByPlaceholder("Montreal")).toBeVisible();
-  await page.getByPlaceholder("Montreal").click();
-  await page.getByPlaceholder("Montreal").fill("Montr");
-  await expect(
-    page.getByRole("option", { name: "Montréal", exact: true })
-  ).toBeVisible();
-  await page.getByRole("option", { name: "Montréal", exact: true }).click();
-  await expect(page.getByPlaceholder("H1H 1H1")).toBeVisible();
-  await page.getByPlaceholder("H1H 1H1").click();
-  await page.getByPlaceholder("H1H 1H1").fill("j3x 1g1");
-  await expect(page.getByRole("button", { name: "Next" })).toBeVisible();
-  await page.getByRole("button", { name: "Next" }).click();
-  await expect(
-    page.getByRole("button", { name: "I need to correct something!" })
-  ).toBeVisible();
-  await page
-    .getByRole("button", { name: "I need to correct something!" })
-    .click();
-  await expect(page.getByPlaceholder("H1H 1H1")).toBeVisible();
-  await expect(page.getByRole("button", { name: "Next" })).toBeVisible();
-  await page.getByRole("button", { name: "Next" }).click();
-  await expect(
-    page.getByRole("heading", { name: "Does this information look" })
-  ).toBeVisible();
-  await expect(page.getByText("Name: Jameson Bourne")).toBeVisible();
-  await expect(page.getByText("Email: liondance@yopmail.com")).toBeVisible();
-  await expect(page.getByText("Phone: +1 (514) 999-9999")).toBeVisible();
-  await expect(
-    page.getByText("Location: 123 main st, Montréal, Quebec, j3x 1g1")
-  ).toBeVisible();
-  await expect(page.getByText("Event Date: January 10, 2025")).toBeVisible();
-  await expect(page.getByText("Event Time: 12:00 AM")).toBeVisible();
-  await expect(
-    page.getByRole("button", { name: "I need to correct something!" })
-  ).toBeVisible();
-  await expect(page.getByRole("button", { name: "Looks Good!" })).toBeVisible();
-  await page
-    .getByRole("button", { name: "I need to correct something!" })
-    .click();
-  await expect(page.getByText("Address Line *Province *City")).toBeVisible();
+  await page.getByText(address.state).click();
+  await page.getByPlaceholder("Montreal").fill(address.city);
+  await page.getByPlaceholder("H1H 1H1").fill(address.zip);
   await page.getByRole("button", { name: "Next" }).click();
   await page.getByRole("button", { name: "Looks Good!" }).click();
   await expect(
     page.getByRole("heading", { name: "Request Submitted!" })
   ).toBeVisible();
-  await expect(page.getByText("Request Submitted!Thank you")).toBeVisible();
-  await expect(page.getByRole("link", { name: "Back to Home" })).toBeVisible();
-  await page.getByRole("link", { name: "Back to Home" }).click();
+  await page.waitForTimeout(1000);
+  await page.getByRole("link", { name: "Upcoming Events" }).click();
+  await expect(
+    page.getByText(
+      `Address: ${address.street}, ${address.city}, ${address.state} ${address.zip}`
+    )
+  ).toHaveCount(1);
+};
+const clientRegistration = async (page: Page) => {
+  await expect(
+    page.getByRole("heading", { name: "Client Registration Form" })
+  ).toBeVisible();
+  await page.getByPlaceholder("John", { exact: true }).click();
+  await page.getByPlaceholder("John", { exact: true }).fill("H");
+  await page.getByPlaceholder("John", { exact: true }).press("Tab");
+  await page.getByPlaceholder("Z.").fill("E");
+  await page.getByPlaceholder("Z.").press("Tab");
+  await page.getByPlaceholder("Doe", { exact: true }).fill("E");
+  await page.getByPlaceholder("Doe", { exact: true }).press("Tab");
+  await page.getByPlaceholder("john.doe@example.com").fill("e@example.com");
+  await page.getByPlaceholder("john.doe@example.com").press("Tab");
+  await page.getByPlaceholder("-123-1234").fill("(514) 709-7180");
+  await page.getByPlaceholder("-123-1234").press("Tab");
+  await page.getByPlaceholder("January 1, 2000").click();
+  await page
+    .locator("div")
+    .filter({ hasText: currentMonth })
+    .getByRole("button")
+    .first()
+    .click();
+  await page.getByLabel(`1 ${prevMonth}`, { exact: true }).click();
+  await page.getByRole("button", { name: "Next" }).click();
+  await page.getByPlaceholder("Main Street").click();
+  await page.getByPlaceholder("Main Street").fill("170 grove street");
+  await page.getByPlaceholder("Main Street").press("Tab");
+  await page.getByPlaceholder("Quebec").click();
+  await page.getByRole("option", { name: "Newfoundland and Labrador" }).click();
+  await page.getByPlaceholder("Montreal").click();
+  await page.getByPlaceholder("Montreal").fill("g");
+  await page.getByRole("option", { name: "Gaultois" }).click();
+  await page.getByPlaceholder("H1H 1H1").click();
+  await page.getByPlaceholder("H1H 1H1").fill("H1H1H1");
+  await page.getByRole("button", { name: "Next" }).click();
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(
+    page.getByRole("heading", { name: "Submission complete!" })
+  ).toBeVisible();
+  await page.waitForTimeout(1000);
+};
+
+test.describe("new user booking", () => {
+  test.use({ storageState: "playwright/.auth/user.json" });
+  test.describe.configure({ mode: "serial" });
+
+  test("book event as new user", async ({ page }) => {
+    await page.goto("/");
+    expect(await page.getByText("Welcome!")).toBeVisible();
+    await page.getByRole("link", { name: "Book Event" }).click();
+
+    await clientRegistration(page);
+
+    await page.getByRole("link", { name: "Back to Event Form" }).click();
+
+    await eventBooking(page);
+  });
+
+  test("book event as newly created user", async ({ page }) => {
+    await page.goto("/");
+    expect(await page.getByText("Welcome!")).toBeVisible();
+    await page.getByRole("link", { name: "Book Event" }).click();
+
+    await eventBooking(page);
+  });
+});
+
+test.describe("student booking", () => {
+  test.use({ storageState: "playwright/.auth/student.json" });
+
+  test("book event as student", async ({ page }) => {
+    await page.goto("/");
+    expect(await page.getByText("Welcome!")).toBeVisible();
+    await page.getByRole("link", { name: "Book Event" }).click();
+
+    await eventBooking(page);
+  });
+});
+
+test.describe("client booking", () => {
+  test.use({ storageState: "playwright/.auth/client.json" });
+
+  test("book event as client", async ({ page }) => {
+    await page.goto("/");
+    expect(await page.getByText("Welcome!")).toBeVisible();
+    await page.getByRole("link", { name: "Book Event" }).click();
+
+    await eventBooking(page);
+  });
 });

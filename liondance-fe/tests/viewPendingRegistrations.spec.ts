@@ -1,5 +1,7 @@
 import { test, expect } from "@playwright/test";
 
+test.use({ storageState: "playwright/.auth/staff.json" });
+
 test("view pending registrations", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("link", { name: "Pending Registrations" }).click();

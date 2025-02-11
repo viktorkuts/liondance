@@ -118,6 +118,14 @@ export const useUserService = () => {
     return await axiosInstance.post<Student>("/clients", client);
   };
 
+  const registerUser = async (user: User): Promise<AxiosResponse<User>> => {
+    if (!user.roles) throw "No user roles!";
+    return await axiosInstance.post<User>(
+      `/api/v1/users?role=${user.roles.map((e) => e.toUpperCase()).toString()}`,
+      user
+    );
+  };
+
   return {
     getAllUsers,
     getUserProfile,
@@ -135,5 +143,6 @@ export const useUserService = () => {
     getSessionRoles,
     getAllClients,
     registerClient,
+    registerUser,
   };
 };
