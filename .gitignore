@@ -4,3 +4,4 @@ data/
 .idea
 .DS_Store
 env
+playwright/
