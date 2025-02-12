@@ -1,5 +1,7 @@
 import { test, expect } from "@playwright/test";
 
+test.use({ storageState: "playwright/.auth/staff.json" });
+
 test("register admin user", async ({ page }) => {
   await page.goto("/");
   await page.getByText("Admin").click();
@@ -32,7 +34,11 @@ test("register admin user", async ({ page }) => {
     .first()
     .click();
   await page
-    .getByRole("button", { name: "November 2024", exact: true })
+    .locator("button")
+    .filter({
+      hasText:
+        /^(January|February|March|April|May|June|July|August|September|October|November|December) \d{4}$/,
+    })
     .click();
   await page
     .locator("div")
@@ -73,4 +79,29 @@ test("register admin user", async ({ page }) => {
   await page.getByPlaceholder("12345").fill("A1A 1A1");
   await page.getByRole("button", { name: "Submit" }).click();
   await expect(page.getByText("Success", { exact: true })).toBeVisible();
+});
+
+test("change user role to student", async ({ page }) => {
+  await page.goto("/");
+  await page.getByText("Admin").click();
+  await page.getByRole("link", { name: "Users" }).click();
+  await page
+    .getByRole("row", { name: "Sarah Jane Smith Sarah.Smith@" })
+    .getByRole("button")
+    .click();
+  await page.getByRole("button", { name: "Change Roles" }).click();
+  await page
+    .locator("div")
+    .filter({ hasText: /^Select Roles$/ })
+    .locator("div")
+    .nth(1)
+    .click();
+  await page.getByRole("option", { name: "STUDENT" }).click();
+  await page.getByText("Change Roles").nth(1).click();
+  await page.getByRole("button", { name: "Save Roles" }).click();
+  await expect(page.getByText("Roles updated successfully.")).toBeVisible();
+  await page.getByRole("button", { name: "Change Roles" }).click();
+  await page.getByLabel("Change Roles").locator("button").nth(2).click();
+  await page.getByRole("button", { name: "Save Roles" }).click();
+  await expect(page.getByText("Roles updated successfully.")).toBeVisible();
 });

@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import axios, { AxiosError } from "axios";
+import { useCourseService } from "@/services/courseService";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { Modal, Text } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import "./StudentCourses.css";
+import { useUserContext } from "@/utils/userProvider";
+import { AxiosError } from "axios";
 
 interface Course {
   courseId: string;
@@ -19,6 +21,8 @@ interface Course {
 }
 
 const StudentCourses: React.FC = () => {
+  const courseService = useCourseService();
+  const { user } = useUserContext();
   const { t } = useTranslation();
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -27,29 +31,29 @@ const StudentCourses: React.FC = () => {
   const [selectedCourses, setSelectedCourses] = useState<Course[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
 
-  const studentId = "a79b0c3c-2462-42a1-922d-1a20be857cba";
-
   useEffect(() => {
     const fetchCourses = async () => {
+      if (!user?.userId) {
+        return;
+      }
       try {
-        const response = await axios.get<Course[]>(
-          `${import.meta.env.BACKEND_URL}/api/v1/students/${studentId}/courses`
-        );
+        const response = await courseService.getStudentCourses(user?.userId);
         setCourses(response.data);
         setLoading(false);
-      } catch (err) {
-        const axiosError = err as AxiosError;
-        if (axiosError.response?.status === 404) {
+      } catch (e: unknown) {
+        if (e instanceof AxiosError) {
           setError(t("You aren't in any courses."));
-        } else {
-          setError(t("Failed to load courses. Please try again later."));
+          setLoading(false);
+          return;
         }
+        setError(t("Failed to load courses. Please try again later."));
         setLoading(false);
       }
     };
 
     fetchCourses();
-  }, [t]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   const handleDayClick = (date: Date) => {
     const clickedCourses = courses.filter(
@@ -72,7 +76,8 @@ const StudentCourses: React.FC = () => {
     return hasCourse ? "course-day" : "";
   };
 
-  if (loading) return <Text style={{ textAlign: "center" }}>{t("Loading...")}</Text>;
+  if (loading)
+    return <Text style={{ textAlign: "center" }}>{t("Loading...")}</Text>;
   if (error)
     return <Text style={{ textAlign: "center", color: "red" }}>{error}</Text>;
 

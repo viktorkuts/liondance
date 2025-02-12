@@ -135,7 +135,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .state("QC")
                                 .city("Sepolia")
                                 .build())
-                        .associatedId("google-oauth2|104075868240337554059")
+                        .associatedId("auth0|67a0600de5c3b505111da424")
                         .roles(EnumSet.of(Role.STAFF))
                         .build()
         );
@@ -157,6 +157,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Laval")
                                 .build())
                         .roles(EnumSet.of(Role.STUDENT))
+                        .associatedId("auth0|67a060b8afb46e45088b2b63")
                         .build()
         );
         students.add(
@@ -539,6 +540,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Toronto")
                                 .build())
                         .roles(EnumSet.of(Role.CLIENT))
+                        .associatedId("auth0|67a441ddb02082c6c00f7718")
                         .build()
         );
         students.add(
@@ -1238,7 +1240,7 @@ ArrayList<Promotion> promotions = new ArrayList<>();
         eventRepository.insert(events).subscribe();
         userRepository.insert(students).subscribe();
         courseRepository.insert(course).subscribe();
-       courseRepository.insert(coursetest).subscribe();
+        courseRepository.insert(coursetest).subscribe();
         promotionRepository.insert(promotions).subscribe();
         feedbackRepository.insert(feedbacks).subscribe();
     }
