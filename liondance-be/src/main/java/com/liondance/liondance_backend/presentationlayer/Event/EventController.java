@@ -90,7 +90,7 @@ public class EventController {
     }
 
     @GetMapping("/filtered-events")
-    public Flux<EventDisplayDTO> getFilteredEvents() {
+    public Flux<EventResponseModel> getFilteredEvents() {
         return eventService.getFilteredEvents();
     }
 

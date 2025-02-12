@@ -1,23 +1,19 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 import { useForm } from "@mantine/form";
-import {
-  TextInput,
-  Button,
-  Select,
-  Group,
-  Notification,
-} from "@mantine/core";
+import { TextInput, Button, Select, Group, Notification } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { useState } from "react";
-import axios from "axios";
+import { useUserService } from "@/services/userService";
 import { useTranslation } from "react-i18next";
 import "./AddUserForm.css";
+import { User } from "@/models/Users";
 
 const AddNewUser = () => {
   const { t } = useTranslation();
   const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const userService = useUserService();
 
   const form = useForm({
     initialValues: {
@@ -37,8 +33,10 @@ const AddNewUser = () => {
     },
 
     validate: {
-      firstName: (value) => (value.length > 0 ? null : t("First name is required")),
-      lastName: (value) => (value.length > 0 ? null : t("Last name is required")),
+      firstName: (value) =>
+        value.length > 0 ? null : t("First name is required"),
+      lastName: (value) =>
+        value.length > 0 ? null : t("Last name is required"),
       dob: (value) => (value ? null : t("Date of birth is required")),
       email: (value) =>
         /^\S+@\S+$/.test(value) ? null : t("Invalid email address"),
@@ -56,20 +54,30 @@ const AddNewUser = () => {
 
   const handleSubmit = async () => {
     const values = form.values;
+    const newUser: User = {
+      firstName: values.firstName,
+      middleName: values.middleName,
+      lastName: values.lastName,
+      address: values.address,
+      dob: values.dob,
+      email: values.email,
+      phone: values.phone,
+      roles: [values.role],
+    };
 
     try {
-      await axios.post(
-        `http://localhost:8080/api/v1/users?role=${values.role.toUpperCase()}`,
-        {
-          ...values,
-          address: { ...values.address },
-        }
+      userService.registerUser(newUser);
+      setSuccess(
+        t("User created successfully. An email has been sent to the user.")
       );
-      setSuccess(t("User created successfully. An email has been sent to the user."));
       setError(null);
       form.reset();
     } catch (err) {
-      setError(t("Failed to create user. Please check the form for errors.") + " " + err);
+      setError(
+        t("Failed to create user. Please check the form for errors.") +
+          " " +
+          err
+      );
       setSuccess(null);
     }
   };

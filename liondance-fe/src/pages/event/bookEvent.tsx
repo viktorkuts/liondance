@@ -27,6 +27,8 @@ import { useUserContext } from "@/utils/userProvider";
 import { useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
 
+let submitDebounce = false;
+
 function BookEvent() {
   const navigate = useNavigate();
   const { user, isLoading } = useUserContext();
@@ -39,7 +41,9 @@ function BookEvent() {
   const [cityDataLoading, setCityDataLoading] = useState<boolean>(false);
   const [activeStep, setActiveStep] = useState(0);
   const [selectedProvince, setSelectedProvince] = useState<string>("");
-  const [provinces, setProvinces] = useState<Province[]>(geoService.provincesCache);
+  const [provinces, setProvinces] = useState<Province[]>(
+    geoService.provincesCache
+  );
 
   const provincesFormatted = () => {
     return provinces.map((val) => {
@@ -161,8 +165,9 @@ function BookEvent() {
     });
   };
 
-  const submit = () => {
-    setActiveStep(4);
+  const submit = async () => {
+    if (submitDebounce) return;
+    submitDebounce = true;
     const values = form.getValues();
     const newEvent: Event = {
       venue: values.venue,
@@ -174,10 +179,8 @@ function BookEvent() {
       eventPrivacy: values.eventPrivacy as EventPrivacy,
     };
 
-    const run = async () => {
-      await eventService.bookEvent(newEvent);
-    };
-    run();
+    await eventService.bookEvent(newEvent);
+    setActiveStep(4);
   };
 
   return (
@@ -197,9 +200,9 @@ function BookEvent() {
             error={form.errors.eventDateTime}
             required
             locale={i18n.language}
-            />
+          />
 
-            <Select
+          <Select
             label={t("Event Time")}
             placeholder={t("Select a time")}
             data={timeOptions}
@@ -212,19 +215,19 @@ function BookEvent() {
             required
           />
 
-              <Select
-              label={t("Event Type")}
-              placeholder={t("Wedding")}
-              data={Object.values(EventType).map((type) => ({
-                value: type,
-                label: t(type),
-              }))}
-              key={form.key("eventType")}
-              required
+          <Select
+            label={t("Event Type")}
+            placeholder={t("Wedding")}
+            data={Object.values(EventType).map((type) => ({
+              value: type,
+              label: t(type),
+            }))}
+            key={form.key("eventType")}
+            required
             {...form.getInputProps("eventType")}
-            />
-            
-            <Select
+          />
+
+          <Select
             label={t("Payment Method")}
             placeholder={t("Cash")}
             data={Object.values(PaymentMethod).map((method) => ({
@@ -234,14 +237,14 @@ function BookEvent() {
             key={form.key("paymentMethod")}
             required
             {...form.getInputProps("paymentMethod")}
-            />
-            <TextInput
+          />
+          <TextInput
             label={t("Special Request")}
             placeholder={t("Request...")}
             key={form.key("specialRequest")}
             {...form.getInputProps("specialRequest")}
-            />
-            <Select
+          />
+          <Select
             label={t("Event Privacy")}
             placeholder={t("PRIVATE")}
             data={Object.values(EventPrivacy).map((privacy) => ({

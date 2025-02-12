@@ -22,37 +22,37 @@ function Navbar() {
     <div className={classes.navbar}>
       <a className={classes.mainSection} href="/">
         <Image src={logo} className={classes.logo} />
-        <h2>{t('Welcome!')}</h2>
+        <h2>{t("Welcome!")}</h2>
       </a>
       <div className={classes.rightSection}>
         <Anchor href="/reviews" fw={1000} fz="h2">
-          {t('Reviews')}
+          {t("Reviews")}
         </Anchor>
         <Anchor href="/contact-us" fw={1000} fz="h2">
-          {t('Contact')}
+          {t("Contact")}
         </Anchor>
         {user && user.roles?.includes(Role.STUDENT) ? (
           <Anchor href="/student-courses" fw={1000} fz={"h2"}>
-            {t('Courses')}
+            {t("Courses")}
           </Anchor>
         ) : null}
         <Anchor href="/filtered-events" fw={1000} fz="h2">
-          {t('Upcoming Events')}
+          {t("Upcoming Events")}
         </Anchor>
         <Anchor href="/booking" fw={1000} fz="h2">
-          {t('Book Event')}
+          {t("Book Event")}
         </Anchor>
         {user && user.roles?.includes(Role.CLIENT) ? (
-          <Anchor href="/events" fw={1000} fz="h2">
-            {t('Your Events')}
+          <Anchor href="/my-events" fw={1000} fz="h2">
+            {t("Your Events")}
           </Anchor>
         ) : null}
         <Anchor href="/registration" fw={1000} fz="h2">
-          {t('Registration')}
+          {t("Registration")}
         </Anchor>
         {user && user.roles?.includes(Role.STAFF) ? (
           <Anchor href="/pending-registrations" fw={1000} fz="h2">
-            {t('Pending Registrations')}
+            {t("Pending Registrations")}
           </Anchor>
         ) : null}
         <Anchor
@@ -70,32 +70,32 @@ function Navbar() {
           fw={1000}
           fz="h2"
         >
-          {isAuthenticated ? t('Logout') : t('Login')}
+          {isAuthenticated ? t("Logout") : t("Login")}
         </Anchor>
         {user && user.roles?.includes(Role.STAFF) ? (
           <div className={classes.dropdown}>
             <Anchor onClick={toggleAdminDropdown} fw={1000} fz="h2">
-              {t('Admin')}
+              {t("Admin")}
             </Anchor>
             {adminDropdownOpen && (
               <div className={classes.dropdownContent}>
                 <Anchor href="/users" fw={1000} fz="h2">
-                  {t('Users')}
+                  {t("Users")}
                 </Anchor>
                 <Anchor href="/students" fw={1000} fz="h2">
-                  {t('Students')}
+                  {t("Students")}
                 </Anchor>
                 <Anchor href="/events" fw={1000} fz="h2">
-                  {t('Events')}
+                  {t("Events")}
                 </Anchor>
                 <Anchor href="/promotions" fw={1000} fz="h2">
-                  {t('Promotions')}
+                  {t("Promotions")}
                 </Anchor>
                 <Anchor href="/clients" fw={1000} fz="h2">
-                  {t('Client List')}
+                  {t("Client List")}
                 </Anchor>
                 <Anchor href="/courses" fw={1000} fz="h2">
-                  {t('Cancel Course')}
+                  {t("Cancel Course")}
                 </Anchor>
               </div>
             )}

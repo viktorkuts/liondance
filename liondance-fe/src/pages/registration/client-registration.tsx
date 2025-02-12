@@ -20,6 +20,8 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useUserContext } from "@/utils/userProvider";
 import { useNavigate } from "react-router";
 
+let submitDebounce = false;
+
 function ClientRegistration() {
   const { isAuthenticated, loginWithRedirect } = useAuth0();
   const { user } = useUserContext();
@@ -82,7 +84,10 @@ function ClientRegistration() {
         }
       },
       email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
-      phone: (value) => (/\(\d{3}\) \d{3}-\d{4}$/.test(value) ? null : "Invalid phone number format"),
+      phone: (value) =>
+        /\(\d{3}\) \d{3}-\d{4}$/.test(value)
+          ? null
+          : "Invalid phone number format",
       address:
         (activeStep === 1 && {
           streetAddress: (value) =>
@@ -151,8 +156,9 @@ function ClientRegistration() {
     });
   };
 
-  const submit = () => {
-    setActiveStep(3);
+  const submit = async () => {
+    if (submitDebounce) return;
+    submitDebounce = true;
     const values = form.getValues();
     const newStudent: Client = {
       firstName: values.firstName,
@@ -164,10 +170,9 @@ function ClientRegistration() {
       address: values.address,
     };
 
-    const run = async () => {
-      await userService.registerClient(newStudent);
-    };
-    run();
+    await userService.registerClient(newStudent);
+
+    setActiveStep(3);
   };
 
   {

@@ -38,6 +38,7 @@ export const UserProvider = ({ children }: Props) => {
         .getSessionUser()
         .then((res) => {
           console.log(t("Setting user"));
+          console.log(user);
           console.log(lvhUser);
           setLvhUser(res.data);
         })
