@@ -1,8 +1,11 @@
 package com.liondance.liondance_backend.logiclayer.User;
 
+import com.liondance.liondance_backend.datalayer.Event.EventStatus;
 import com.liondance.liondance_backend.datalayer.Notification.NotificationType;
 import com.liondance.liondance_backend.datalayer.User.*;
+import com.liondance.liondance_backend.logiclayer.Event.EventService;
 import com.liondance.liondance_backend.logiclayer.Notification.NotificationService;
+import com.liondance.liondance_backend.presentationlayer.Event.EventResponseModel;
 import com.liondance.liondance_backend.presentationlayer.User.StudentRequestModel;
 import com.liondance.liondance_backend.presentationlayer.User.StudentResponseModel;
 import com.liondance.liondance_backend.presentationlayer.User.UserRequestModel;
@@ -18,6 +21,7 @@ import com.liondance.liondance_backend.utils.exceptions.EmailInUse;
 import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
 import com.liondance.liondance_backend.utils.exceptions.StudentNotPending;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.mail.MailSendException;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -35,10 +39,12 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final NotificationService notificationService;
+    private final EventService eventService;
 
-    public UserServiceImpl(UserRepository userRepository, NotificationService notificationService) {
+    public UserServiceImpl(UserRepository userRepository, NotificationService notificationService, @Lazy EventService eventService) {
         this.userRepository = userRepository;
         this.notificationService = notificationService;
+        this.eventService = eventService;
     }
 
     @Override
@@ -295,6 +301,36 @@ public class UserServiceImpl implements UserService {
                 })
                 .flatMap(userRepository::save)
                 .map(UserResponseModel::from);
+    }
+
+    @Override
+    public Mono<UserResponseModel> getClientDetails(String clientId) {
+        return userRepository.findByUserId(clientId)
+                .filter(user -> user.getRoles().contains(Role.CLIENT))
+                .flatMap(user -> {
+                    Flux<EventResponseModel> allEvents = eventService.getEventsByClientId(user.getUserId()).cache();
+
+                    Mono<List<EventResponseModel>> activeEvents = allEvents
+                            .filter(event -> event.getEventStatus() == EventStatus.CONFIRMED)
+                            .collectList();
+
+                    Mono<List<EventResponseModel>> pastEvents = allEvents
+                            .filter(event -> event.getEventStatus() == EventStatus.COMPLETED)
+                            .collectList();
+
+                    return Mono.zip(Mono.just(user), activeEvents, pastEvents)
+                            .map(tuple -> ClientResponseModel.builder()
+                                    .userId(user.getUserId())
+                                    .firstName(user.getFirstName())
+                                    .middleName(user.getMiddleName())
+                                    .lastName(user.getLastName())
+                                    .email(user.getEmail())
+                                    .phone(user.getPhone())
+                                    .roles(user.getRoles())
+                                    .activeEvents(tuple.getT2())
+                                    .pastEvents(tuple.getT3())
+                                    .build());
+                });
     }
 
     @Override

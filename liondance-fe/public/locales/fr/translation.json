@@ -268,5 +268,12 @@
     "No confirmed events found.": "Aucun événement confirmé trouvé.",
     "Cancelled Events": "Événements annulés",
     "No cancelled events found.": "Aucun événement annulé trouvé.",
-    "Search events...": "Rechercher des événements..."
+    "Search events...": "Rechercher des événements...",
+    "Client Profile": "Profil du client",
+    "Active Events": "Événements actifs",
+    "Past Events": "Événements passés",
+    "Venue": "Lieu",
+    "No active events.": "Aucun événement actif.",
+    "No past events available.": "Aucun événement passé disponible.",
+    "Back to Client List": "Retour à la liste des clients"
 }

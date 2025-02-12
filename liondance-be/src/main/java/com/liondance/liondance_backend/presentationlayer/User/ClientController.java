@@ -56,4 +56,10 @@ public class ClientController {
                 })
                 .flatMapMany(eventService::getEventsByClientId);
     }
+
+    @PreAuthorize("hasAuthority('STAFF')")
+    @GetMapping("/{clientId}")
+    public Mono<UserResponseModel> getClientDetails(@PathVariable String clientId) {
+        return userService.getClientDetails(clientId);
+    }
 }

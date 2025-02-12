@@ -1,11 +1,11 @@
 package com.liondance.liondance_backend.presentationlayer.User;
 
+import com.liondance.liondance_backend.presentationlayer.Event.EventResponseModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.time.Instant;
 import java.util.List;
 
 @Data
@@ -14,8 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ClientResponseModel extends UserResponseModel {
 
-    private Instant joinDate;
-    private List<String> activeEvents;
-    private List<String> pastEvents;
+    private List<EventResponseModel> activeEvents;
+    private List<EventResponseModel> pastEvents;
 
 }

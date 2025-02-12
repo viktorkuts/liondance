@@ -1,0 +1,103 @@
+.client-profile {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #ECBA4B;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .client-profile h1 {
+    text-align: center;
+    color: #000000;
+    margin-bottom: 20px;
+  }
+  
+  .loading,
+  .error {
+    text-align: center;
+    font-size: 18px;
+    margin: 20px 0;
+  }
+  
+  .error {
+    color: #e53e3e;
+  }
+  
+  .client-details {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #ECBA4B;
+  }
+  
+  .client-details p {
+    font-size: 16px;
+    margin: 10px 0;
+  }
+  
+  .client-details strong {
+    color: #333;
+  }
+  
+  .client-details th,
+  .client-details td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+  }
+  
+  .client-details th {
+    background-color: #ffe4c4;
+    color: #333;
+    font-weight: bold;
+  }
+  
+  .client-details tr:nth-child(even) {
+    background-color: #fff7eb;
+  }
+  
+  .client-details tr:hover {
+    background-color: #fde2c4;
+  }
+  
+  /* Event sections */
+  .active-events,
+  .past-events {
+    margin-top: 20px;
+  }
+  
+  .active-events h2,
+  .past-events h2 {
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .active-events ul,
+  .past-events ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .active-events li,
+  .past-events li {
+    padding: 10px;
+    background: #fff7eb;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .button-container {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .mantine-Button-root {
+    display: block;
+    margin: 20px auto;
+  }
+  
