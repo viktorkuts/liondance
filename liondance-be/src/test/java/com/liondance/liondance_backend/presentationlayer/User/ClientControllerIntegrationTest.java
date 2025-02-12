@@ -136,6 +136,7 @@ public class ClientControllerIntegrationTest {
                 });
 
         verify(userService, times(1)).getClientDetails(clientId);
+    }
 
     @Test
     void addClient_thenReturnAddedClient() {
