@@ -121,15 +121,14 @@ export const useUserService = () => {
   const getClientProfile = async (clientId: string): Promise<Client> => {
     const response = await axiosInstance.get<Client>(`/clients/${clientId}`);
     return response.data;
-    );
-    
+  };
+
   const registerUser = async (user: User): Promise<AxiosResponse<User>> => {
     if (!user.roles) throw "No user roles!";
     return await axiosInstance.post<User>(
       `/api/v1/users?role=${user.roles.map((e) => e.toUpperCase()).toString()}`,
       user
     );
-
   };
 
   return {
@@ -151,6 +150,5 @@ export const useUserService = () => {
     registerClient,
     getClientProfile,
     registerUser,
-
   };
 };
