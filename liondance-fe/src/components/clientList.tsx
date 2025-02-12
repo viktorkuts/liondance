@@ -16,9 +16,10 @@ const ClientList: React.FC = () => {
     userService.getAllClients().then((data) => {
       setClients(data);
     });
-  }, [userService]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const filteredClients = clients.filter(client =>
+  const filteredClients = clients.filter((client) =>
     `${client.firstName} ${client.middleName || ""} ${client.lastName}`
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
@@ -26,24 +27,24 @@ const ClientList: React.FC = () => {
 
   return (
     <div className="clientListContainer">
-      <Title order={1}>{t('Client List')}</Title>
+      <Title order={1}>{t("Client List")}</Title>
       <Input
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        placeholder={t('Search by name')}
+        placeholder={t("Search by name")}
         className="searchInput"
       />
       {filteredClients.length === 0 ? (
-        <p className="noData">{t('No clients found.')}</p>
+        <p className="noData">{t("No clients found.")}</p>
       ) : (
         <table className="clientsTable">
           <thead>
             <tr>
               <th>#</th>
-              <th>{t('Name')}</th>
-              <th>{t('Email')}</th>
-              <th>{t('Phone')}</th>
-              <th>{t('Actions')}</th>
+              <th>{t("Name")}</th>
+              <th>{t("Email")}</th>
+              <th>{t("Phone")}</th>
+              <th>{t("Actions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -58,7 +59,7 @@ const ClientList: React.FC = () => {
                 <td>
                   <Link to={`/client-profile/${client.userId}`}>
                     <Button className="viewProfileButton" variant="outline">
-                      {t('View Profile')}
+                      {t("View Profile")}
                     </Button>
                   </Link>
                 </td>
