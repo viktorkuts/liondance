@@ -127,6 +127,17 @@ public void sendScheduledFeedbackRequests(Course course) {
                 .map(ClassFeedbackResponseModel::from);
     }
 
+    @Override
+    public Flux<ClassFeedbackReportResponseModel> getAllClassFeedbackReports() {
+        return classFeedbackReportRepository.findAll().map(ClassFeedbackReportResponseModel::from);
+    }
+
+    @Override
+    public Mono<ClassFeedbackPdf> downloadClassFeedbackPdf(String reportId) {
+        return classFeedbackPdfRepository.findByReportId(reportId);
+    }
+
+
     public void generateClassFeedbackReport(Course course, LocalDate classDate) {
         log.info("Generating class feedback report for {} - {}", course.getName(), classDate);
 
