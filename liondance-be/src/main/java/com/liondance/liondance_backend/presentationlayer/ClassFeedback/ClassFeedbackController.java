@@ -4,6 +4,7 @@ import com.liondance.liondance_backend.logiclayer.ClassFeedback.ClassFeedbackSer
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -22,12 +23,12 @@ public class ClassFeedbackController {
 public Mono<ClassFeedbackResponseModel> addClassFeedback(@RequestBody Mono<ClassFeedbackRequestModel> classfeedback){
         return classFeedbackService.addClassFeedback(classfeedback);
 }
-
+@PreAuthorize("hasAuthority('STAFF')")
 @GetMapping("/reports")
 public Flux<ClassFeedbackReportResponseModel> getAllClassFeedbackReports(){
         return classFeedbackService.getAllClassFeedbackReports();
 }
-
+@PreAuthorize("hasAuthority('STAFF')")
     @GetMapping("/reports/{reportId}/download")
     public Mono<ResponseEntity<byte[]>> downloadReport(@PathVariable String reportId) {
         return classFeedbackService.downloadClassFeedbackPdf(reportId)
