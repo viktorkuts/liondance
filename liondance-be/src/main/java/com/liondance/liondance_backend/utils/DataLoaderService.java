@@ -1,5 +1,7 @@
 package com.liondance.liondance_backend.utils;
 
+import com.liondance.liondance_backend.datalayer.ClassFeedback.ClassFeedback;
+import com.liondance.liondance_backend.datalayer.ClassFeedback.ClassFeedbackRepository;
 import com.liondance.liondance_backend.datalayer.Course.Course;
 import com.liondance.liondance_backend.datalayer.Course.CourseRepository;
 import com.liondance.liondance_backend.datalayer.Event.*;
@@ -42,6 +44,9 @@ public class DataLoaderService implements CommandLineRunner {
 
     @Autowired
     FeedbackRepository feedbackRepository;
+
+    @Autowired
+    ClassFeedbackRepository classFeedbackRepository;
 
     private void tearDown(){
         eventRepository.deleteAll().subscribe();
@@ -1215,7 +1220,7 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .clientId(students.stream().filter(user -> user.getRoles().contains(Role.CLIENT)).toList().get(4).getUserId())
                         .build()
         );
-
+        
         events.add(
                 Event.builder()
                         .eventId("e5b07c6c6-dc48-489f-aa20-0d7d6fb12899")
@@ -1234,6 +1239,24 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .clientId("c56a8e9d-4362-42c8-965d-2b8b98f9f4d9")
                         .build()
         );
+        
+        ArrayList<ClassFeedback> classFeedbacks = new ArrayList<>();
+        classFeedbacks.add(
+                ClassFeedback.builder()
+                        .feedbackId("fe0ec8c1-15eb-486e-bb4d-987a4607e18a")
+                        .classDate(LocalDate.now())
+                        .score(4.5)
+                        .comment("Awesome class, it was so fun")
+                        .build()
+        );
+        classFeedbacks.add(
+                ClassFeedback.builder()
+                        .feedbackId("9fc7c678-60d0-4519-897f-5b40bc2fa86d")
+                        .classDate(LocalDate.now())
+                        .score(4.0)
+                        .comment("I liked it")
+                        .build()
+        );
 
         tearDown();
 
@@ -1243,5 +1266,6 @@ ArrayList<Promotion> promotions = new ArrayList<>();
         courseRepository.insert(coursetest).subscribe();
         promotionRepository.insert(promotions).subscribe();
         feedbackRepository.insert(feedbacks).subscribe();
+        classFeedbackRepository.insert(classFeedbacks).subscribe();
     }
 }

@@ -46,6 +46,8 @@ dependencies {
 	testImplementation "de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring3x:${flapdoodle}"
 	testImplementation "org.awaitility:awaitility"
 	testImplementation 'org.springframework.security:spring-security-test'
+	implementation 'com.itextpdf:itextpdf:5.0.6'
+
 }
 
 jacocoTestReport {
