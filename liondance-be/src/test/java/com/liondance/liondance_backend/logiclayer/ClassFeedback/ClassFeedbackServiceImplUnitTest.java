@@ -1,7 +1,6 @@
 package com.liondance.liondance_backend.logiclayer.ClassFeedback;
 
-import com.liondance.liondance_backend.datalayer.ClassFeedback.ClassFeedback;
-import com.liondance.liondance_backend.datalayer.ClassFeedback.ClassFeedbackRepository;
+import com.liondance.liondance_backend.datalayer.ClassFeedback.*;
 import com.liondance.liondance_backend.datalayer.Course.Course;
 import com.liondance.liondance_backend.datalayer.Course.CourseRepository;
 import com.liondance.liondance_backend.datalayer.Notification.NotificationType;
@@ -51,14 +50,24 @@ class ClassFeedbackServiceImplUnitTest {
         @Mock
         private ClassFeedbackRepository classFeedbackRepository;
 
+        @Mock
+        private ClassFeedbackReportRepository classFeedbackReportRepository;
+
+        @Mock
+        private ClassFeedbackPdfRepository classFeedbackPdfRepository;
+
         private Course course1;
 
         private ClassFeedback classFeedback;
 
         private ClassFeedbackRequestModel requestModel;
 
-        @BeforeEach
+        private LocalDate testDate;
+
+    @BeforeEach
         void setUp() {
+            testDate = LocalDate.now();
+
             course1 = Course.builder()
                     .courseId("1")
                     .name("Sample Course")
@@ -149,6 +158,43 @@ class ClassFeedbackServiceImplUnitTest {
                 .expectNextMatches(response -> response.getScore().equals(requestModel.getScore()) &&
                         response.getComment().equals(requestModel.getComment()))
                 .verifyComplete();
+    }
+
+    @Test
+    void whenNoFeedbackExists_thenReportNotGenerated() {
+        Mockito.when(classFeedbackRepository.findAllByClassDate(testDate))
+                .thenReturn(Flux.empty());
+
+        feedbackService.generateClassFeedbackReport(course1, testDate);
+
+        Mockito.verify(classFeedbackReportRepository, Mockito.never()).save(Mockito.any());
+        Mockito.verify(classFeedbackPdfRepository, Mockito.never()).save(Mockito.any());
+    }
+
+    @Test
+    void whenFeedbackExists_thenReportIsGeneratedAndPdfStored() {
+        Mockito.when(classFeedbackRepository.findAllByClassDate(testDate))
+                .thenReturn(Flux.just(classFeedback));
+
+        Mockito.when(classFeedbackReportRepository.save(Mockito.any(ClassFeedbackReport.class)))
+                .thenReturn(Mono.just(ClassFeedbackReport.builder()
+                        .reportId("test-report-id")
+                        .classDate(testDate)
+                        .averageScore(4.5)
+                        .feedbackDetails(List.of(ClassFeedbackResponseModel.from(classFeedback)))
+                        .build()));
+
+        Mockito.when(classFeedbackPdfRepository.save(Mockito.any(ClassFeedbackPdf.class)))
+                .thenReturn(Mono.just(ClassFeedbackPdf.builder()
+                        .reportId("test-report-id")
+                        .classDate(testDate)
+                        .pdfData(new byte[]{1, 2, 3})
+                        .build()));
+
+        feedbackService.generateClassFeedbackReport(course1, testDate);
+
+        Mockito.verify(classFeedbackReportRepository, Mockito.times(1)).save(Mockito.any(ClassFeedbackReport.class));
+        Mockito.verify(classFeedbackPdfRepository, Mockito.times(1)).save(Mockito.any(ClassFeedbackPdf.class));
     }
 
     }
