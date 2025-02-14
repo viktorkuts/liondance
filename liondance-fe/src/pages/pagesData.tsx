@@ -21,7 +21,7 @@ import ClientRegistration from "./registration/client-registration";
 import CancelCourse from "@/components/cancelCourse";
 import ClientProfile from "@/components/clientProfile";
 import GetMyEvents from "./event/clientEventPage";
-
+import ClassFeedbackReportPage from "./feedback/ClassFeedbackReportPage";
 const pagesData: routerType[] = [
   {
     path: "",
@@ -133,6 +133,13 @@ const pagesData: routerType[] = [
     element: <ClientProfile />,
     title: "Client Profile",
   },
+
+  {
+    path: "classfeedback/reports",
+    element: <ClassFeedbackReportPage />,
+    title: "Class Feedback Reports",
+  }
+
 ];
 
 export default pagesData;

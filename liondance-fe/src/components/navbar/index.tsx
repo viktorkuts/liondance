@@ -97,6 +97,9 @@ function Navbar() {
                 <Anchor href="/courses" fw={1000} fz="h2">
                   {t("Cancel Course")}
                 </Anchor>
+                <Anchor href="classfeedback/reports" fw={1000} fz="h2">
+                  {t("Class Feedback Reports")}
+                </Anchor>
               </div>
             )}
           </div>
