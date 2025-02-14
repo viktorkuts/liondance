@@ -3,6 +3,7 @@ import { useEventService } from "@/services/eventService";
 import { Event } from "@/models/Event.ts";
 import { useTranslation } from "react-i18next";
 import "./eventsList.css";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const GetMyEvents: React.FC = () => {
   const { t } = useTranslation();
@@ -10,6 +11,7 @@ const GetMyEvents: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const eventService = useEventService();
+  const navigate = useNavigate(); // Initialize navigate function
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -73,6 +75,14 @@ const GetMyEvents: React.FC = () => {
                     : t("No special requests")}
                 </td>
                 <td>{event.eventStatus ?? t("N/A")}</td>
+                <td>
+                  <button
+                    className="feedback-button"
+                    onClick={() => navigate(`/feedback-form/${event.eventId}`)}
+                  >
+                    {t("Give Feedback")}
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>

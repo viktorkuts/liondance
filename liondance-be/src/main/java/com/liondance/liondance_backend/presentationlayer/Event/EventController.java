@@ -3,6 +3,8 @@ package com.liondance.liondance_backend.presentationlayer.Event;
 import com.liondance.liondance_backend.datalayer.Event.EventStatus;
 import com.liondance.liondance_backend.logiclayer.Event.EventService;
 import com.liondance.liondance_backend.logiclayer.User.UserService;
+import com.liondance.liondance_backend.presentationlayer.Feedback.FeedbackRequestModel;
+import com.liondance.liondance_backend.presentationlayer.Feedback.FeedbackResponseModel;
 import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -98,4 +100,22 @@ public class EventController {
     public Mono<EventResponseModel> updateEventDetails(@PathVariable String eventId, @Valid @RequestBody EventRequestModel eventRequestModel) {
         return eventService.updateEventDetails(eventId, eventRequestModel);
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping(value = "/{eventId}/feedback")
+    public Mono<ResponseEntity<FeedbackResponseModel>> submitFeedback(
+            @PathVariable String eventId,
+            @Valid @RequestBody Mono<FeedbackRequestModel> feedbackRequestModel,
+            @AuthenticationPrincipal JwtAuthenticationToken jwt) {
+
+        // Log user details
+        logger.info("User: " + jwt.getName());
+        logger.info("Authorities: " + jwt.getAuthorities());
+        logger.info("JWT Token Claims: " + jwt.getTokenAttributes());
+
+        return userService.validate(jwt.getName())  // Validate user from JWT
+                .flatMap(user -> eventService.submitFeedback(eventId, feedbackRequestModel, user))
+                .map(response -> ResponseEntity.status(HttpStatus.CREATED).body(response));
+    }
+
 }
