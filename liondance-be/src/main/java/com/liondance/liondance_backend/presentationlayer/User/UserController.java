@@ -73,14 +73,13 @@ public class UserController {
     }
 
     @PatchMapping("{userId}/subscribe")
-    public Mono<UserResponseModel> subscribeToPromotions(@PathVariable String userId, @RequestBody Mono<Map<String, String>> requestBody) {
+    public Mono<UserResponseModel> subscribeToPromotions(@PathVariable String userId, @RequestBody Mono<Map<String, Boolean>> requestBody) {
         return requestBody
                 .flatMap(body -> {
-                    String isSubscribedStr = body.get("isSubscribed");
-                    if (isSubscribedStr == null) {
+                    Boolean isSubscribed = body.get("isSubscribed");
+                    if (isSubscribed == null) {
                         return Mono.error(new IllegalArgumentException("isSubscribed cannot be null or empty"));
                     }
-                    boolean isSubscribed = Boolean.parseBoolean(isSubscribedStr);
                     return userService.subscribeToPromotions(userId, isSubscribed);
                 });
     }

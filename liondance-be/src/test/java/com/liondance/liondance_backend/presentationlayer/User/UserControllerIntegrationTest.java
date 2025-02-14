@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
@@ -28,6 +29,7 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -45,6 +47,21 @@ class UserControllerIntegrationTest {
 
     @Autowired
     private WebTestClient client;
+
+    User testUser = User.builder()
+            .userId("test-user-id")
+            .firstName("Test")
+            .lastName("User")
+            .email("test.user@null.local")
+            .dob(LocalDate.parse("1990-01-01"))
+            .roles(EnumSet.of(Role.CLIENT))
+            .address(Address.builder()
+                    .streetAddress("123 Test St")
+                    .city("TestCity")
+                    .state("TC")
+                    .zip("T0T 0T0")
+                    .build())
+            .build();
 
     User staff = Client.builder()
             .userId(UUID.randomUUID().toString())
@@ -702,4 +719,55 @@ class UserControllerIntegrationTest {
                 .expectStatus().isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY)
                 .expectBody(InvalidInputException.class);
     }
+
+    @Test
+    void subscribeToPromotionsWithValidRequest() {
+        userRepository.save(testUser).block();
+
+        Map<String, String> requestBody = Map.of("isSubscribed", "true");
+
+        client.patch()
+                .uri("/api/v1/users/test-user-id/subscribe")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(requestBody)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(UserResponseModel.class)
+                .value(response -> assertThat(response.getIsSubscribed()).isTrue());
+    }
+
+    @Test
+    void unsubscribeFromPromotionsWithValidRequest() {
+        userRepository.save(testUser).block();
+
+        Map<String, String> requestBody = Map.of("isSubscribed", "false");
+
+        client.patch()
+                .uri("/api/v1/users/test-user-id/subscribe")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(requestBody)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(UserResponseModel.class)
+                .value(response -> assertThat(response.getIsSubscribed()).isFalse());
+    }
+    @Test
+    void whenSubscribeToPromotionsWithNullIsSubscribed_thenThrowIllegalArgumentException() {
+        userRepository.save(testUser).block();
+
+        Map<String, String> requestBody = Map.of("isSubscribed", "");
+
+        client.patch()
+                .uri("/api/v1/users/test-user-id/subscribe")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(requestBody)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().is5xxServerError()
+                .expectBody()
+                .jsonPath("$.message").isEqualTo("isSubscribed cannot be null or empty");
+    }
+    
 }
