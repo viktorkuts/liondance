@@ -9,3 +9,9 @@ export interface ClassFeedbackRequestModel {
     comment?: string;
   }
   
+  export interface ClassFeedbackReportResponseModel {
+    reportId: string;
+    classDate: string; 
+    averageScore: number;
+    feedbackDetails: Array<{ score: number; comment: string }>;
+  }

@@ -275,5 +275,9 @@
     "Venue": "Lieu",
     "No active events.": "Aucun événement actif.",
     "No past events available.": "Aucun événement passé disponible.",
-    "Back to Client List": "Retour à la liste des clients"
+    "Back to Client List": "Retour à la liste des clients",
+    "Class Feedback Reports": "Rapports de retour sur les cours",
+    "No reports available.": "Aucun rapport disponible.",
+    "Average Score": "Note moyenne",
+    "Download PDF": "Télécharger le PDF"
 }

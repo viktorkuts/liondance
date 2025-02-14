@@ -275,5 +275,10 @@
     "Venue": "Venue",
     "No active events.": "No active events.",
     "No past events available.": "No past events available.",
-    "Back to Client List": "Back to Client List"
+    "Back to Client List": "Back to Client List",
+    "Class Feedback Reports": "Class Feedback Reports",
+    "No reports available.": "No reports available.",
+    "Average Score": "Average Score",
+    "Download PDF": "Download PDF"
+
 }
