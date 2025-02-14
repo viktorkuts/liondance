@@ -14,6 +14,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.Map;
 import java.util.Set;
 
 @RestController
@@ -48,7 +49,7 @@ public class UserController {
         return Mono.just(roles);
     }
 
-    @PreAuthorize("hasAuthority('STAFF')")
+//    @PreAuthorize("hasAuthority('STAFF')")
     @GetMapping("{userId}")
     public Mono<UserResponseModel> getUserByUserId(@PathVariable String userId) {
         return userService.getUserByUserId(userId)
@@ -69,5 +70,18 @@ public class UserController {
     @PatchMapping("{userId}/role")
     public Mono<UserResponseModel> updateUserRole(@PathVariable String userId, @RequestBody UserRolePatchRequestModel role) {
         return userService.updateUserRole(userId, role);
+    }
+
+    @PatchMapping("{userId}/subscribe")
+    public Mono<UserResponseModel> subscribeToPromotions(@PathVariable String userId, @RequestBody Mono<Map<String, String>> requestBody) {
+        return requestBody
+                .flatMap(body -> {
+                    String isSubscribedStr = body.get("isSubscribed");
+                    if (isSubscribedStr == null) {
+                        return Mono.error(new IllegalArgumentException("isSubscribed cannot be null or empty"));
+                    }
+                    boolean isSubscribed = Boolean.parseBoolean(isSubscribedStr);
+                    return userService.subscribeToPromotions(userId, isSubscribed);
+                });
     }
 }
