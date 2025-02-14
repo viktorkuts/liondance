@@ -3,14 +3,13 @@ package com.liondance.liondance_backend.logiclayer.Event;
 import com.liondance.liondance_backend.datalayer.Event.EventPrivacy;
 import com.liondance.liondance_backend.datalayer.Event.EventRepository;
 import com.liondance.liondance_backend.datalayer.Event.EventStatus;
+import com.liondance.liondance_backend.datalayer.Event.PerformerStatus;
 import com.liondance.liondance_backend.datalayer.Notification.NotificationType;
 import com.liondance.liondance_backend.datalayer.User.Role;
 import com.liondance.liondance_backend.datalayer.User.User;
 import com.liondance.liondance_backend.logiclayer.Notification.NotificationService;
 import com.liondance.liondance_backend.logiclayer.User.UserService;
-import com.liondance.liondance_backend.presentationlayer.Event.EventDisplayDTO;
-import com.liondance.liondance_backend.presentationlayer.Event.EventRequestModel;
-import com.liondance.liondance_backend.presentationlayer.Event.EventResponseModel;
+import com.liondance.liondance_backend.presentationlayer.Event.*;
 import com.liondance.liondance_backend.presentationlayer.User.UserRolePatchRequestModel;
 import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
 import org.springframework.mail.MailSendException;
@@ -20,8 +19,7 @@ import reactor.core.publisher.Mono;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.EnumSet;
-import java.util.UUID;
+import java.util.*;
 
 import static com.liondance.liondance_backend.datalayer.Event.EventStatus.PENDING;
 
@@ -198,4 +196,55 @@ public class EventServiceImpl implements EventService {
                 .map(EventResponseModel::from);
     }
 
+    @Override
+    public Flux<PerformerListResponseModel> addEventPerformers(String eventId, Mono<PerformerListRequestModel> performerListRequestModel) {
+        return performerListRequestModel
+                .flatMapMany(model -> {
+                    List<String> filteredList = new ArrayList<>();
+                    return Flux.fromIterable(model.getPerformers())
+                            .flatMap(userService::getUserByUserId)
+                            .filter(userModel -> userModel.getRoles().contains(Role.STAFF))
+                            .doOnNext(userModel -> filteredList.add(userModel.getUserId()))
+                            .collectList()
+                            .flatMapMany(users -> eventRepository.findEventByEventId(eventId)
+                                    .switchIfEmpty(Mono.error(new NotFoundException("Event not found")))
+                                    .flatMapMany(event -> {
+                                        Map<String, PerformerStatus> currentPerformers = event.getPerformers();
+                                        List<String> performersToRemove = new ArrayList<>();
+                                        currentPerformers.keySet().forEach(key -> {
+                                            if (!filteredList.contains(key)) {
+                                                performersToRemove.add(key);
+                                            }
+                                        });
+                                        for (String performerId : performersToRemove) {
+                                            currentPerformers.remove(performerId);
+                                        }
+                                        for (String performerId : filteredList) {
+                                            currentPerformers.put(performerId, PerformerStatus.PENDING);
+                                        }
+                                        event.setPerformers(currentPerformers);
+                                        return eventRepository.save(event)
+                                                .flatMapMany(e -> Flux.fromIterable(currentPerformers.entrySet())
+                                                        .flatMap(entry -> {
+                                                            String key = entry.getKey();
+                                                            PerformerStatus val = entry.getValue();
+                                                            return userService.getUserByUserId(key)
+                                                                    .map(us -> PerformerListResponseModel.builder()
+                                                                            .performer(
+                                                                                    us
+                                                                            )
+                                                                            .status(val)
+                                                                            .build());
+                                                        }));
+                                    }));
+                });
+    }
+
+    @Override
+    public Flux<PerformerListResponseModel> getEventPerformers(String eventId) {
+        return eventRepository.findEventByEventId(eventId)
+                .flatMapMany(event -> Flux.fromIterable(event.getPerformers().entrySet())
+                        .flatMap(e -> userService.getUserByUserId(e.getKey())
+                                .map(us -> PerformerListResponseModel.builder().performer(us).status(e.getValue()).build())));
+    }
 }

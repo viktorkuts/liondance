@@ -21,9 +21,7 @@ import org.springframework.stereotype.Service;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Profile("!production")
@@ -952,6 +950,9 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .eventStatus(EventStatus.PENDING)
                         .eventPrivacy(EventPrivacy.PUBLIC)
                         .clientId(students.stream().filter(user -> user.getRoles().contains(Role.CLIENT)).toList().get(0).getUserId())
+                        .performers(
+                                Map.of(students.stream().filter(user -> user.getRoles().contains(Role.STAFF)).toList().get(0).getUserId(), PerformerStatus.PENDING)
+                        )
                         .build()
         );
         events.add(

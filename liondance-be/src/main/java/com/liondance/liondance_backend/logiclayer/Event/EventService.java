@@ -2,9 +2,7 @@ package com.liondance.liondance_backend.logiclayer.Event;
 
 import com.liondance.liondance_backend.datalayer.Event.EventStatus;
 import com.liondance.liondance_backend.datalayer.User.User;
-import com.liondance.liondance_backend.presentationlayer.Event.EventDisplayDTO;
-import com.liondance.liondance_backend.presentationlayer.Event.EventRequestModel;
-import com.liondance.liondance_backend.presentationlayer.Event.EventResponseModel;
+import com.liondance.liondance_backend.presentationlayer.Event.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -19,4 +17,6 @@ public interface EventService {
     public Flux<EventResponseModel> getEventsByClientId(String clientId);
     public Flux<EventResponseModel> getFilteredEvents();
     public Mono<EventResponseModel> updateEventDetails(String eventId, EventRequestModel eventRequestModel);
+    public Flux<PerformerListResponseModel> addEventPerformers(String eventId, Mono<PerformerListRequestModel> performerListRequestModel);
+    public Flux<PerformerListResponseModel> getEventPerformers(String eventId);
 }

@@ -5,6 +5,7 @@ import com.liondance.liondance_backend.logiclayer.Event.EventService;
 import com.liondance.liondance_backend.logiclayer.User.UserService;
 import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,8 +25,8 @@ import org.slf4j.LoggerFactory;
 @RestController
 @RequestMapping("/api/v1/events")
 @CrossOrigin(origins = {"http://localhost:5173", "http://localhost:8080"})
+@Slf4j
 public class EventController {
-    private static final Logger logger = LoggerFactory.getLogger(EventController.class);
     private final EventService eventService;
     private final UserService userService;
 
@@ -97,5 +98,17 @@ public class EventController {
     @PutMapping("/{eventId}")
     public Mono<EventResponseModel> updateEventDetails(@PathVariable String eventId, @Valid @RequestBody EventRequestModel eventRequestModel) {
         return eventService.updateEventDetails(eventId, eventRequestModel);
+    }
+
+    @PreAuthorize("hasAuthority('STAFF')")
+    @PostMapping("/{eventId}/performers")
+    public Flux<PerformerListResponseModel> setPerformersForEvent(@PathVariable String eventId, @RequestBody Mono<PerformerListRequestModel> requestBody) {
+        return eventService.addEventPerformers(eventId, requestBody);
+    }
+
+    @PreAuthorize("hasAuthority('STAFF')")
+    @GetMapping("/{eventId}/performers")
+    public Flux<PerformerListResponseModel> getPerformersForEvent(@PathVariable String eventId) {
+        return eventService.getEventPerformers(eventId);
     }
 }

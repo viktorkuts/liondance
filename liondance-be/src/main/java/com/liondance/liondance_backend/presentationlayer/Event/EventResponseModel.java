@@ -10,6 +10,8 @@ import org.springframework.beans.BeanUtils;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.Dictionary;
+import java.util.Map;
 
 @Data
 @SuperBuilder(toBuilder = true)
@@ -25,6 +27,7 @@ public class EventResponseModel {
     private String specialRequest;
     private EventStatus eventStatus;
     private EventPrivacy eventPrivacy;
+    private Map<String, PerformerStatus> performers;
 
     public static EventResponseModel from(Event event) {
         EventResponseModel responseModel = new EventResponseModel();
