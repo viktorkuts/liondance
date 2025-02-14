@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./ClassFeedbackReportPage.css";
-import { Button, Table, Notification, Loader } from "@mantine/core";
+import { Notification, Loader } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import useClassFeedbackService from "@/services/classFeedbackService";
 import { ClassFeedbackReportResponseModel } from "@/models/ClassFeedback";
@@ -23,6 +23,7 @@ const ClassFeedbackReportPage: React.FC = () => {
         setError("Failed to fetch reports: " + err.message);
         setLoading(false);
       });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleDownload = async (reportId: string) => {
