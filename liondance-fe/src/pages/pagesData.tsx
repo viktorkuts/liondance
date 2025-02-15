@@ -21,6 +21,7 @@ import ClientRegistration from "./registration/client-registration";
 import CancelCourse from "@/components/cancelCourse";
 import ClientProfile from "@/components/clientProfile";
 import GetMyEvents from "./event/clientEventPage";
+import ClassFeedbackReportPage from "./feedback/ClassFeedbackReportPage";
 import FeedbackForm from "./feedback/feedbackForm";
 
 const pagesData: routerType[] = [
@@ -135,6 +136,11 @@ const pagesData: routerType[] = [
     title: "Client Profile",
   },
   {
+    path: "classfeedback/reports",
+    element: <ClassFeedbackReportPage />,
+    title: "Class Feedback Reports",
+  },
+    {
     path: "feedback-form/:eventId",
     element: <FeedbackForm />,
     title: "Feedback Form",
