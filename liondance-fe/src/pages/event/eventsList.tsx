@@ -11,6 +11,8 @@ import { useTranslation } from "react-i18next";
 import { useUserService } from "@/services/userService.ts";
 import { useEventService } from "@/services/eventService.ts";
 import ContactClientModal from "./contactClientModal";
+import AddPerformersModal from "./addPerformersModal.tsx";
+import RemovePerformersModal from "./removePerformersModal.tsx";
 
 interface EventWithClient extends Event {
   client?: User;
@@ -32,6 +34,8 @@ interface ExpandableEventTableProps {
   handleViewFeedback: (eventId: string) => void;
   handleRequestFeedback: (eventId: string) => void;
   handleContactClick: (event: EventWithClient) => void;
+  handleAddPerformersClick: (event: EventWithClient) => void;
+  handleRemovePerformersClick: (event: EventWithClient) => void;
 }
 
 const ExpandableEventTable: React.FC<ExpandableEventTableProps> = ({
@@ -45,6 +49,8 @@ const ExpandableEventTable: React.FC<ExpandableEventTableProps> = ({
   handleViewFeedback,
   handleRequestFeedback,
   handleContactClick,
+  handleAddPerformersClick,
+  handleRemovePerformersClick,
 }) => {
   const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -160,6 +166,12 @@ const ExpandableEventTable: React.FC<ExpandableEventTableProps> = ({
                   <button onClick={() => handleContactClick(event)} className="button_contact_client">
                     {t("Contact Client")}
                   </button>
+                  <button onClick={() => handleAddPerformersClick(event)} className="button_add_performers">
+                    {t("Add Performers")}
+                  </button>
+                  <button onClick={() => handleRemovePerformersClick(event)} className="button_remove_performers">
+                    {t("Remove Performers")}
+                  </button>
                 </td>
               </tr>
             ))}
@@ -180,6 +192,8 @@ function GetAllEvents() {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showRescheduleModal, setShowRescheduleModal] = useState<boolean>(false);
   const [showUpdateDetailsModal, setShowUpdateDetailsModal] = useState<boolean>(false);
+  const [showAddPerformersModal, setShowAddPerformersModal] = useState<boolean>(false);
+  const [showRemovePerformersModal, setShowRemovePerformersModal] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: '', direction: 'none' });
   const [showContactModal, setShowContactModal] = useState<boolean>(false);
@@ -287,7 +301,7 @@ function GetAllEvents() {
       }
     };
     fetchEvents();
-  }, [axiosInstance]);
+  }, []);
 
   const handleStatusClick = (event: EventWithClient): void => {
     setSelectedEvent(event);
@@ -304,6 +318,16 @@ function GetAllEvents() {
     setShowUpdateDetailsModal(true);
   };
 
+  const handleAddPerformersClick = (event: EventWithClient): void => {
+    setSelectedEvent(event);
+    setShowAddPerformersModal(true);
+  };
+
+  const handleRemovePerformersClick = (event: EventWithClient): void => {
+    setSelectedEvent(event);
+    setShowRemovePerformersModal(true);
+  };
+
   const handleModalClose = (): void => {
     setShowModal(false);
     setSelectedEvent(null);
@@ -316,6 +340,16 @@ function GetAllEvents() {
 
   const handleUpdateDetailsModalClose = (): void => {
     setShowUpdateDetailsModal(false);
+    setSelectedEvent(null);
+  };
+
+  const handleAddPerformersModalClose = (): void => {
+    setShowAddPerformersModal(false);
+    setSelectedEvent(null);
+  };
+
+  const handleRemovePerformersModalClose = (): void => {
+    setShowRemovePerformersModal(false);
     setSelectedEvent(null);
   };
 
@@ -433,6 +467,8 @@ function GetAllEvents() {
             handleViewFeedback={handleViewFeedback}
             handleRequestFeedback={handleRequestFeedback}
             handleContactClick={handleContactClick}
+            handleAddPerformersClick={handleAddPerformersClick}
+            handleRemovePerformersClick={handleRemovePerformersClick}
           />
           <ExpandableEventTable
             title={t("Pending Events")}
@@ -445,6 +481,8 @@ function GetAllEvents() {
             handleViewFeedback={handleViewFeedback}
             handleRequestFeedback={handleRequestFeedback}
             handleContactClick={handleContactClick}
+            handleAddPerformersClick={handleAddPerformersClick}
+            handleRemovePerformersClick={handleRemovePerformersClick}
           />
           <ExpandableEventTable
             title={t("Confirmed Events")}
@@ -457,6 +495,8 @@ function GetAllEvents() {
             handleViewFeedback={handleViewFeedback}
             handleRequestFeedback={handleRequestFeedback}
             handleContactClick={handleContactClick}
+            handleAddPerformersClick={handleAddPerformersClick}
+            handleRemovePerformersClick={handleRemovePerformersClick}
           />
           <ExpandableEventTable
             title={t("Cancelled Events")}
@@ -469,6 +509,8 @@ function GetAllEvents() {
             handleViewFeedback={handleViewFeedback}
             handleRequestFeedback={handleRequestFeedback}
             handleContactClick={handleContactClick}
+            handleAddPerformersClick={handleAddPerformersClick}
+            handleRemovePerformersClick={handleRemovePerformersClick}
           />
           <ExpandableEventTable
             title={t("Completed Events")}
@@ -481,6 +523,8 @@ function GetAllEvents() {
             handleViewFeedback={handleViewFeedback}
             handleRequestFeedback={handleRequestFeedback}
             handleContactClick={handleContactClick}
+            handleAddPerformersClick={handleAddPerformersClick}
+            handleRemovePerformersClick={handleRemovePerformersClick}
           />
         </div>
       )}
@@ -504,6 +548,20 @@ function GetAllEvents() {
           event={selectedEvent}
           onClose={handleUpdateDetailsModalClose}
           onUpdate={handleEventUpdate}
+        />
+      )}
+      {selectedEvent && showAddPerformersModal && (
+        <AddPerformersModal
+          event={selectedEvent}
+          onClose={handleAddPerformersModalClose}
+          onAddPerformers={handleEventUpdate}
+        />
+      )}
+      {selectedEvent && showRemovePerformersModal && (
+        <RemovePerformersModal
+          event={selectedEvent}
+          onClose={handleRemovePerformersModalClose}
+          onRemovePerformers={handleEventUpdate}
         />
       )}
       {selectedClientToContact && showContactModal && (
