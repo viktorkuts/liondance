@@ -269,8 +269,11 @@ public class EventServiceImpl implements EventService {
                         .switchIfEmpty(Mono.error(new NotFoundException("User associated with event not found")))
                         .flatMap(user -> {
                             String message = new StringBuilder()
-                                    .append("Hello, please provide feedback for your recent event using the link below:\n")
-                                    .append(frontendUrl + "/feedback-form/" + eventId)
+                                    .append("Hello! We would appreciate that you provide feedback for your recent event using the link below:\n\n")
+                                    .append(frontendUrl)
+                                    .append("\n\nRemember to log in to your account to access the feedback form!")
+                                    .append("\n\nThank you!")
+
                                     .toString();
 
                             Boolean success = notificationService.sendMail(

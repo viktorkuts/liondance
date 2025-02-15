@@ -536,7 +536,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .middleName("Grace")
                         .lastName("Johnson")
                         .dob(LocalDate.parse("1998-02-15"))
-                        .email("alice.johnson@webmail.com")
+                        .email("estecorreoesdeprueba@yopmail.com")
                         .phone("234-567-8901")
                         .address(Address.builder()
                                 .streetAddress("5678 Oak Ave")

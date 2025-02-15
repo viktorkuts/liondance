@@ -1,18 +1,18 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom"; // Import useParams and useNavigate
+import { useParams, useNavigate } from "react-router-dom";
 import { useFeedbackService } from "../../services/feedbackService";
-import { useUserContext } from "../../utils/userProvider"; // Import useUserContext
-import classes from "./feedback.module.css"; // Import CSS module
+import { useUserContext } from "../../utils/userProvider"; 
+import classes from "./feedback.module.css"; 
 
 interface FeedbackFormProps {
   onSuccess?: () => void;
 }
 
 const FeedbackForm: React.FC<FeedbackFormProps> = ({ onSuccess }) => {
-  const { eventId } = useParams<{ eventId: string }>(); // Extract eventId from URL
+  const { eventId } = useParams<{ eventId: string }>(); 
   const { submitFeedback } = useFeedbackService();
-  const { user, isLoading } = useUserContext(); // Use the user context
-  const navigate = useNavigate(); // Initialize navigate function
+  const { user, isLoading } = useUserContext(); 
+  const navigate = useNavigate(); 
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -20,7 +20,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({ onSuccess }) => {
 
   useEffect(() => {
     if (!isLoading && !user) {
-      navigate("/login"); // Redirect to login if user is not authenticated
+      navigate("/");
     }
   }, [user, isLoading, navigate]);
 
@@ -45,7 +45,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({ onSuccess }) => {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>; // Show loading state while checking authentication
+    return <div>Loading...</div>;
   }
 
   return (
