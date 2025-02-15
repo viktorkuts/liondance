@@ -1,6 +1,7 @@
 package com.liondance.liondance_backend.presentationlayer.Event;
 
 import com.liondance.liondance_backend.datalayer.Event.*;
+import com.liondance.liondance_backend.datalayer.User.Student;
 import com.liondance.liondance_backend.datalayer.common.Address;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,6 +11,7 @@ import org.springframework.beans.BeanUtils;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @SuperBuilder(toBuilder = true)
@@ -25,6 +27,7 @@ public class EventResponseModel {
     private String specialRequest;
     private EventStatus eventStatus;
     private EventPrivacy eventPrivacy;
+    private List<String> performers;
 
     public static EventResponseModel from(Event event) {
         EventResponseModel responseModel = new EventResponseModel();

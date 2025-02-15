@@ -31,8 +31,8 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
-import java.util.EnumSet;
-import java.util.UUID;
+import java.util.*;
+import java.util.List;
 
 import static com.liondance.liondance_backend.datalayer.Event.EventStatus.PENDING;
 import static org.mockito.ArgumentMatchers.*;
@@ -686,5 +686,99 @@ class EventServiceImplUnitTest {
         StepVerifier.create(eventService.requestFeedback("nonexistent-event-id"))
                 .expectError(NotFoundException.class)
                 .verify();
+    }
+
+    @Test
+    void assignPerformersWithValidEventAndPerformers() {
+        List<String> performerIds = List.of("performer1", "performer2");
+        event1.setPerformers(new ArrayList<>());
+        Mockito.when(eventRepository.findEventByEventId(anyString()))
+                .thenReturn(Mono.just(event1));
+        Mockito.when(userRepository.findUserByUserId(anyString()))
+                .thenReturn(Mono.just(client1));
+        Mockito.when(eventRepository.save(any(Event.class)))
+                .thenReturn(Mono.just(event1));
+        Mockito.when(notificationService.sendMail(anyString(), anyString(), anyString(), any(NotificationType.class)))
+                .thenReturn(true);
+
+        StepVerifier.create(eventService.assignPerformers(event1.getEventId(), performerIds))
+                .expectNextMatches(eventResponseModel -> EventResponseModel.from(event1).equals(eventResponseModel))
+                .verifyComplete();
+    }
+
+    @Test
+    void assignPerformersWithNonExistentEvent() {
+        List<String> performerIds = List.of("performer1", "performer2");
+        Mockito.when(eventRepository.findEventByEventId(anyString()))
+                .thenReturn(Mono.empty());
+
+        StepVerifier.create(eventService.assignPerformers("nonexistent-event-id", performerIds))
+                .expectError(NotFoundException.class)
+                .verify();
+    }
+    @Test
+
+    void assignPerformersWithFailedEmailSend_shouldThrowMailSendException() {
+        List<String> performerIds = List.of("performer1", "performer2");
+        event1.setPerformers(new ArrayList<>());
+        Mockito.when(eventRepository.findEventByEventId(anyString()))
+                .thenReturn(Mono.just(event1));
+        Mockito.when(userRepository.findUserByUserId(anyString()))
+                .thenReturn(Mono.just(client1));
+        Mockito.when(eventRepository.save(any(Event.class)))
+                .thenReturn(Mono.just(event1));
+        Mockito.when(notificationService.sendMail(anyString(), anyString(), anyString(), any(NotificationType.class)))
+                .thenReturn(false);
+
+        StepVerifier.create(eventService.assignPerformers(event1.getEventId(), performerIds))
+                .expectNextMatches(eventResponseModel -> eventResponseModel.getEventId().equals(event1.getEventId()))
+                .verifyComplete();
+    }
+
+    @Test
+    void removePerformersWithValidEventAndPerformers() {
+        List<String> performerIds = List.of("performer1", "performer2");
+        event1.setPerformers(new ArrayList<>(performerIds));
+        Mockito.when(eventRepository.findEventByEventId(anyString()))
+                .thenReturn(Mono.just(event1));
+        Mockito.when(userRepository.findUserByUserId(anyString()))
+                .thenReturn(Mono.just(client1));
+        Mockito.when(eventRepository.save(any(Event.class)))
+                .thenReturn(Mono.just(event1));
+        Mockito.when(notificationService.sendMail(anyString(), anyString(), anyString(), any(NotificationType.class)))
+                .thenReturn(true);
+
+        StepVerifier.create(eventService.removePerformers(event1.getEventId(), performerIds))
+                .expectNextMatches(eventResponseModel -> EventResponseModel.from(event1).equals(eventResponseModel))
+                .verifyComplete();
+    }
+
+    @Test
+    void removePerformersWithNonExistentEvent() {
+        List<String> performerIds = List.of("performer1", "performer2");
+        Mockito.when(eventRepository.findEventByEventId(anyString()))
+                .thenReturn(Mono.empty());
+
+        StepVerifier.create(eventService.removePerformers("nonexistent-event-id", performerIds))
+                .expectError(NotFoundException.class)
+                .verify();
+    }
+
+    @Test
+    void removePerformersWithFailedEmailSend_shouldThrowMailSendException() {
+        List<String> performerIds = List.of("performer1", "performer2");
+        event1.setPerformers(new ArrayList<>(performerIds));
+        Mockito.when(eventRepository.findEventByEventId(anyString()))
+                .thenReturn(Mono.just(event1));
+        Mockito.when(userRepository.findUserByUserId(anyString()))
+                .thenReturn(Mono.just(client1));
+        Mockito.when(eventRepository.save(any(Event.class)))
+                .thenReturn(Mono.just(event1));
+        Mockito.when(notificationService.sendMail(anyString(), anyString(), anyString(), any(NotificationType.class)))
+                .thenReturn(false);
+
+        StepVerifier.create(eventService.removePerformers(event1.getEventId(), performerIds))
+                .expectNextMatches(eventResponseModel -> eventResponseModel.getEventId().equals(event1.getEventId()))
+                .verifyComplete();
     }
 }
