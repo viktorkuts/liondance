@@ -2,10 +2,7 @@
 package com.liondance.liondance_backend.presentationlayer.Event;
 
 import com.liondance.liondance_backend.datalayer.Event.*;
-import com.liondance.liondance_backend.datalayer.User.Client;
-import com.liondance.liondance_backend.datalayer.User.Role;
-import com.liondance.liondance_backend.datalayer.User.User;
-import com.liondance.liondance_backend.datalayer.User.UserRepository;
+import com.liondance.liondance_backend.datalayer.User.*;
 import com.liondance.liondance_backend.datalayer.common.Address;
 import com.liondance.liondance_backend.utils.WebTestAuthConfig;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +29,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"spring.data.mongodb.port= 0"})
 @ActiveProfiles("test")
@@ -504,14 +502,14 @@ class EventControllerIntegrationTest {
         webTestClient.get().uri("/api/v1/events/filtered-events")
                 .exchange()
                 .expectStatus().isOk()
-                .expectBodyList(EventDisplayDTO.class)
+                .expectBodyList(EventResponseModel.class)
                 .value(events -> {
                     assertThat(events).hasSize(2);
                     events.forEach(dto -> {
-                        if (dto.getEventPrivacy().equals(EventPrivacy.PUBLIC.toString())) {
-                            assertThat(dto.getEventAddress()).isNotNull();
+                        if (dto.getEventPrivacy().equals(EventPrivacy.PUBLIC)) {
+                            assertThat(dto.getVenue()).isNotNull();
                         } else {
-                            assertThat(dto.getEventAddress()).isNull();
+                            assertThat(dto.getVenue()).isNull();
                         }
                     });
                 });
@@ -534,51 +532,53 @@ class EventControllerIntegrationTest {
         webTestClient.get().uri("/api/v1/events/filtered-events")
                 .exchange()
                 .expectStatus().isOk()
-                .expectBodyList(EventDisplayDTO.class)
+                .expectBodyList(EventResponseModel.class)
                 .hasSize(0);
     }
 
-//    @Test
-//    void whenGetFilteredEvents_VerifyDTOFields() {
-//        Event testEvent = Event.builder()
-//                .venue(
-//                        new Address(
-//                                "1234 Test St.",
-//                                "TestCity",
-//                                "Quebec",
-//                                "J2X 2J4")
-//                )
-//                .eventDateTime(Instant.parse("2024-12-31T23:59:59Z"))
-//                .eventType(EventType.WEDDING)
-//                .eventPrivacy(EventPrivacy.PUBLIC)
-//                .paymentMethod(PaymentMethod.CASH)
-//                .specialRequest("Test event")
-//                .build();
-//
-//        // Save test event
-//        StepVerifier.create(eventRepository.deleteAll())
-//                .verifyComplete();
-//
-//        StepVerifier.create(eventRepository.save(testEvent))
-//                .expectNextCount(1)
-//                .verifyComplete();
-//
-//        // Test the endpoint
-//        webTestClient.get().uri("/api/v1/events/filtered-events")
-//                .exchange()
-//                .expectStatus().isOk()
-//                .expectBodyList(EventDisplayDTO.class)
-//                .value(events -> {
-//                    assertThat(events).hasSize(1);
-//                    EventDisplayDTO dto = events.get(0);
-//                    assertThat(dto.getEventId()).isNotNull();
-//                    assertThat(dto.getEventDateTime()).contains("2024-12-31T23:59:59Z");
-//                    assertThat(dto.getEventType()).isEqualTo(EventType.WEDDING.toString());
-//                    assertThat(dto.getEventPrivacy()).isEqualTo(EventPrivacy.PUBLIC.toString());
-//                    assertThat(dto.getEventAddress()).isNotNull();
-//                    assertThat(dto.getEventAddress().getCity()).isEqualTo("TestCity");
-//                });
-//    }
+    @Test
+    void whenGetFilteredEvents_VerifyDTOFields() {
+        Event testEvent = Event.builder()
+                .eventId(UUID.randomUUID().toString())
+                .venue(
+                        new Address(
+                                "1234 Test St.",
+                                "TestCity",
+                                "Quebec",
+                                "J2X 2J4")
+                )
+                .eventDateTime(Instant.parse("2024-12-31T23:59:59Z"))
+                .eventType(EventType.WEDDING)
+                .eventPrivacy(EventPrivacy.PUBLIC)
+                .paymentMethod(PaymentMethod.CASH)
+                .specialRequest("Test event")
+                .build();
+
+        // Save test event
+        StepVerifier.create(eventRepository.deleteAll())
+                .verifyComplete();
+
+        StepVerifier.create(eventRepository.save(testEvent))
+                .expectNextCount(1)
+                .verifyComplete();
+
+        // Test the endpoint
+        webTestClient.get().uri("/api/v1/events/filtered-events")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(EventResponseModel.class)
+                .value(events -> {
+                    assertThat(events).hasSize(1);
+                    events.forEach(dto -> {
+                        assertThat(dto.getEventId()).isNotNull();
+                        assertThat(dto.getEventDateTime()).isEqualTo("2024-12-31T23:59:59Z");
+                        assertThat(dto.getEventType()).isEqualTo(EventType.WEDDING);
+                        assertThat(dto.getEventPrivacy()).isEqualTo(EventPrivacy.PUBLIC);
+                        assertThat(dto.getVenue()).isNotNull();
+                        assertThat(dto.getVenue().getCity()).isEqualTo("TestCity");
+                    });
+                });
+    }
 
     @Test
     void whenUpdateEventDetails_InvalidRequest_thenReturnUnprocessableEntityStatus() {
@@ -592,6 +592,67 @@ class EventControllerIntegrationTest {
                 .bodyValue(eventRequestModel)
                 .exchange()
                 .expectStatus().isEqualTo(422);
+    }
+
+    @Test
+    void whenBookEventAsOtherRole_thenRoleShouldUpdate(){
+
+        Student student1 = Student.builder()
+                .userId(UUID.randomUUID().toString())
+                .firstName("John")
+                .lastName("Doe")
+                .email("liondance@yopmail.com")
+                .phone("1234567890")
+                .address(
+                        new Address(
+                                "1234 Main St.",
+                                "Springfield",
+                                "Quebec",
+                                "J2X 2J4")
+                )
+                .roles(EnumSet.of(Role.STUDENT))
+                .associatedId("thetester3")
+                .build();
+
+        StepVerifier.create(userRepository.save(student1))
+                .expectNextCount(1)
+                .verifyComplete();
+
+        EventRequestModel eventRequestModel = EventRequestModel.builder()
+                .venue(
+                        new Address(
+                                "1234 Main St.",
+                                "Springfield",
+                                "Quebec",
+                                "J2X 2J4")
+                )
+                .eventDateTime(LocalDate.now().atTime(LocalTime.NOON).toInstant(ZoneOffset.UTC))
+                .eventType(EventType.WEDDING)
+                .paymentMethod(PaymentMethod.CASH)
+                .eventPrivacy(EventPrivacy.PRIVATE)
+                .specialRequest("Special request")
+                .build();
+
+        webTestClient
+                .mutateWith(WebTestAuthConfig.getAuthFor(student1))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .post()
+                .uri("/api/v1/events")
+                .bodyValue(eventRequestModel)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(EventResponseModel.class);
+
+        StepVerifier.create(eventRepository.findAll())
+                .expectNextCount(3)
+                .verifyComplete();
+
+        StepVerifier.create(userRepository.findUserByUserId(student1.getUserId()))
+                .expectNextMatches(student -> {
+                    assertTrue(student.getRoles().contains(Role.STUDENT));
+                    return true;
+                })
+                .verifyComplete();
     }
 
 }

@@ -46,7 +46,6 @@ export interface Student extends User {
 }
 
 export interface Client extends User {
-  joinDate?: string;
-  activeEvents?: string[];
-  pastEvents?: string[];
+  activeEvents?: Event[];
+  pastEvents?: Event[];
 }

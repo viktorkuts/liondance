@@ -1,7 +1,6 @@
 package com.liondance.liondance_backend.logiclayer.ClassFeedback;
 
-import com.liondance.liondance_backend.datalayer.ClassFeedback.ClassFeedback;
-import com.liondance.liondance_backend.datalayer.ClassFeedback.ClassFeedbackRepository;
+import com.liondance.liondance_backend.datalayer.ClassFeedback.*;
 import com.liondance.liondance_backend.datalayer.Course.Course;
 import com.liondance.liondance_backend.datalayer.Course.CourseRepository;
 import com.liondance.liondance_backend.datalayer.Notification.NotificationType;
@@ -10,6 +9,7 @@ import com.liondance.liondance_backend.datalayer.User.User;
 import com.liondance.liondance_backend.datalayer.User.UserRepository;
 import com.liondance.liondance_backend.logiclayer.Feedback.FeedbackService;
 import com.liondance.liondance_backend.logiclayer.Notification.NotificationService;
+import com.liondance.liondance_backend.presentationlayer.ClassFeedback.ClassFeedbackReportResponseModel;
 import com.liondance.liondance_backend.presentationlayer.ClassFeedback.ClassFeedbackRequestModel;
 import com.liondance.liondance_backend.presentationlayer.ClassFeedback.ClassFeedbackResponseModel;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,14 +51,24 @@ class ClassFeedbackServiceImplUnitTest {
         @Mock
         private ClassFeedbackRepository classFeedbackRepository;
 
+        @Mock
+        private ClassFeedbackReportRepository classFeedbackReportRepository;
+
+        @Mock
+        private ClassFeedbackPdfRepository classFeedbackPdfRepository;
+
         private Course course1;
 
         private ClassFeedback classFeedback;
 
         private ClassFeedbackRequestModel requestModel;
 
-        @BeforeEach
+        private LocalDate testDate;
+
+    @BeforeEach
         void setUp() {
+            testDate = LocalDate.now();
+
             course1 = Course.builder()
                     .courseId("1")
                     .name("Sample Course")
@@ -151,4 +161,96 @@ class ClassFeedbackServiceImplUnitTest {
                 .verifyComplete();
     }
 
+    @Test
+    void whenNoFeedbackExists_thenReportNotGenerated() {
+        Mockito.when(classFeedbackRepository.findAllByClassDate(testDate))
+                .thenReturn(Flux.empty());
+
+        feedbackService.generateClassFeedbackReport(course1, testDate);
+
+        Mockito.verify(classFeedbackReportRepository, Mockito.never()).save(Mockito.any());
+        Mockito.verify(classFeedbackPdfRepository, Mockito.never()).save(Mockito.any());
     }
+
+    @Test
+    void whenFeedbackExists_thenReportIsGeneratedAndPdfStored() {
+        Mockito.when(classFeedbackRepository.findAllByClassDate(testDate))
+                .thenReturn(Flux.just(classFeedback));
+
+        Mockito.when(classFeedbackReportRepository.save(Mockito.any(ClassFeedbackReport.class)))
+                .thenReturn(Mono.just(ClassFeedbackReport.builder()
+                        .reportId("test-report-id")
+                        .classDate(testDate)
+                        .averageScore(4.5)
+                        .feedbackDetails(List.of(ClassFeedbackResponseModel.from(classFeedback)))
+                        .build()));
+
+        Mockito.when(classFeedbackPdfRepository.save(Mockito.any(ClassFeedbackPdf.class)))
+                .thenReturn(Mono.just(ClassFeedbackPdf.builder()
+                        .reportId("test-report-id")
+                        .classDate(testDate)
+                        .pdfData(new byte[]{1, 2, 3})
+                        .build()));
+
+        feedbackService.generateClassFeedbackReport(course1, testDate);
+
+        Mockito.verify(classFeedbackReportRepository, Mockito.times(1)).save(Mockito.any(ClassFeedbackReport.class));
+        Mockito.verify(classFeedbackPdfRepository, Mockito.times(1)).save(Mockito.any(ClassFeedbackPdf.class));
+    }
+
+    @Test
+    void getAllClassFeedbackReports_returnsMappedReports() {
+        ClassFeedbackReport report = ClassFeedbackReport.builder()
+                .reportId("report1")
+                .classDate(testDate)
+                .averageScore(4.5)
+                .feedbackDetails(List.of(ClassFeedbackResponseModel.from(classFeedback)))
+                .build();
+
+        // When the repository returns a flux with the report
+        Mockito.when(classFeedbackReportRepository.findAll())
+                .thenReturn(Flux.just(report));
+
+        Flux<ClassFeedbackReportResponseModel> result = feedbackService.getAllClassFeedbackReports();
+
+        StepVerifier.create(result)
+                .expectNextMatches(response ->
+                        response.getReportId().equals("report1") &&
+                                response.getAverageScore().equals(4.5) &&
+                                response.getFeedbackDetails().size() == 1)
+                .verifyComplete();
+    }
+
+    @Test
+    void downloadClassFeedbackPdf_returnsPdf() {
+        ClassFeedbackPdf pdf = ClassFeedbackPdf.builder()
+                .reportId("report1")
+                .classDate(testDate)
+                .pdfData(new byte[]{1, 2, 3})
+                .build();
+
+        Mockito.when(classFeedbackPdfRepository.findByReportId("report1"))
+                .thenReturn(Mono.just(pdf));
+
+        Mono<ClassFeedbackPdf> result = feedbackService.downloadClassFeedbackPdf("report1");
+
+        StepVerifier.create(result)
+                .expectNextMatches(pdfResult ->
+                        pdfResult.getReportId().equals("report1") &&
+                                java.util.Arrays.equals(pdfResult.getPdfData(), new byte[]{1, 2, 3}))
+                .verifyComplete();
+    }
+
+    @Test
+    void downloadClassFeedbackPdf_returnsEmptyWhenNotFound() {
+        Mockito.when(classFeedbackPdfRepository.findByReportId("nonexistent"))
+                .thenReturn(Mono.empty());
+
+        Mono<ClassFeedbackPdf> result = feedbackService.downloadClassFeedbackPdf("nonexistent");
+
+        StepVerifier.create(result)
+                .verifyComplete();
+    }
+}
+
+

@@ -19,7 +19,9 @@ import ClientList from "@/components/clientList";
 import ClassFeedbackForm from "./feedback/ClassFeedbackForm";
 import ClientRegistration from "./registration/client-registration";
 import CancelCourse from "@/components/cancelCourse";
-
+import ClientProfile from "@/components/clientProfile";
+import GetMyEvents from "./event/clientEventPage";
+import ClassFeedbackReportPage from "./feedback/ClassFeedbackReportPage";
 const pagesData: routerType[] = [
   {
     path: "",
@@ -94,7 +96,12 @@ const pagesData: routerType[] = [
   {
     path: "events",
     element: <ClientEventPage />,
-    title: "My Events",
+    title: "Events",
+  },
+  {
+    path: "my-events",
+    element: <GetMyEvents />,
+    title: "Events",
   },
   {
     path: "feedbacks/:eventId",
@@ -108,7 +115,7 @@ const pagesData: routerType[] = [
   },
   {
     path: "classfeedback/:date",
-    element: <ClassFeedbackForm/>,
+    element: <ClassFeedbackForm />,
     title: "Class Feedback Form",
   },
   {
@@ -121,6 +128,18 @@ const pagesData: routerType[] = [
     element: <ClientRegistration />,
     title: "Client Registration Form",
   },
+  {
+    path: "client-profile/:clientId",
+    element: <ClientProfile />,
+    title: "Client Profile",
+  },
+
+  {
+    path: "classfeedback/reports",
+    element: <ClassFeedbackReportPage />,
+    title: "Class Feedback Reports",
+  }
+
 ];
 
 export default pagesData;

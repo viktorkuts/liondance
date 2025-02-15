@@ -1,7 +1,7 @@
 name: Playwright Tests
 on:
   pull_request:
-    branches: [ "master" ]
+    branches: ["master"]
 
 jobs:
   test:
@@ -32,6 +32,9 @@ jobs:
         run: |
           frontend="${FRONTEND_URL/:\/\//://${{ github.event.number }}.}"
           backend="${BACKEND_URL/:\/\//://${{ github.event.number }}.}"
+
+          echo "BACKEND_URL_NEW=$backend" >> $GITHUB_ENV
+
           echo $frontend
           echo $backend
           timeout 180 bash -c '
@@ -40,11 +43,17 @@ jobs:
             done
           ' || false
       - name: Run Playwright
-        run: npx playwright test --workers=4 --project='chromium'
+        run: npx playwright test --workers=4 --project='chromium' --retries 1
         working-directory: ./liondance-fe
         env:
           PR_NUMBER: ${{ github.event.number }}
           FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
+          PLAYWRIGHT_STAFF: ${{ secrets.PLAYWRIGHT_STAFF }}
+          PLAYWRIGHT_STUDENT: ${{ secrets.PLAYWRIGHT_STUDENT }}
+          PLAYWRIGHT_CLIENT: ${{ secrets.PLAYWRIGHT_CLIENT }}
+          PLAYWRIGHT_ANYUSER: ${{ secrets.PLAYWRIGHT_ANYUSER }}
+          PLAYWRIGHT_PASS: ${{ secrets.PLAYWRIGHT_PASS }}
+          BACKEND_URL: ${{ env.BACKEND_URL_NEW }}
       - name: Archive report
         uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}

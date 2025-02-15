@@ -277,5 +277,16 @@
     "Enter your message here...": "Entrez votre message ici...",
     "Sending...": "Envoi...",
     "Send": "Envoyer",
-    "\n\nBest regards,\nLVH Lion Dance Team\nWebsite: www.lvhliondance.com\nEmail: info@lvhliondance.com\nPhone: (123) 456-7890": "\n\nCordialement,\nÉquipe de danse du lion LVH\nSite web: www.lvhliondance.com\nCourriel: info@lvhliondance.com\nTéléphone: (123) 456-7890"
+    "\n\nBest regards,\nLVH Lion Dance Team\nWebsite: www.lvhliondance.com\nEmail: info@lvhliondance.com\nPhone: (123) 456-7890": "\n\nCordialement,\nÉquipe de danse du lion LVH\nSite web: www.lvhliondance.com\nCourriel: info@lvhliondance.com\nTéléphone: (123) 456-7890",
+    "Client Profile": "Profil du client",
+    "Active Events": "Événements actifs",
+    "Past Events": "Événements passés",
+    "Venue": "Lieu",
+    "No active events.": "Aucun événement actif.",
+    "No past events available.": "Aucun événement passé disponible.",
+    "Back to Client List": "Retour à la liste des clients",
+    "Class Feedback Reports": "Rapports de retour sur les cours",
+    "No reports available.": "Aucun rapport disponible.",
+    "Average Score": "Note moyenne",
+    "Download PDF": "Télécharger le PDF"
 }

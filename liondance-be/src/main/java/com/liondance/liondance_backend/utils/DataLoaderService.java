@@ -1,5 +1,7 @@
 package com.liondance.liondance_backend.utils;
 
+import com.liondance.liondance_backend.datalayer.ClassFeedback.ClassFeedback;
+import com.liondance.liondance_backend.datalayer.ClassFeedback.ClassFeedbackRepository;
 import com.liondance.liondance_backend.datalayer.Course.Course;
 import com.liondance.liondance_backend.datalayer.Course.CourseRepository;
 import com.liondance.liondance_backend.datalayer.Event.*;
@@ -42,6 +44,9 @@ public class DataLoaderService implements CommandLineRunner {
 
     @Autowired
     FeedbackRepository feedbackRepository;
+
+    @Autowired
+    ClassFeedbackRepository classFeedbackRepository;
 
     private void tearDown(){
         eventRepository.deleteAll().subscribe();
@@ -135,7 +140,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .state("QC")
                                 .city("Sepolia")
                                 .build())
-                        .associatedId("google-oauth2|104075868240337554059")
+                        .associatedId("auth0|67a0600de5c3b505111da424")
                         .roles(EnumSet.of(Role.STAFF))
                         .build()
         );
@@ -157,6 +162,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Laval")
                                 .build())
                         .roles(EnumSet.of(Role.STUDENT))
+                        .associatedId("auth0|67a060b8afb46e45088b2b63")
                         .build()
         );
         students.add(
@@ -539,6 +545,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Toronto")
                                 .build())
                         .roles(EnumSet.of(Role.CLIENT))
+                        .associatedId("auth0|67a441ddb02082c6c00f7718")
                         .build()
         );
         students.add(
@@ -1213,14 +1220,52 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .clientId(students.stream().filter(user -> user.getRoles().contains(Role.CLIENT)).toList().get(4).getUserId())
                         .build()
         );
+        
+        events.add(
+                Event.builder()
+                        .eventId("e5b07c6c6-dc48-489f-aa20-0d7d6fb12899")
+                        .venue(Address.builder()
+                                .streetAddress("2205 Redwood Blvd")
+                                .zip("H5H 5H5")
+                                .state("QC")
+                                .city("Quebec City")
+                                .build())
+                        .eventDateTime(Instant.parse("2029-01-01T00:00:00Z").plus(4, ChronoUnit.DAYS))
+                        .eventType(EventType.WEDDING)
+                        .paymentMethod(PaymentMethod.CREDIT)
+                        .specialRequest("Handouts needed")
+                        .eventStatus(EventStatus.COMPLETED)
+                        .eventPrivacy(EventPrivacy.PRIVATE)
+                        .clientId("c56a8e9d-4362-42c8-965d-2b8b98f9f4d9")
+                        .build()
+        );
+        
+        ArrayList<ClassFeedback> classFeedbacks = new ArrayList<>();
+        classFeedbacks.add(
+                ClassFeedback.builder()
+                        .feedbackId("fe0ec8c1-15eb-486e-bb4d-987a4607e18a")
+                        .classDate(LocalDate.now())
+                        .score(4.5)
+                        .comment("Awesome class, it was so fun")
+                        .build()
+        );
+        classFeedbacks.add(
+                ClassFeedback.builder()
+                        .feedbackId("9fc7c678-60d0-4519-897f-5b40bc2fa86d")
+                        .classDate(LocalDate.now())
+                        .score(4.0)
+                        .comment("I liked it")
+                        .build()
+        );
 
         tearDown();
 
         eventRepository.insert(events).subscribe();
         userRepository.insert(students).subscribe();
         courseRepository.insert(course).subscribe();
-       courseRepository.insert(coursetest).subscribe();
+        courseRepository.insert(coursetest).subscribe();
         promotionRepository.insert(promotions).subscribe();
         feedbackRepository.insert(feedbacks).subscribe();
+        classFeedbackRepository.insert(classFeedbacks).subscribe();
     }
 }

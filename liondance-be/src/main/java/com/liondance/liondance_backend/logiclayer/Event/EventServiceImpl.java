@@ -148,15 +148,17 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Flux<EventDisplayDTO> getFilteredEvents() {
+    public Flux<EventResponseModel> getFilteredEvents() {
         return eventRepository.findAll()
-                .map(event -> new EventDisplayDTO(
-                        event.getEventId(),
-                        event.getEventDateTime().toString(),
-                        event.getEventType().toString(),
-                        event.getEventPrivacy().toString(),
-                        event.getEventPrivacy() == EventPrivacy.PUBLIC ? event.getVenue() : null
-                ));
+                .map(event ->
+                        EventResponseModel.builder()
+                                .eventId(event.getEventId())
+                                .eventDateTime(event.getEventDateTime())
+                                .eventType(event.getEventType())
+                                .eventPrivacy(event.getEventPrivacy())
+                                .venue(event.getEventPrivacy() == EventPrivacy.PUBLIC ? event.getVenue() : null)
+                                .build()
+                );
     }
 
     @Override

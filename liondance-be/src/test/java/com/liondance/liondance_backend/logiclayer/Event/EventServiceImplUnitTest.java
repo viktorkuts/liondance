@@ -4,25 +4,20 @@ import com.liondance.liondance_backend.datalayer.Event.*;
 import com.liondance.liondance_backend.datalayer.Notification.NotificationType;
 import com.liondance.liondance_backend.datalayer.User.Client;
 import com.liondance.liondance_backend.datalayer.User.Role;
-import com.liondance.liondance_backend.datalayer.User.UserRepository;
 import com.liondance.liondance_backend.datalayer.common.Address;
 import com.liondance.liondance_backend.logiclayer.Notification.NotificationService;
 import com.liondance.liondance_backend.logiclayer.User.UserService;
-import com.liondance.liondance_backend.logiclayer.User.UserServiceImpl;
 import com.liondance.liondance_backend.presentationlayer.Event.EventRequestModel;
 import com.liondance.liondance_backend.presentationlayer.Event.EventResponseModel;
 import com.liondance.liondance_backend.presentationlayer.User.UserResponseModel;
 import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.BeanUtils;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mail.MailSendException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -31,6 +26,7 @@ import reactor.test.StepVerifier;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.util.EnumSet;
 import java.util.UUID;
 
@@ -38,8 +34,8 @@ import static com.liondance.liondance_backend.datalayer.Event.EventStatus.PENDIN
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.junit.jupiter.api.Assertions.*;
 
-@Disabled
 @ExtendWith(MockitoExtension.class)
 class EventServiceImplUnitTest {
     @Mock
@@ -147,7 +143,7 @@ class EventServiceImplUnitTest {
                                 "Quebec",
                                 "J2X 2J4")
                 )
-                .eventDateTime(Instant.from(LocalDate.now().atTime(LocalTime.NOON)))
+                .eventDateTime(LocalDate.now().atTime(LocalTime.NOON).toInstant(ZoneOffset.UTC))
                 .eventType(EventType.WEDDING)
                 .paymentMethod(PaymentMethod.CASH)
                 .specialRequest("Special request")
@@ -175,7 +171,7 @@ class EventServiceImplUnitTest {
                                 "Quebec",
                                 "J2X 2J4")
                 )
-                .eventDateTime(Instant.from(LocalDate.now().atTime(LocalTime.NOON)))
+                .eventDateTime(LocalDate.now().atTime(LocalTime.NOON).toInstant(ZoneOffset.UTC))
                 .eventType(EventType.WEDDING)
                 .paymentMethod(PaymentMethod.CASH)
                 .specialRequest("Special request")
@@ -201,7 +197,7 @@ class EventServiceImplUnitTest {
                                 "Quebec",
                                 "J2X 2J4")
                 )
-                .eventDateTime(Instant.from(LocalDate.now().atTime(LocalTime.NOON)))
+                .eventDateTime(LocalDate.now().atTime(LocalTime.NOON).toInstant(ZoneOffset.UTC))
                 .eventType(EventType.WEDDING)
                 .paymentMethod(PaymentMethod.CASH)
                 .specialRequest("Special request")
@@ -300,6 +296,7 @@ class EventServiceImplUnitTest {
                 .thenReturn(Flux.just(event1, event2));
         StepVerifier.create(eventService.getEventsByClientId(client1.getUserId()))
                 .expectNextMatches(eventResponseModel -> EventResponseModel.from(event1).equals(eventResponseModel))
+                .expectNextCount(1)
                 .verifyComplete();
     }
 
@@ -320,7 +317,7 @@ class EventServiceImplUnitTest {
     void whenUpdateEventDetails_Successful_thenReturnEventResponse() {
         EventRequestModel requestModel = EventRequestModel.builder()
                 .venue(new Address("1234 Main St.", "Springfield", "Quebec", "J2X 2J4"))
-                .eventDateTime(Instant.from(LocalDate.now().atTime(LocalTime.NOON)))
+                .eventDateTime(LocalDate.now().atTime(LocalTime.NOON).toInstant(ZoneOffset.UTC))
                 .eventType(EventType.WEDDING)
                 .paymentMethod(PaymentMethod.CASH)
                 .specialRequest("Special request")
@@ -345,7 +342,7 @@ class EventServiceImplUnitTest {
     void whenUpdateEventDetails_EventNotFound_thenThrowIllegalArgumentException() {
         EventRequestModel requestModel = EventRequestModel.builder()
                 .venue(new Address("1234 Main St.", "Springfield", "Quebec", "J2X 2J4"))
-                .eventDateTime(Instant.from(LocalDate.now().atTime(LocalTime.NOON)))
+                .eventDateTime(LocalDate.now().atTime(LocalTime.NOON).toInstant(ZoneOffset.UTC))
                 .eventType(EventType.WEDDING)
                 .paymentMethod(PaymentMethod.CASH)
                 .specialRequest("Special request")
@@ -363,7 +360,7 @@ class EventServiceImplUnitTest {
     void whenUpdateEventDetails_FailedToSendEmail_thenThrowMailSendException() {
         EventRequestModel requestModel = EventRequestModel.builder()
                 .venue(new Address("1234 Main St.", "Springfield", "Quebec", "J2X 2J4"))
-                .eventDateTime(Instant.from(LocalDate.now().atTime(LocalTime.NOON)))
+                .eventDateTime(LocalDate.now().atTime(LocalTime.NOON).toInstant(ZoneOffset.UTC))
                 .eventType(EventType.WEDDING)
                 .paymentMethod(PaymentMethod.CASH)
                 .specialRequest("Special request")
@@ -393,14 +390,13 @@ class EventServiceImplUnitTest {
 
     @Test
     void whenGetFilteredEvents_thenReturnAllEventsWithPrivacyFilter() {
-        // Create test events with different privacy settings
         Event publicEvent = event1.toBuilder()
-                .id("1")
+                .eventId("1")
                 .eventPrivacy(EventPrivacy.PUBLIC)
                 .build();
 
         Event privateEvent = event2.toBuilder()
-                .id("2")
+                .eventId("2")
                 .eventPrivacy(EventPrivacy.PRIVATE)
                 .build();
 
@@ -408,20 +404,22 @@ class EventServiceImplUnitTest {
                 .thenReturn(Flux.just(publicEvent, privateEvent));
 
         StepVerifier.create(eventService.getFilteredEvents())
-                .expectNextMatches(dto ->
-                        dto.getEventId().equals("1") &&
-                                dto.getEventPrivacy().equals("PUBLIC") &&
-                                dto.getEventAddress() != null &&
-                                dto.getEventDateTime().equals(publicEvent.getEventDateTime().toString()) &&
-                                dto.getEventType().equals(publicEvent.getEventType().toString())
-                )
-                .expectNextMatches(dto ->
-                        dto.getEventId().equals("2") &&
-                                dto.getEventPrivacy().equals("PRIVATE") &&
-                                dto.getEventAddress() == null &&
-                                dto.getEventDateTime().equals(privateEvent.getEventDateTime().toString()) &&
-                                dto.getEventType().equals(privateEvent.getEventType().toString())
-                )
+                .expectNextMatches(dto -> {
+                    assertEquals(publicEvent.getEventId(), dto.getEventId());
+                    assertEquals(publicEvent.getEventPrivacy(), dto.getEventPrivacy());
+                    assertNotNull(dto.getVenue());
+                    assertEquals(publicEvent.getEventDateTime(), dto.getEventDateTime());
+                    assertEquals(publicEvent.getEventType(), dto.getEventType());
+                    return true;
+                })
+                .expectNextMatches(dto -> {
+                    assertEquals(privateEvent.getEventId(), dto.getEventId());
+                    assertEquals(privateEvent.getEventPrivacy(), dto.getEventPrivacy());
+                    assertNull(dto.getVenue());
+                    assertEquals(privateEvent.getEventDateTime(), dto.getEventDateTime());
+                    assertEquals(privateEvent.getEventType(), dto.getEventType());
+                    return true;
+                })
                 .verifyComplete();
     }
 
@@ -429,7 +427,7 @@ class EventServiceImplUnitTest {
     void whenGetFilteredEvents_PrivateEvent_thenReturnDTOWithNullAddress() {
         Address address = new Address("123 Private St", "SecretCity", "Hidden", "12345");
         Event privateEvent = event1.toBuilder()
-                .id("1")
+                .eventId("1")
                 .eventPrivacy(EventPrivacy.PRIVATE)
                 .venue(address)
                 .build();
@@ -438,30 +436,31 @@ class EventServiceImplUnitTest {
                 .thenReturn(Flux.just(privateEvent));
 
         StepVerifier.create(eventService.getFilteredEvents())
-                .expectNextMatches(dto ->
-                        dto.getEventId().equals("1") &&
-                                dto.getEventPrivacy().equals("PRIVATE") &&
-                                dto.getEventAddress() == null &&  // Address should be null for private events
-                                dto.getEventDateTime().equals(privateEvent.getEventDateTime().toString()) &&
-                                dto.getEventType().equals(privateEvent.getEventType().toString())
-                )
+                .expectNextMatches(dto -> {
+                    assertEquals(privateEvent.getEventId(), dto.getEventId());
+                    assertEquals(privateEvent.getEventPrivacy(), dto.getEventPrivacy());
+                    assertNull(dto.getVenue());
+                    assertEquals(privateEvent.getEventDateTime(), dto.getEventDateTime());
+                    assertEquals(privateEvent.getEventType(), dto.getEventType());
+                    return true;
+                })
                 .verifyComplete();
     }
 
     @Test
     void whenGetFilteredEvents_MultiplePrivacyTypes_thenReturnCorrectAddresses() {
         Event publicEvent1 = event1.toBuilder()
-                .id("1")
+                .eventId("1")
                 .eventPrivacy(EventPrivacy.PUBLIC)
                 .build();
 
         Event privateEvent = event2.toBuilder()
-                .id("2")
+                .eventId("2")
                 .eventPrivacy(EventPrivacy.PRIVATE)
                 .build();
 
         Event publicEvent2 = event1.toBuilder()
-                .id("3")
+                .eventId("3")
                 .eventPrivacy(EventPrivacy.PUBLIC)
                 .build();
 
@@ -469,40 +468,43 @@ class EventServiceImplUnitTest {
                 .thenReturn(Flux.just(publicEvent1, privateEvent, publicEvent2));
 
         StepVerifier.create(eventService.getFilteredEvents())
-                .expectNextMatches(dto ->
-                        dto.getEventId().equals("1") &&
-                                dto.getEventPrivacy().equals("PUBLIC") &&
-                                dto.getEventAddress() != null
-                )
-                .expectNextMatches(dto ->
-                        dto.getEventId().equals("2") &&
-                                dto.getEventPrivacy().equals("PRIVATE") &&
-                                dto.getEventAddress() == null
-                )
-                .expectNextMatches(dto ->
-                        dto.getEventId().equals("3") &&
-                                dto.getEventPrivacy().equals("PUBLIC") &&
-                                dto.getEventAddress() != null
-                )
+                .expectNextMatches(dto -> {
+                    assertEquals(publicEvent1.getEventId(), dto.getEventId());
+                    assertEquals(publicEvent1.getEventPrivacy(), dto.getEventPrivacy());
+                    assertNotNull(dto.getVenue());
+                    return true;
+                })
+                .expectNextMatches(dto -> {
+                    assertEquals(privateEvent.getEventId(), dto.getEventId());
+                    assertEquals(privateEvent.getEventPrivacy(), dto.getEventPrivacy());
+                    assertNull(dto.getVenue());
+                    return true;
+                })
+                .expectNextMatches(dto -> {
+                    assertEquals(publicEvent2.getEventId(), dto.getEventId());
+                    assertEquals(publicEvent2.getEventPrivacy(), dto.getEventPrivacy());
+                    assertNotNull(dto.getVenue());
+                    return true;
+                })
                 .verifyComplete();
     }
 
     @Test
     void whenGetFilteredEvents_MixedAddressStates_thenHandleCorrectly() {
         Event publicWithAddress = event1.toBuilder()
-                .id("1")
+                .eventId("1")
                 .eventPrivacy(EventPrivacy.PUBLIC)
                 .venue(new Address("123 Public St", "OpenCity", "Visible", "12345"))
                 .build();
 
         Event publicWithoutAddress = event1.toBuilder()
-                .id("2")
+                .eventId("2")
                 .eventPrivacy(EventPrivacy.PUBLIC)
                 .venue(null)
                 .build();
 
         Event privateWithAddress = event2.toBuilder()
-                .id("3")
+                .eventId("3")
                 .eventPrivacy(EventPrivacy.PRIVATE)
                 .venue(new Address("123 Private St", "SecretCity", "Hidden", "67890"))
                 .build();
@@ -511,22 +513,25 @@ class EventServiceImplUnitTest {
                 .thenReturn(Flux.just(publicWithAddress, publicWithoutAddress, privateWithAddress));
 
         StepVerifier.create(eventService.getFilteredEvents())
-                .expectNextMatches(dto ->
-                        dto.getEventId().equals("1") &&
-                                dto.getEventPrivacy().equals("PUBLIC") &&
-                                dto.getEventAddress() != null &&
-                                dto.getEventAddress().getStreetAddress().equals("123 Public St")
-                )
-                .expectNextMatches(dto ->
-                        dto.getEventId().equals("2") &&
-                                dto.getEventPrivacy().equals("PUBLIC") &&
-                                dto.getEventAddress() == null
-                )
-                .expectNextMatches(dto ->
-                        dto.getEventId().equals("3") &&
-                                dto.getEventPrivacy().equals("PRIVATE") &&
-                                dto.getEventAddress() == null
-                )
+                .expectNextMatches(dto -> {
+                    assertEquals(publicWithAddress.getEventId(), dto.getEventId());
+                    assertEquals(publicWithAddress.getEventPrivacy(), dto.getEventPrivacy());
+                    assertNotNull(dto.getVenue());
+                    assertEquals(publicWithAddress.getVenue().getStreetAddress(), dto.getVenue().getStreetAddress());
+                    return true;
+                })
+                .expectNextMatches(dto -> {
+                    assertEquals(publicWithoutAddress.getEventId(), dto.getEventId());
+                    assertEquals(publicWithoutAddress.getEventPrivacy(), dto.getEventPrivacy());
+                    assertNull(dto.getVenue());
+                    return true;
+                })
+                .expectNextMatches(dto -> {
+                    assertEquals(privateWithAddress.getEventId(), dto.getEventId());
+                    assertEquals(privateWithAddress.getEventPrivacy(), dto.getEventPrivacy());
+                    assertNull(dto.getVenue());
+                    return true;
+                })
                 .verifyComplete();
     }
 
@@ -543,7 +548,7 @@ class EventServiceImplUnitTest {
     @Test
     void whenGetFilteredEvents_WithNullAddress_thenReturnDTOWithNullAddress() {
         Event eventWithNullAddress = event1.toBuilder()
-                .id("1")
+                .eventId("1")
                 .eventPrivacy(EventPrivacy.PUBLIC)
                 .venue(null)
                 .build();
@@ -552,11 +557,12 @@ class EventServiceImplUnitTest {
                 .thenReturn(Flux.just(eventWithNullAddress));
 
         StepVerifier.create(eventService.getFilteredEvents())
-                .expectNextMatches(dto ->
-                        dto.getEventId().equals("1") &&
-                                dto.getEventPrivacy().equals("PUBLIC") &&
-                                dto.getEventAddress() == null
-                )
+                .expectNextMatches(dto -> {
+                    assertEquals(eventWithNullAddress.getEventId(), dto.getEventId());
+                    assertEquals(eventWithNullAddress.getEventPrivacy(), dto.getEventPrivacy());
+                    assertNull(dto.getVenue());
+                    return true;
+                })
                 .verifyComplete();
     }
 }

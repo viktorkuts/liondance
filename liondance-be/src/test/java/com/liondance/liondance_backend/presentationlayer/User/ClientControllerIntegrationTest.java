@@ -14,13 +14,21 @@ import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.util.Collections;
+import java.time.LocalDate;
 import java.util.EnumSet;
 import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"spring.data.mongodb.port= 0"})
 @ActiveProfiles("test")
@@ -31,6 +39,10 @@ public class ClientControllerIntegrationTest {
     private WebTestClient webTestClient;
     @Autowired
     private UserRepository userRepository;
+    @SpyBean
+    private UserService userService;
+
+
 
     User staff = Client.builder()
             .userId(UUID.randomUUID().toString())
@@ -55,6 +67,7 @@ public class ClientControllerIntegrationTest {
             .lastName("Johnson")
             .email("alice.johnson@webmail.com")
             .roles(EnumSet.of(Role.CLIENT))
+            .associatedId("thetester1")
             .build();
 
     private final User client2 = User.builder()
@@ -62,10 +75,8 @@ public class ClientControllerIntegrationTest {
             .firstName("Bob")
             .email("bob.lee@someplace.com")
             .roles(EnumSet.of(Role.CLIENT))
+            .associatedId("thetester2")
             .build();
-
-    @Autowired
-    private UserService userService;
 
     @BeforeEach
     public void setupDB() {
@@ -92,6 +103,91 @@ public class ClientControllerIntegrationTest {
         StepVerifier.create(userRepository.findAll())
                 .expectNextMatches(client -> client.getUserId().equals(client1.getUserId()))
                 .expectNextMatches(client -> client.getUserId().equals(client2.getUserId()))
+                .verifyComplete();
+    }
+
+    @Test
+    @WithMockUser(authorities = "STAFF")
+    void getClientDetails_withValidClientId_shouldReturnClientDetails() {
+        String clientId = "c56a8e9d-4362-42c8-965d-2b8b98f9f4d9";
+        ClientResponseModel mockClient = ClientResponseModel.builder()
+                .userId(clientId)
+                .firstName("Alice")
+                .lastName("Johnson")
+                .email("alice.johnson@webmail.com")
+                .phone("234-567-8901")
+                .roles(EnumSet.of(Role.CLIENT))
+                .activeEvents(Collections.emptyList())
+                .pastEvents(Collections.emptyList())
+                .build();
+
+        when(userService.getClientDetails(clientId)).thenReturn(Mono.just(mockClient));
+
+        webTestClient.get()
+                .uri("/api/v1/clients/" + clientId)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(ClientResponseModel.class)
+                .value(response -> {
+                    assertEquals(clientId, response.getUserId());
+                    assertEquals("Alice", response.getFirstName());
+                    assertEquals("Johnson", response.getLastName());
+                    assertEquals("alice.johnson@webmail.com", response.getEmail());
+                    assertEquals("234-567-8901", response.getPhone());
+                });
+
+        verify(userService, times(1)).getClientDetails(clientId);
+    }
+
+    @Test
+    void addClient_thenReturnAddedClient() {
+        UserRequestModel notRelatedRequest = UserRequestModel.builder()
+                .firstName("UnrelatedGuy")
+                .lastName("UnrelatedFamily")
+                .email("helloIamnobody@example.com")
+                .dob(LocalDate.now())
+                .phone("1234567890")
+                .build();
+        webTestClient
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .post()
+                .uri("/api/v1/clients")
+                .bodyValue(notRelatedRequest)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.firstName").isEqualTo(notRelatedRequest.getFirstName())
+                .jsonPath("$.lastName").isEqualTo(notRelatedRequest.getLastName())
+                .jsonPath("$.email").isEqualTo(notRelatedRequest.getEmail());
+        StepVerifier.create(userRepository.findAll())
+                .expectNextCount(3)
+                .verifyComplete();
+    }
+
+    @Test
+    void addClientExists_thenReturnsClient() {
+        UserRequestModel notRelatedRequest = UserRequestModel.builder()
+                .firstName("UnrelatedGuy")
+                .lastName("UnrelatedFamily")
+                .email("helloIamnobody@example.com")
+                .dob(LocalDate.now())
+                .phone("1234567890")
+                .build();
+        webTestClient
+                .mutateWith(WebTestAuthConfig.getAuthFor(client1))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .post()
+                .uri("/api/v1/clients")
+                .bodyValue(notRelatedRequest)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.firstName").isEqualTo(client1.getFirstName())
+                .jsonPath("$.lastName").isEqualTo(client1.getLastName())
+                .jsonPath("$.email").isEqualTo(client1.getEmail());
+        StepVerifier.create(userRepository.findAll())
+                .expectNextCount(2)
                 .verifyComplete();
     }
 }
