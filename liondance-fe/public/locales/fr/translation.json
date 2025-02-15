@@ -182,7 +182,6 @@
     "PARADE": "PARADE",
     "PUBLIC": "PUBLIC",
     "PRIVATE": "PRIVÉ",
-    "CONFIRMED": "CONFIRMÉ",
     "CANCELLED": "ANNULÉ",
     "COMPLETED": "TERMINÉ",
     "PENDING": "EN ATTENTE",
@@ -276,5 +275,7 @@
     "Venue": "Lieu",
     "No active events.": "Aucun événement actif.",
     "No past events available.": "Aucun événement passé disponible.",
-    "Back to Client List": "Retour à la liste des clients"
+    "Back to Client List": "Retour à la liste des clients",
+    "Completed Events": "Événements terminés",
+    "CONFIRMED": "CONFIRMÉ"
 }

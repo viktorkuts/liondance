@@ -185,7 +185,6 @@
     "CONFIRMED": "CONFIRMED",
     "CANCELLED": "CANCELLED",
     "PENDING": "PENDING",
-    "COMPLETED": "COMPLETED",
     "Please select both a new date and time.": "Please select both a new date and time.",
     "The new date and time cannot be before the current date and time.": "The new date and time cannot be before the current date and time.",
     "Failed to reschedule event, please try again.": "Failed to reschedule event, please try again.",
@@ -276,5 +275,7 @@
     "Venue": "Venue",
     "No active events.": "No active events.",
     "No past events available.": "No past events available.",
-    "Back to Client List": "Back to Client List"
+    "Back to Client List": "Back to Client List",
+    "Completed Events": "Completed Events",
+    "COMPLETED": "COMPLETED"
 }
