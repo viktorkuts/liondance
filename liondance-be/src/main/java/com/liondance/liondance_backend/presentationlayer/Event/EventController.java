@@ -118,4 +118,11 @@ public class EventController {
                 .map(response -> ResponseEntity.status(HttpStatus.CREATED).body(response));
     }
 
+    @PreAuthorize("hasAuthority('STAFF')")
+    @PostMapping("/{eventId}/request-feedback")
+    public Mono<ResponseEntity<Void>> requestFeedback(@PathVariable String eventId) {
+        return eventService.requestFeedback(eventId)
+                .then(Mono.just(ResponseEntity.ok().build()));
+    }
+
 }

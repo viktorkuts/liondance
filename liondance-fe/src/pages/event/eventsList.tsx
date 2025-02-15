@@ -9,6 +9,7 @@ import UpdateEventDetails from "./updateEventDetails.tsx";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useUserService } from "@/services/userService.ts";
+import { useEventService } from "@/services/eventService.ts";
 
 interface EventWithClient extends Event {
   client?: User;
@@ -28,6 +29,7 @@ interface ExpandableEventTableProps {
   handleRescheduleClick: (event: EventWithClient) => void;
   handleUpdateDetailsClick: (event: EventWithClient) => void;
   handleViewFeedback: (eventId: string) => void;
+  handleRequestFeedback: (eventId: string) => void;
 }
 
 const ExpandableEventTable: React.FC<ExpandableEventTableProps> = ({
@@ -39,6 +41,7 @@ const ExpandableEventTable: React.FC<ExpandableEventTableProps> = ({
   handleRescheduleClick,
   handleUpdateDetailsClick,
   handleViewFeedback,
+  handleRequestFeedback,
 }) => {
   const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -148,6 +151,9 @@ const ExpandableEventTable: React.FC<ExpandableEventTableProps> = ({
                   <button onClick={() => handleUpdateDetailsClick(event)} className="button_view_feedback">
                     {t("Update Details")}
                   </button>
+                  <button onClick={() => event.eventId && handleRequestFeedback(event.eventId)}>
+                    {t("Request Feedback")}
+                  </button>
                 </td>
               </tr>
             ))}
@@ -173,6 +179,7 @@ function GetAllEvents() {
 
   const axiosInstance = useAxiosInstance();
   const userService = useUserService();
+  const eventService = useEventService();
 
   const handleSort = (key: string) => {
     setSortConfig((prevConfig) => ({
@@ -328,6 +335,14 @@ function GetAllEvents() {
     );
   };
 
+  const handleRequestFeedback = async (eventId: string) => {
+    try {
+      await eventService.handleRequestFeedback(eventId);
+    } catch (error) {
+      console.error("Error sending feedback request:", error);
+    }
+  };
+
   const filteredEvents = events.filter((event: EventWithClient) => {
     if (searchTerm.trim() === "") return true;
     
@@ -398,6 +413,7 @@ function GetAllEvents() {
             handleRescheduleClick={handleRescheduleClick}
             handleUpdateDetailsClick={handleUpdateDetailsClick}
             handleViewFeedback={handleViewFeedback}
+            handleRequestFeedback={handleRequestFeedback}
           />
           <ExpandableEventTable
             title={t("Pending Events")}
@@ -408,6 +424,7 @@ function GetAllEvents() {
             handleRescheduleClick={handleRescheduleClick}
             handleUpdateDetailsClick={handleUpdateDetailsClick}
             handleViewFeedback={handleViewFeedback}
+            handleRequestFeedback={handleRequestFeedback}
           />
           <ExpandableEventTable
             title={t("Confirmed Events")}
@@ -418,6 +435,7 @@ function GetAllEvents() {
             handleRescheduleClick={handleRescheduleClick}
             handleUpdateDetailsClick={handleUpdateDetailsClick}
             handleViewFeedback={handleViewFeedback}
+            handleRequestFeedback={handleRequestFeedback}
           />
           <ExpandableEventTable
             title={t("Cancelled Events")}
@@ -428,6 +446,7 @@ function GetAllEvents() {
             handleRescheduleClick={handleRescheduleClick}
             handleUpdateDetailsClick={handleUpdateDetailsClick}
             handleViewFeedback={handleViewFeedback}
+            handleRequestFeedback={handleRequestFeedback}
           />
           <ExpandableEventTable
             title={t("Completed Events")}
@@ -438,6 +457,7 @@ function GetAllEvents() {
             handleRescheduleClick={handleRescheduleClick}
             handleUpdateDetailsClick={handleUpdateDetailsClick}
             handleViewFeedback={handleViewFeedback}
+            handleRequestFeedback={handleRequestFeedback}
           />
         </div>
       )}

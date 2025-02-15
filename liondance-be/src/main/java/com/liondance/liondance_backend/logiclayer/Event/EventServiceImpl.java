@@ -8,6 +8,7 @@ import com.liondance.liondance_backend.datalayer.Feedback.FeedbackRepository;
 import com.liondance.liondance_backend.datalayer.Notification.NotificationType;
 import com.liondance.liondance_backend.datalayer.User.Role;
 import com.liondance.liondance_backend.datalayer.User.User;
+import com.liondance.liondance_backend.datalayer.User.UserRepository;
 import com.liondance.liondance_backend.logiclayer.Notification.NotificationService;
 import com.liondance.liondance_backend.logiclayer.User.UserService;
 import com.liondance.liondance_backend.presentationlayer.Event.EventDisplayDTO;
@@ -39,12 +40,15 @@ public class EventServiceImpl implements EventService {
     private final NotificationService notificationService;
     private final UserService userService;
     private final FeedbackRepository feedbackRepository;
+    private final UserRepository userRepository;
 
-    public EventServiceImpl(EventRepository eventRepository, NotificationService notificationService, UserService userService, FeedbackRepository feedbackRepository) {
+    public EventServiceImpl(EventRepository eventRepository, NotificationService notificationService, UserService userService,
+                            FeedbackRepository feedbackRepository, UserRepository userRepository) {
         this.eventRepository = eventRepository;
         this.notificationService = notificationService;
         this.userService = userService;
         this.feedbackRepository = feedbackRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -250,6 +254,38 @@ public class EventServiceImpl implements EventService {
                             });
                 })
                 .doOnError(error -> logger.error("Error occurred in submitFeedback(): {}", error.getMessage(), error));
+    }
+
+    @Override
+    public Mono<Void> requestFeedback(String eventId) {
+        String frontendUrl = System.getenv("FRONTEND_URL");
+        if (frontendUrl == null || frontendUrl.isEmpty()) {
+            return Mono.error(new IllegalStateException("FRONTEND_URL environment variable is not set"));
+        }
+
+        return eventRepository.findEventByEventId(eventId)
+                .switchIfEmpty(Mono.error(new NotFoundException("Event not found with ID: " + eventId)))
+                .flatMap(event -> userRepository.findUserByUserId(event.getClientId())
+                        .switchIfEmpty(Mono.error(new NotFoundException("User associated with event not found")))
+                        .flatMap(user -> {
+                            String message = new StringBuilder()
+                                    .append("Hello, please provide feedback for your recent event using the link below:\n")
+                                    .append(frontendUrl + "/feedback-form/" + eventId)
+                                    .toString();
+
+                            Boolean success = notificationService.sendMail(
+                                    user.getEmail(),
+                                    "Feedback Request for Your Event",
+                                    message,
+                                    NotificationType.FEEDBACK_REQUEST
+                            );
+
+                            if (!success) {
+                                return Mono.error(new MailSendException("Failed to send email to " + user.getEmail()));
+                            }
+                            return Mono.<Void>empty();
+                        })
+                );
     }
 
 }

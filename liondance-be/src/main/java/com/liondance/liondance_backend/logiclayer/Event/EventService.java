@@ -22,5 +22,6 @@ public interface EventService {
     public Flux<EventResponseModel> getFilteredEvents();
     public Mono<EventResponseModel> updateEventDetails(String eventId, EventRequestModel eventRequestModel);
     public Mono<FeedbackResponseModel> submitFeedback(String eventId, Mono<FeedbackRequestModel> feedbackRequestModel, User user);
+    Mono<Void> requestFeedback(String eventId);
 
 }

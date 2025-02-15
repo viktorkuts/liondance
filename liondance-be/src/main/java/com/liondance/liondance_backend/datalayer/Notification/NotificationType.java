@@ -15,4 +15,5 @@ public enum NotificationType {
     USER_REGISTRATION,
     AUTHORIZATION,
     CLIENT_FEEDBACK_SUBMISSION,
+    FEEDBACK_REQUEST,
 }

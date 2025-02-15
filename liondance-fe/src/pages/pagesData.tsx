@@ -139,6 +139,11 @@ const pagesData: routerType[] = [
     element: <FeedbackForm />,
     title: "Feedback Form",
   },
+  {
+    path: "feedback-form/:eventId",
+    element: <FeedbackForm />,
+    title: "Feedback Form",
+  },
 ];
 
 export default pagesData;
