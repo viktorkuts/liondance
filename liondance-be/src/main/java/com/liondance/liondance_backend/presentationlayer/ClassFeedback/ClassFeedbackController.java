@@ -1,7 +1,12 @@
 package com.liondance.liondance_backend.presentationlayer.ClassFeedback;
 
 import com.liondance.liondance_backend.logiclayer.ClassFeedback.ClassFeedbackService;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -18,4 +23,20 @@ public class ClassFeedbackController {
 public Mono<ClassFeedbackResponseModel> addClassFeedback(@RequestBody Mono<ClassFeedbackRequestModel> classfeedback){
         return classFeedbackService.addClassFeedback(classfeedback);
 }
+@PreAuthorize("hasAuthority('STAFF')")
+@GetMapping("/reports")
+public Flux<ClassFeedbackReportResponseModel> getAllClassFeedbackReports(){
+        return classFeedbackService.getAllClassFeedbackReports();
+}
+@PreAuthorize("hasAuthority('STAFF')")
+    @GetMapping("/reports/{reportId}/download")
+    public Mono<ResponseEntity<byte[]>> downloadReport(@PathVariable String reportId) {
+        return classFeedbackService.downloadClassFeedbackPdf(reportId)
+                .map(pdf -> ResponseEntity.ok()
+                        .contentType(MediaType.APPLICATION_PDF)
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=report-" + reportId + ".pdf")
+                        .body(pdf.getPdfData()))
+                .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+
 }

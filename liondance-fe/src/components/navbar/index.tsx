@@ -10,7 +10,7 @@ import { Role } from "@/models/Users";
 function Navbar() {
   const { t } = useTranslation();
   const [adminDropdownOpen, setAdminDropdownOpen] = useState(false);
-
+ 
   const toggleAdminDropdown = () => {
     setAdminDropdownOpen(!adminDropdownOpen);
   };
@@ -96,6 +96,9 @@ function Navbar() {
                 </Anchor>
                 <Anchor href="/courses" fw={1000} fz="h2">
                   {t("Cancel Course")}
+                </Anchor>
+                <Anchor href="classfeedback/reports" fw={1000} fz="h2">
+                  {t("Class Feedback Reports")}
                 </Anchor>
               </div>
             )}

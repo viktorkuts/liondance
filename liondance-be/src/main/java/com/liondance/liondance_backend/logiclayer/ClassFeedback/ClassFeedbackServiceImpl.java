@@ -1,5 +1,7 @@
 package com.liondance.liondance_backend.logiclayer.ClassFeedback;
 
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
 import com.liondance.liondance_backend.datalayer.ClassFeedback.*;
 import com.liondance.liondance_backend.datalayer.Course.Course;
 import com.liondance.liondance_backend.datalayer.Course.CourseRepository;
@@ -50,8 +52,7 @@ public class ClassFeedbackServiceImpl implements ClassFeedbackService{
         this.classFeedbackPdfRepository = classFeedbackPdfRepository;
     }
 
-    //@Scheduled(cron = "0 0 0 * * *")
-    @Scheduled(cron = "0 * * * * *" )
+    @Scheduled(cron = "0 0 0 * * *")
     public void checkForCoursesToday() {
         log.debug("Scheduled task started");
 
@@ -61,7 +62,7 @@ public class ClassFeedbackServiceImpl implements ClassFeedbackService{
                 .doOnSubscribe(subscription -> log.debug("Fetching courses for {}", today.getDayOfWeek()))
                 .doOnNext(course -> log.debug("Processing course: {}", course.getName()))
                 .doOnError(error -> log.error("Error fetching courses: {}", error.getMessage(), error))
-                .switchIfEmpty(Mono.fromRunnable(() -> log.debug("No courses found for today: {}", today)))
+                .switchIfEmpty(Mono.fromRunnable(() -> { log.debug("No courses found for today: {}", today); return;}))
                 .filter(course -> {
                     if (course.getCancelledDates().contains(today)) {
                         log.debug("Course {} is canceled for today", course.getName());
@@ -127,6 +128,17 @@ public void sendScheduledFeedbackRequests(Course course) {
                 .map(ClassFeedbackResponseModel::from);
     }
 
+    @Override
+    public Flux<ClassFeedbackReportResponseModel> getAllClassFeedbackReports() {
+        return classFeedbackReportRepository.findAll().map(ClassFeedbackReportResponseModel::from);
+    }
+
+    @Override
+    public Mono<ClassFeedbackPdf> downloadClassFeedbackPdf(String reportId) {
+        return classFeedbackPdfRepository.findByReportId(reportId);
+    }
+
+
     public void generateClassFeedbackReport(Course course, LocalDate classDate) {
         log.info("Generating class feedback report for {} - {}", course.getName(), classDate);
 
@@ -173,17 +185,44 @@ public void sendScheduledFeedbackRequests(Course course) {
 
     private byte[] createPdf(ClassFeedbackReport report) {
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-            Document document = new Document();
+            Document document = new Document(PageSize.A4, 50, 50, 50, 50);
             PdfWriter.getInstance(document, outputStream);
             document.open();
 
-            document.add(new Paragraph("Class Feedback Report - " + report.getClassDate()));
-            document.add(new Paragraph("Average Score: " + report.getAverageScore()));
-            document.add(new Paragraph("\nFeedback Comments:\n"));
+            Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 16, BaseColor.BLACK);
+            Paragraph title = new Paragraph("Class Feedback Report - " + report.getClassDate(), titleFont);
+            title.setAlignment(Element.ALIGN_CENTER);
+            document.add(title);
 
+            document.add(Chunk.NEWLINE);
+
+            Font subTitleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 14, BaseColor.DARK_GRAY);
+            Paragraph avgScore = new Paragraph("Average Score: " + report.getAverageScore(), subTitleFont);
+            avgScore.setSpacingAfter(10f);
+            document.add(avgScore);
+
+            Paragraph commentsHeader = new Paragraph("Feedback Comments:", subTitleFont);
+            commentsHeader.setSpacingBefore(10f);
+            document.add(commentsHeader);
+
+            PdfPTable table = new PdfPTable(2);
+            table.setWidthPercentage(100);
+            table.setWidths(new float[] {4, 1});
+            table.setSpacingBefore(10f);
+
+
+            PdfPCell commentHeader = new PdfPCell(new Phrase("Comment", subTitleFont));
+            PdfPCell scoreHeader = new PdfPCell(new Phrase("Score", subTitleFont));
+            table.addCell(commentHeader);
+            table.addCell(scoreHeader);
+
+
+            Font commentFont = FontFactory.getFont(FontFactory.HELVETICA, 12, BaseColor.BLACK);
             for (ClassFeedbackResponseModel feedback : report.getFeedbackDetails()) {
-                document.add(new Paragraph("- " + feedback.getComment() + " (Score: " + feedback.getScore() + ")"));
+                table.addCell(new PdfPCell(new Phrase(feedback.getComment(), commentFont)));
+                table.addCell(new PdfPCell(new Phrase(String.valueOf(feedback.getScore()), commentFont)));
             }
+            document.add(table);
 
             document.close();
             return outputStream.toByteArray();
@@ -192,5 +231,6 @@ public void sendScheduledFeedbackRequests(Course course) {
             return new byte[0];
         }
     }
+
 
 }

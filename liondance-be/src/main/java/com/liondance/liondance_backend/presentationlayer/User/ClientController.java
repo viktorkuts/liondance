@@ -51,7 +51,6 @@ public class ClientController {
                     if(!user.getRoles().contains(Role.CLIENT)) {
                         return Mono.error(new Unauthorized("User does not have the right roles to access this resource"));
                     }
-
                     return Mono.just(user.getUserId());
                 })
                 .flatMapMany(eventService::getEventsByClientId);
