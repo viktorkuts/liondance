@@ -21,6 +21,7 @@ import ClientRegistration from "./registration/client-registration";
 import CancelCourse from "@/components/cancelCourse";
 import ClientProfile from "@/components/clientProfile";
 import GetMyEvents from "./event/clientEventPage";
+import SubscribeToPromotions from "./promotions/subscribeToPromotions";
 
 const pagesData: routerType[] = [
   {
@@ -47,6 +48,11 @@ const pagesData: routerType[] = [
     path: "users",
     element: <UserList />,
     title: "User List",
+  },
+  {
+    path: ":userId/subscription",
+    element: <SubscribeToPromotions openModal={true} />,
+    title: "Subscribe to Promotions",
   },
   {
     path: "students",

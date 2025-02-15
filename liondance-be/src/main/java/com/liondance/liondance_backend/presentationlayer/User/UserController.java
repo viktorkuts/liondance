@@ -49,7 +49,7 @@ public class UserController {
         return Mono.just(roles);
     }
 
-//    @PreAuthorize("hasAuthority('STAFF')")
+    @PreAuthorize("hasAuthority('STAFF')")
     @GetMapping("{userId}")
     public Mono<UserResponseModel> getUserByUserId(@PathVariable String userId) {
         return userService.getUserByUserId(userId)
