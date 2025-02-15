@@ -185,6 +185,7 @@
     "CONFIRMED": "CONFIRMED",
     "CANCELLED": "CANCELLED",
     "PENDING": "PENDING",
+    "COMPLETED": "COMPLETED",
     "Please select both a new date and time.": "Please select both a new date and time.",
     "The new date and time cannot be before the current date and time.": "The new date and time cannot be before the current date and time.",
     "Failed to reschedule event, please try again.": "Failed to reschedule event, please try again.",

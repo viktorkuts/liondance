@@ -16,7 +16,7 @@ export const useFeedbackService = () => {
     try {
         const response = await axiosInstance.post(`/events/${eventId}/feedback`, {
             rating,
-            feedback: comment, // No need to send eventId in the body anymore
+            feedback: comment,
         });
         return response.data;
     } catch (error) {

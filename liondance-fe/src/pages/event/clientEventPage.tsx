@@ -3,7 +3,7 @@ import { useEventService } from "@/services/eventService";
 import { Event } from "@/models/Event.ts";
 import { useTranslation } from "react-i18next";
 import "./eventsList.css";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 
 const GetMyEvents: React.FC = () => {
   const { t } = useTranslation();
@@ -11,7 +11,7 @@ const GetMyEvents: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const eventService = useEventService();
-  const navigate = useNavigate(); // Initialize navigate function
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     const fetchEvents = async () => {

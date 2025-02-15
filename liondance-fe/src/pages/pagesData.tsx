@@ -106,7 +106,7 @@ const pagesData: routerType[] = [
   },
   {
     path: "feedbacks/:eventId",
-    element: <FeedbackList eventId={":eventId"} />,
+    element: <FeedbackList />,
     title: "Feedback List",
   },
   {
