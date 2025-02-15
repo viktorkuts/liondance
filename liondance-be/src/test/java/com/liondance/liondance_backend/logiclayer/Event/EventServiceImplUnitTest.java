@@ -1,14 +1,18 @@
 package com.liondance.liondance_backend.logiclayer.Event;
 
 import com.liondance.liondance_backend.datalayer.Event.*;
+import com.liondance.liondance_backend.datalayer.Feedback.Feedback;
+import com.liondance.liondance_backend.datalayer.Feedback.FeedbackRepository;
 import com.liondance.liondance_backend.datalayer.Notification.NotificationType;
 import com.liondance.liondance_backend.datalayer.User.Client;
 import com.liondance.liondance_backend.datalayer.User.Role;
+import com.liondance.liondance_backend.datalayer.User.UserRepository;
 import com.liondance.liondance_backend.datalayer.common.Address;
 import com.liondance.liondance_backend.logiclayer.Notification.NotificationService;
 import com.liondance.liondance_backend.logiclayer.User.UserService;
 import com.liondance.liondance_backend.presentationlayer.Event.EventRequestModel;
 import com.liondance.liondance_backend.presentationlayer.Event.EventResponseModel;
+import com.liondance.liondance_backend.presentationlayer.Feedback.FeedbackRequestModel;
 import com.liondance.liondance_backend.presentationlayer.User.UserResponseModel;
 import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,6 +44,12 @@ import static org.junit.jupiter.api.Assertions.*;
 class EventServiceImplUnitTest {
     @Mock
     private EventRepository eventRepository;
+
+    @Mock
+    private FeedbackRepository feedbackRepository;
+
+    @Mock
+    private UserRepository userRepository;
 
     @Mock
     private NotificationService notificationService;
@@ -564,5 +574,117 @@ class EventServiceImplUnitTest {
                     return true;
                 })
                 .verifyComplete();
+    }
+
+    @Test
+    void submitFeedback_withValidRequest_shouldSaveFeedback() {
+        FeedbackRequestModel feedbackRequestModel = FeedbackRequestModel.builder()
+                .feedback("Great event!")
+                .rating(5)
+                .build();
+
+        event1.setEventStatus(EventStatus.COMPLETED); // Set event status to COMPLETED
+
+        Mockito.when(eventRepository.findEventByEventId(event1.getEventId()))
+                .thenReturn(Mono.just(event1));
+        Mockito.when(feedbackRepository.save(any(Feedback.class)))
+                .thenReturn(Mono.just(Feedback.builder()
+                        .feedbackId(UUID.randomUUID().toString())
+                        .timestamp(Instant.now())
+                        .feedback(feedbackRequestModel.getFeedback())
+                        .rating(feedbackRequestModel.getRating())
+                        .eventId(event1.getEventId())
+                        .build()));
+
+        StepVerifier.create(eventService.submitFeedback(event1.getEventId(), Mono.just(feedbackRequestModel), client1))
+                .expectNextMatches(response -> response.getFeedback().equals("Great event!") && response.getRating() == 5)
+                .verifyComplete();
+    }
+
+    @Test
+    void submitFeedback_withNonExistentEvent_shouldReturnNotFound() {
+        FeedbackRequestModel feedbackRequestModel = FeedbackRequestModel.builder()
+                .feedback("Great event!")
+                .rating(5)
+                .build();
+
+        Mockito.when(eventRepository.findEventByEventId("nonexistent-event-id"))
+                .thenReturn(Mono.empty());
+
+        StepVerifier.create(eventService.submitFeedback("nonexistent-event-id", Mono.just(feedbackRequestModel), client1))
+                .expectError(NotFoundException.class)
+                .verify();
+    }
+
+    @Test
+    void submitFeedback_withIncompleteEvent_shouldReturnIllegalState() {
+        event1.setEventStatus(EventStatus.PENDING);
+
+        FeedbackRequestModel feedbackRequestModel = FeedbackRequestModel.builder()
+                .feedback("Great event!")
+                .rating(5)
+                .build();
+
+        Mockito.when(eventRepository.findEventByEventId(event1.getEventId()))
+                .thenReturn(Mono.just(event1));
+
+        StepVerifier.create(eventService.submitFeedback(event1.getEventId(), Mono.just(feedbackRequestModel), client1))
+                .expectError(IllegalStateException.class)
+                .verify();
+    }
+
+    @Test
+    void requestFeedback_withValidEventId_shouldSendEmail() {
+        String frontendUrl = "http://localhost:5173";
+        System.setProperty("FRONTEND_URL", frontendUrl);
+
+        Mockito.when(eventRepository.findEventByEventId(event1.getEventId()))
+                .thenReturn(Mono.just(event1));
+        Mockito.when(userRepository.findUserByUserId(event1.getClientId()))
+                .thenReturn(Mono.just(client1));
+        Mockito.when(notificationService.sendMail(anyString(), anyString(), anyString(), any(NotificationType.class)))
+                .thenReturn(true);
+
+        StepVerifier.create(eventService.requestFeedback(event1.getEventId()))
+                .verifyComplete();
+    }
+
+    @Test
+    void requestFeedback_withFailedEmailSend_shouldReturnMailSendException() {
+        String frontendUrl = "http://localhost:5173";
+        System.setProperty("FRONTEND_URL", frontendUrl);
+
+        Mockito.when(eventRepository.findEventByEventId(event1.getEventId()))
+                .thenReturn(Mono.just(event1));
+        Mockito.when(userRepository.findUserByUserId(event1.getClientId()))
+                .thenReturn(Mono.just(client1));
+        Mockito.when(notificationService.sendMail(anyString(), anyString(), anyString(), any(NotificationType.class)))
+                .thenReturn(false);
+
+        StepVerifier.create(eventService.requestFeedback(event1.getEventId()))
+                .expectError(MailSendException.class)
+                .verify();
+    }
+
+    @Test
+    void requestFeedback_withNonExistentUser_shouldReturnNotFound() {
+        Mockito.when(eventRepository.findEventByEventId(event1.getEventId()))
+                .thenReturn(Mono.just(event1));
+        Mockito.when(userRepository.findUserByUserId(event1.getClientId()))
+                .thenReturn(Mono.empty());
+
+        StepVerifier.create(eventService.requestFeedback(event1.getEventId()))
+                .expectError(NotFoundException.class)
+                .verify();
+    }
+
+    @Test
+    void requestFeedback_withNonExistentEventId_shouldReturnNotFound() {
+        Mockito.when(eventRepository.findEventByEventId("nonexistent-event-id"))
+                .thenReturn(Mono.empty());
+
+        StepVerifier.create(eventService.requestFeedback("nonexistent-event-id"))
+                .expectError(NotFoundException.class)
+                .verify();
     }
 }

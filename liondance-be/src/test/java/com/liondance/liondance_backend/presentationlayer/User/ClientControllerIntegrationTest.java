@@ -43,6 +43,7 @@ public class ClientControllerIntegrationTest {
     private UserService userService;
 
 
+
     User staff = Client.builder()
             .userId(UUID.randomUUID().toString())
             .firstName("JaneStaff")
