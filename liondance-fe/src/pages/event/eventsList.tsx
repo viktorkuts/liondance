@@ -9,8 +9,8 @@ import UpdateEventDetails from "./updateEventDetails.tsx";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useUserService } from "@/services/userService.ts";
-import ContactClientModal from "./contactClientModal";
 import { useEventService } from "@/services/eventService.ts";
+import ContactClientModal from "./contactClientModal";
 
 interface EventWithClient extends Event {
   client?: User;
@@ -30,10 +30,9 @@ interface ExpandableEventTableProps {
   handleRescheduleClick: (event: EventWithClient) => void;
   handleUpdateDetailsClick: (event: EventWithClient) => void;
   handleViewFeedback: (eventId: string) => void;
-  handleContactClick: (event: EventWithClient) => void;
   handleRequestFeedback: (eventId: string) => void;
+  handleContactClick: (event: EventWithClient) => void;
 }
-
 
 const ExpandableEventTable: React.FC<ExpandableEventTableProps> = ({
   title,
@@ -44,8 +43,8 @@ const ExpandableEventTable: React.FC<ExpandableEventTableProps> = ({
   handleRescheduleClick,
   handleUpdateDetailsClick,
   handleViewFeedback,
-  handleContactClick,
   handleRequestFeedback,
+  handleContactClick,
 }) => {
   const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -155,11 +154,11 @@ const ExpandableEventTable: React.FC<ExpandableEventTableProps> = ({
                   <button onClick={() => handleUpdateDetailsClick(event)} className="button_view_feedback">
                     {t("Update Details")}
                   </button>
-                  <button onClick={() => handleContactClick(event)} className="button_contact_client">
-                    {t("Contact Client")}
-                  </button>
                   <button onClick={() => event.eventId && handleRequestFeedback(event.eventId)}>
                     {t("Request Feedback")}
+                  </button>
+                  <button onClick={() => handleContactClick(event)} className="button_contact_client">
+                    {t("Contact Client")}
                   </button>
                 </td>
               </tr>
@@ -343,7 +342,15 @@ function GetAllEvents() {
       )
     );
   };
-        
+
+  const handleRequestFeedback = async (eventId: string) => {
+    try {
+      await eventService.handleRequestFeedback(eventId);
+    } catch (error) {
+      console.error("Error sending feedback request:", error);
+    }
+  };
+
   const handleContactClick = (event: EventWithClient): void => {
     setSelectedClientToContact(event);
     setShowContactModal(true);
@@ -352,13 +359,6 @@ function GetAllEvents() {
   const handleContactModalClose = (): void => {
     setShowContactModal(false);
     setSelectedClientToContact(null);
-  };
-    
-  const handleRequestFeedback = async (eventId: string) => {
-    try {
-      await eventService.handleRequestFeedback(eventId);
-    } catch (error) {
-      console.error("Error sending feedback request:", error);
   };
 
   const filteredEvents = events.filter((event: EventWithClient) => {
@@ -431,8 +431,8 @@ function GetAllEvents() {
             handleRescheduleClick={handleRescheduleClick}
             handleUpdateDetailsClick={handleUpdateDetailsClick}
             handleViewFeedback={handleViewFeedback}
-            handleContactClick={handleContactClick}
             handleRequestFeedback={handleRequestFeedback}
+            handleContactClick={handleContactClick}
           />
           <ExpandableEventTable
             title={t("Pending Events")}
@@ -443,8 +443,8 @@ function GetAllEvents() {
             handleRescheduleClick={handleRescheduleClick}
             handleUpdateDetailsClick={handleUpdateDetailsClick}
             handleViewFeedback={handleViewFeedback}
-            handleContactClick={handleContactClick}
             handleRequestFeedback={handleRequestFeedback}
+            handleContactClick={handleContactClick}
           />
           <ExpandableEventTable
             title={t("Confirmed Events")}
@@ -455,8 +455,8 @@ function GetAllEvents() {
             handleRescheduleClick={handleRescheduleClick}
             handleUpdateDetailsClick={handleUpdateDetailsClick}
             handleViewFeedback={handleViewFeedback}
-            handleContactClick={handleContactClick}
             handleRequestFeedback={handleRequestFeedback}
+            handleContactClick={handleContactClick}
           />
           <ExpandableEventTable
             title={t("Cancelled Events")}
@@ -467,8 +467,8 @@ function GetAllEvents() {
             handleRescheduleClick={handleRescheduleClick}
             handleUpdateDetailsClick={handleUpdateDetailsClick}
             handleViewFeedback={handleViewFeedback}
-            handleContactClick={handleContactClick}
             handleRequestFeedback={handleRequestFeedback}
+            handleContactClick={handleContactClick}
           />
           <ExpandableEventTable
             title={t("Completed Events")}
@@ -479,8 +479,8 @@ function GetAllEvents() {
             handleRescheduleClick={handleRescheduleClick}
             handleUpdateDetailsClick={handleUpdateDetailsClick}
             handleViewFeedback={handleViewFeedback}
-            handleContactClick={handleContactClick}
             handleRequestFeedback={handleRequestFeedback}
+            handleContactClick={handleContactClick}
           />
         </div>
       )}
