@@ -269,6 +269,15 @@
     "Cancelled Events": "Cancelled Events",
     "No cancelled events found.": "No cancelled events found.",
     "Search events...": "Search events...",
+    "Contact Client": "Contact Client",
+    "Message": "Message",
+    "Send Message": "Send Message",
+    "Failed to send message. Please try again.": "Failed to send message. Please try again.",
+    "Include contact information footer": "Include contact information footer",
+    "Enter your message here...": "Enter your message here...",
+    "Sending...": "Sending...",
+    "Send": "Send",
+    "\n\nBest regards,\nLVH Lion Dance Team\nWebsite: www.lvhliondance.com\nEmail: info@lvhliondance.com\nPhone: (123) 456-7890": "\n\nBest regards,\nLVH Lion Dance Team\nWebsite: www.lvhliondance.com\nEmail: info@lvhliondance.com\nPhone: (123) 456-7890",
     "Client Profile": "Client Profile",
     "Active Events": "Active Events",
     "Past Events": "Past Events",
@@ -280,5 +289,4 @@
     "No reports available.": "No reports available.",
     "Average Score": "Average Score",
     "Download PDF": "Download PDF"
-
 }

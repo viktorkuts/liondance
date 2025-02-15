@@ -10,7 +10,7 @@ import { Role } from "@/models/Users";
 function Navbar() {
   const { t } = useTranslation();
   const [adminDropdownOpen, setAdminDropdownOpen] = useState(false);
-
+ 
   const toggleAdminDropdown = () => {
     setAdminDropdownOpen(!adminDropdownOpen);
   };

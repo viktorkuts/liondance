@@ -9,6 +9,7 @@ import UpdateEventDetails from "./updateEventDetails.tsx";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useUserService } from "@/services/userService.ts";
+import ContactClientModal from "./contactClientModal";
 
 interface EventWithClient extends Event {
   client?: User;
@@ -28,7 +29,9 @@ interface ExpandableEventTableProps {
   handleRescheduleClick: (event: EventWithClient) => void;
   handleUpdateDetailsClick: (event: EventWithClient) => void;
   handleViewFeedback: (eventId: string) => void;
+  handleContactClick: (event: EventWithClient) => void;
 }
+
 
 const ExpandableEventTable: React.FC<ExpandableEventTableProps> = ({
   title,
@@ -39,6 +42,7 @@ const ExpandableEventTable: React.FC<ExpandableEventTableProps> = ({
   handleRescheduleClick,
   handleUpdateDetailsClick,
   handleViewFeedback,
+  handleContactClick,
 }) => {
   const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -146,6 +150,9 @@ const ExpandableEventTable: React.FC<ExpandableEventTableProps> = ({
                   <button onClick={() => handleUpdateDetailsClick(event)} className="button_view_feedback">
                     {t("Update Details")}
                   </button>
+                  <button onClick={() => handleContactClick(event)} className="button_contact_client">
+                    {t("Contact Client")}
+                  </button>
                 </td>
               </tr>
             ))}
@@ -168,6 +175,8 @@ function GetAllEvents() {
   const [showUpdateDetailsModal, setShowUpdateDetailsModal] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: '', direction: 'none' });
+  const [showContactModal, setShowContactModal] = useState<boolean>(false);
+  const [selectedClientToContact, setSelectedClientToContact] = useState<EventWithClient | null>(null);
 
   const axiosInstance = useAxiosInstance();
   const userService = useUserService();
@@ -326,6 +335,16 @@ function GetAllEvents() {
     );
   };
 
+  const handleContactClick = (event: EventWithClient): void => {
+    setSelectedClientToContact(event);
+    setShowContactModal(true);
+  };
+
+  const handleContactModalClose = (): void => {
+    setShowContactModal(false);
+    setSelectedClientToContact(null);
+  };
+
   const filteredEvents = events.filter((event: EventWithClient) => {
     if (searchTerm.trim() === "") return true;
     
@@ -395,6 +414,7 @@ function GetAllEvents() {
             handleRescheduleClick={handleRescheduleClick}
             handleUpdateDetailsClick={handleUpdateDetailsClick}
             handleViewFeedback={handleViewFeedback}
+            handleContactClick={handleContactClick}
           />
           <ExpandableEventTable
             title={t("Pending Events")}
@@ -405,6 +425,7 @@ function GetAllEvents() {
             handleRescheduleClick={handleRescheduleClick}
             handleUpdateDetailsClick={handleUpdateDetailsClick}
             handleViewFeedback={handleViewFeedback}
+            handleContactClick={handleContactClick}
           />
           <ExpandableEventTable
             title={t("Confirmed Events")}
@@ -415,6 +436,7 @@ function GetAllEvents() {
             handleRescheduleClick={handleRescheduleClick}
             handleUpdateDetailsClick={handleUpdateDetailsClick}
             handleViewFeedback={handleViewFeedback}
+            handleContactClick={handleContactClick}
           />
           <ExpandableEventTable
             title={t("Cancelled Events")}
@@ -425,6 +447,7 @@ function GetAllEvents() {
             handleRescheduleClick={handleRescheduleClick}
             handleUpdateDetailsClick={handleUpdateDetailsClick}
             handleViewFeedback={handleViewFeedback}
+            handleContactClick={handleContactClick}
           />
         </div>
       )}
@@ -448,6 +471,13 @@ function GetAllEvents() {
           event={selectedEvent}
           onClose={handleUpdateDetailsModalClose}
           onUpdate={handleEventUpdate}
+        />
+      )}
+      {selectedClientToContact && showContactModal && (
+        <ContactClientModal
+          clientEmail={selectedClientToContact.client?.email ?? ""}
+          clientName={`${selectedClientToContact.client?.firstName ?? ""} ${selectedClientToContact.client?.lastName ?? ""}`}
+          onClose={handleContactModalClose}
         />
       )}
     </div>
