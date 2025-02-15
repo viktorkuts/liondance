@@ -214,10 +214,10 @@ public class EventServiceImpl implements EventService {
         logger.info(" Roles: {}", user.getRoles());
 
         // Check if user has "CLIENT" role
-        if (!user.getRoles().contains("CLIENT")) {
-            logger.warn("Access Denied: User does not have CLIENT role");
-            return Mono.error(new AccessDeniedException("Only clients can submit feedback."));
-        }
+//        if (!user.getRoles().contains("CLIENT")) {
+//            logger.warn("Access Denied: User does not have CLIENT role");
+//            return Mono.error(new AccessDeniedException("Only clients can submit feedback."));
+//        }
 
         return eventRepository.findEventByEventId(eventId)
                 .switchIfEmpty(Mono.error(new NotFoundException("Event not found with ID: " + eventId)))
