@@ -288,5 +288,12 @@
     "Class Feedback Reports": "Class Feedback Reports",
     "No reports available.": "No reports available.",
     "Average Score": "Average Score",
-    "Download PDF": "Download PDF"
+    "Download PDF": "Download PDF",
+    "Completed Events": "Completed Events",
+    "COMPLETED": "COMPLETED",
+    "Give Feedback": "Give Feedback",
+    "Rating (1-5)": "Rating (1-5)",
+    "Event ID is missing.": "Event ID is missing.",
+    "Submitting...": "Submitting...",
+    "Back to My Events": "Back to My Events"
 }

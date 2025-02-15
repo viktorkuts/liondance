@@ -53,7 +53,7 @@ const ClientProfile: React.FC = () => {
     };
 
     fetchClient();
-  }, [clientId]);
+  }, [clientId, clientService]);
 
   if (error) {
     return <div className="error">{t('Error')}: {error}</div>;

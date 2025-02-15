@@ -3,6 +3,7 @@ import { useEventService } from "@/services/eventService";
 import { Event } from "@/models/Event.ts";
 import { useTranslation } from "react-i18next";
 import "./eventsList.css";
+import { useNavigate } from "react-router-dom";
 
 const GetMyEvents: React.FC = () => {
   const { t } = useTranslation();
@@ -10,6 +11,7 @@ const GetMyEvents: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const eventService = useEventService();
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -56,6 +58,7 @@ const GetMyEvents: React.FC = () => {
               <th>{t("Event Type")}</th>
               <th>{t("Special Request")}</th>
               <th>{t("Event Status")}</th>
+              <th>{t("Actions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -66,13 +69,23 @@ const GetMyEvents: React.FC = () => {
                   {event.venue?.city ? `, ${event.venue.city}` : ""}
                 </td>
                 <td>{new Date(event.eventDateTime).toLocaleString()}</td>
-                <td>{event.eventType}</td>
+                <td>{t(event.eventType)}</td>
                 <td>
                   {event.specialRequest && event.specialRequest.trim()
                     ? event.specialRequest
                     : t("No special requests")}
                 </td>
-                <td>{event.eventStatus ?? t("N/A")}</td>
+                <td>{t(event.eventStatus) ?? t("N/A")}</td>
+                <td>
+                  {event.eventStatus === "COMPLETED" && (
+                    <button
+                      className="feedback-button"
+                      onClick={() => navigate(`/feedback-form/${event.eventId}`)}
+                    >
+                      {t("Give Feedback")}
+                    </button>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>

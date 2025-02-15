@@ -182,8 +182,8 @@
     "PARADE": "PARADE",
     "PUBLIC": "PUBLIC",
     "PRIVATE": "PRIVÉ",
-    "CONFIRMED": "CONFIRMÉ",
     "CANCELLED": "ANNULÉ",
+    "COMPLETED": "TERMINÉ",
     "PENDING": "EN ATTENTE",
     "Please select both a new date and time.": "Veuillez sélectionner une nouvelle date et une nouvelle heure.",
     "The new date and time cannot be before the current date and time.": "La nouvelle date et heure ne peuvent pas être antérieures à la date et heure actuelles.",
@@ -288,5 +288,12 @@
     "Class Feedback Reports": "Rapports de retour sur les cours",
     "No reports available.": "Aucun rapport disponible.",
     "Average Score": "Note moyenne",
-    "Download PDF": "Télécharger le PDF"
+    "Download PDF": "Télécharger le PDF",
+    "Completed Events": "Événements terminés",
+    "CONFIRMED": "CONFIRMÉ",
+    "Give Feedback": "Donner un avis",
+    "Rating (1-5)": "Évaluation (1-5)",
+    "Submitting...": "Soumission en cours...",
+    "Event ID is missing.": "L'ID de l'événement est manquant.",
+    "Back to My Events": "Retour à mes événements"
 }

@@ -25,6 +25,7 @@ export enum EventStatus {
   PENDING = "PENDING",
   CONFIRMED = "CONFIRMED",
   CANCELLED = "CANCELLED",
+  COMPLETED = "COMPLETED",
 }
 
 export enum EventPrivacy {

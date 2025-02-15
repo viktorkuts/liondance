@@ -9,6 +9,7 @@ import UpdateEventDetails from "./updateEventDetails.tsx";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useUserService } from "@/services/userService.ts";
+import { useEventService } from "@/services/eventService.ts";
 import ContactClientModal from "./contactClientModal";
 
 interface EventWithClient extends Event {
@@ -29,9 +30,9 @@ interface ExpandableEventTableProps {
   handleRescheduleClick: (event: EventWithClient) => void;
   handleUpdateDetailsClick: (event: EventWithClient) => void;
   handleViewFeedback: (eventId: string) => void;
+  handleRequestFeedback: (eventId: string) => void;
   handleContactClick: (event: EventWithClient) => void;
 }
-
 
 const ExpandableEventTable: React.FC<ExpandableEventTableProps> = ({
   title,
@@ -42,6 +43,7 @@ const ExpandableEventTable: React.FC<ExpandableEventTableProps> = ({
   handleRescheduleClick,
   handleUpdateDetailsClick,
   handleViewFeedback,
+  handleRequestFeedback,
   handleContactClick,
 }) => {
   const { t } = useTranslation();
@@ -139,16 +141,21 @@ const ExpandableEventTable: React.FC<ExpandableEventTableProps> = ({
                   <button onClick={() => handleRescheduleClick(event)}>
                     {t("Reschedule")}
                   </button>
-                  <button
-                    onClick={() =>
-                      event.eventId && handleViewFeedback(event.eventId)
-                    }
-                    className="button_view_feedback"
-                  >
-                    {t("View Feedback")}
-                  </button>
+                  {event.eventStatus === 'COMPLETED' && (
+                    <button
+                      onClick={() =>
+                        event.eventId && handleViewFeedback(event.eventId)
+                      }
+                      className="button_view_feedback"
+                    >
+                      {t("View Feedback")}
+                    </button>
+                  )}
                   <button onClick={() => handleUpdateDetailsClick(event)} className="button_view_feedback">
                     {t("Update Details")}
+                  </button>
+                  <button onClick={() => event.eventId && handleRequestFeedback(event.eventId)}>
+                    {t("Request Feedback")}
                   </button>
                   <button onClick={() => handleContactClick(event)} className="button_contact_client">
                     {t("Contact Client")}
@@ -180,6 +187,7 @@ function GetAllEvents() {
 
   const axiosInstance = useAxiosInstance();
   const userService = useUserService();
+  const eventService = useEventService();
 
   const handleSort = (key: string) => {
     setSortConfig((prevConfig) => ({
@@ -209,7 +217,7 @@ function GetAllEvents() {
             break;
           case 'phone':
             aValue = a.client?.phone ?? '';
-            bValue = b.client?.phone ?? '';
+            bValue = a.client?.phone ?? '';
             break;
           case 'location':
             aValue = `${a.venue?.streetAddress ?? ''} ${a.venue?.city ?? ''}`.trim();
@@ -335,6 +343,14 @@ function GetAllEvents() {
     );
   };
 
+  const handleRequestFeedback = async (eventId: string) => {
+    try {
+      await eventService.handleRequestFeedback(eventId);
+    } catch (error) {
+      console.error("Error sending feedback request:", error);
+    }
+  };
+
   const handleContactClick = (event: EventWithClient): void => {
     setSelectedClientToContact(event);
     setShowContactModal(true);
@@ -372,6 +388,7 @@ function GetAllEvents() {
   const pendingEvents = sortedEvents.filter(event => event.eventStatus === 'PENDING');
   const confirmedEvents = sortedEvents.filter(event => event.eventStatus === 'CONFIRMED');
   const cancelledEvents = sortedEvents.filter(event => event.eventStatus === 'CANCELLED');
+  const completedEvents = sortedEvents.filter(event => event.eventStatus === 'COMPLETED');
 
   if (loading) return <div className="loading">{t("Loading...")}</div>;
   if (error) return <div className="error">{t(error)}</div>;
@@ -414,6 +431,7 @@ function GetAllEvents() {
             handleRescheduleClick={handleRescheduleClick}
             handleUpdateDetailsClick={handleUpdateDetailsClick}
             handleViewFeedback={handleViewFeedback}
+            handleRequestFeedback={handleRequestFeedback}
             handleContactClick={handleContactClick}
           />
           <ExpandableEventTable
@@ -425,6 +443,7 @@ function GetAllEvents() {
             handleRescheduleClick={handleRescheduleClick}
             handleUpdateDetailsClick={handleUpdateDetailsClick}
             handleViewFeedback={handleViewFeedback}
+            handleRequestFeedback={handleRequestFeedback}
             handleContactClick={handleContactClick}
           />
           <ExpandableEventTable
@@ -436,6 +455,7 @@ function GetAllEvents() {
             handleRescheduleClick={handleRescheduleClick}
             handleUpdateDetailsClick={handleUpdateDetailsClick}
             handleViewFeedback={handleViewFeedback}
+            handleRequestFeedback={handleRequestFeedback}
             handleContactClick={handleContactClick}
           />
           <ExpandableEventTable
@@ -447,6 +467,19 @@ function GetAllEvents() {
             handleRescheduleClick={handleRescheduleClick}
             handleUpdateDetailsClick={handleUpdateDetailsClick}
             handleViewFeedback={handleViewFeedback}
+            handleRequestFeedback={handleRequestFeedback}
+            handleContactClick={handleContactClick}
+          />
+          <ExpandableEventTable
+            title={t("Completed Events")}
+            events={completedEvents}
+            sortConfig={sortConfig}
+            handleSort={handleSort}
+            handleStatusClick={handleStatusClick}
+            handleRescheduleClick={handleRescheduleClick}
+            handleUpdateDetailsClick={handleUpdateDetailsClick}
+            handleViewFeedback={handleViewFeedback}
+            handleRequestFeedback={handleRequestFeedback}
             handleContactClick={handleContactClick}
           />
         </div>

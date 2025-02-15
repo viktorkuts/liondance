@@ -63,6 +63,16 @@ export const useEventService = () => {
     return response.data;
   };
 
+  const handleRequestFeedback = async (eventId: string) => {
+    try {
+      await axiosInstance.post(`/events/${eventId}/request-feedback`);
+      alert("Feedback request sent successfully.");
+    } catch (error) {
+      console.error("Error sending feedback request:", error);
+      alert("Failed to send feedback request.");
+    }
+  };
+
   return {
     getAllEvents,
     bookEvent,
@@ -72,5 +82,6 @@ export const useEventService = () => {
     getSelfEvents,
     fetchPublicEvents,
     updateEventDetails,
+    handleRequestFeedback,
   };
 };
