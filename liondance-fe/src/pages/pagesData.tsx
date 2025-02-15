@@ -22,6 +22,8 @@ import CancelCourse from "@/components/cancelCourse";
 import ClientProfile from "@/components/clientProfile";
 import GetMyEvents from "./event/clientEventPage";
 import SubscribeToPromotions from "./promotions/subscribeToPromotions";
+import ClassFeedbackReportPage from "./feedback/ClassFeedbackReportPage";
+import FeedbackForm from "./feedback/feedbackForm";
 
 const pagesData: routerType[] = [
   {
@@ -111,7 +113,7 @@ const pagesData: routerType[] = [
   },
   {
     path: "feedbacks/:eventId",
-    element: <FeedbackList eventId={":eventId"} />,
+    element: <FeedbackList />,
     title: "Feedback List",
   },
   {
@@ -138,6 +140,16 @@ const pagesData: routerType[] = [
     path: "client-profile/:clientId",
     element: <ClientProfile />,
     title: "Client Profile",
+  },
+  {
+    path: "classfeedback/reports",
+    element: <ClassFeedbackReportPage />,
+    title: "Class Feedback Reports",
+  },
+    {
+    path: "feedback-form/:eventId",
+    element: <FeedbackForm />,
+    title: "Feedback Form",
   },
 ];
 

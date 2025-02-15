@@ -54,6 +54,14 @@ h1 {
   cursor: pointer;
 }
 
+.events-table td button {
+  margin-right: 5px;
+}
+
+.events-table td button:last-child {
+  margin-right: 0;
+}
+
 button {
   background-color: #f44336;
   color: white;
@@ -112,10 +120,6 @@ button:hover {
   color: #e53e3e;
   font-size: 16px;
   text-align: center;
-}
-
-.button_view_feedback {
-  margin-top: 5px;
 }
 
 .search-container {
