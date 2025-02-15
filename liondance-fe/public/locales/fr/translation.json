@@ -275,5 +275,9 @@
     "Venue": "Lieu",
     "No active events.": "Aucun événement actif.",
     "No past events available.": "Aucun événement passé disponible.",
-    "Back to Client List": "Retour à la liste des clients"
+    "Back to Client List": "Retour à la liste des clients",
+    "Promotions!": "Promotions!",
+    "Subscribe to Promotions": "S'abonner aux promotions",
+    "I want to receive promotional emails": "Je veux recevoir des e-mails promotionnels",
+    "*leave unchecked to stop receiving emails": "*laissez décoché pour arrêter de recevoir des e-mails"
 }

@@ -1,19 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { User } from "@/models/Users";
-import { Button, Modal, Checkbox } from "@mantine/core";
+import { Button, Modal, Checkbox, Notification } from "@mantine/core";
 import { useAxiosInstance } from "@/utils/axiosInstance";
 import { useParams, useNavigate } from "react-router-dom";
 import "./promotions.css";
+import { useTranslation } from "react-i18next";
 
 interface SubscribeToPromotionsProps {
     openModal: boolean;
 }
 
 const SubscribeToPromotions: React.FC<SubscribeToPromotionsProps> = ({ openModal }) => {
+    const { t } = useTranslation();
     const [opened, setOpened] = useState(openModal);
     const [isSubscribed, setIsSubscribed] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState<string | null>(null);
     const axiosInstance = useAxiosInstance();
     const { userId } = useParams<{ userId: string }>();
     const navigate = useNavigate();
@@ -29,17 +32,19 @@ const SubscribeToPromotions: React.FC<SubscribeToPromotionsProps> = ({ openModal
 
     const handleSubscribe = async () => {
         if (!userId) {
-            setError("User ID is missing.");
+            setError(t("User ID is missing."));
             return;
         }
         setLoading(true);
         setError(null);
+        setSuccess(null);
         try {
             await subscribeToPromotions(userId, isSubscribed);
+            setSuccess(t("Successfully subscribed to promotions."));
             setOpened(false);
             navigate("/");
         } catch {
-            setError("Failed to subscribe to promotions. Please try again later.");
+            setError(t("Failed to subscribe to promotions. Please try again later."));
         } finally {
             setLoading(false);
         }
@@ -47,18 +52,24 @@ const SubscribeToPromotions: React.FC<SubscribeToPromotionsProps> = ({ openModal
 
     return (
         <>
-            <Modal opened={opened} onClose={() => setOpened(false)} title="Subscribe to Promotions">
+            <Modal opened={opened} onClose={() => setOpened(false)} title={t("Subscribe to Promotions")}>
                 <Checkbox
-                    label="I want to receive promotional emails"
+                    label={t("I want to receive promotional emails")}
                     checked={isSubscribed}
                     onChange={(event) => setIsSubscribed(event.currentTarget.checked)}
                 />
-                <div className="note">*leave unchecked to stop receiving emails</div>
+                <div className="note">{t("*leave unchecked to stop receiving emails")}</div>
                 {error && <div className="error">{error}</div>}
+                {success && <div className="success">{success}</div>}
                 <Button onClick={handleSubscribe} loading={loading}>
-                    Submit
+                    {t("Submit")}
                 </Button>
             </Modal>
+            {success && (
+                <Notification onClose={() => setSuccess(null)} color="teal" title={t("Success")}>
+                    {success}
+                </Notification>
+            )}
         </>
     );
 };
