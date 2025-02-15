@@ -1,7 +1,7 @@
 {
     "Welcome!": "Bienvenue!",
     "Reviews": "Avis",
-    "Contact": "Contact",
+    "Contact": "Contacter",
     "Upcoming Events": "Événements à venir",
     "Book Event": "Réserver un événement",
     "Registration": "Inscription",
@@ -268,5 +268,14 @@
     "No confirmed events found.": "Aucun événement confirmé trouvé.",
     "Cancelled Events": "Événements annulés",
     "No cancelled events found.": "Aucun événement annulé trouvé.",
-    "Search events...": "Rechercher des événements..."
+    "Search events...": "Rechercher des événements...",
+    "Contact Client": "Contacter le client",
+    "Message": "Message",
+    "Send Message": "Envoyer un message",
+    "Failed to send message. Please try again.": "Échec d'envoi du message. Veuillez réessayer.",
+    "Include contact information footer": "Inclure le pied de page avec les informations de contact",
+    "Enter your message here...": "Entrez votre message ici...",
+    "Sending...": "Envoi...",
+    "Send": "Envoyer",
+    "\n\nBest regards,\nLVH Lion Dance Team\nWebsite: www.lvhliondance.com\nEmail: info@lvhliondance.com\nPhone: (123) 456-7890": "\n\nCordialement,\nÉquipe de danse du lion LVH\nSite web: www.lvhliondance.com\nCourriel: info@lvhliondance.com\nTéléphone: (123) 456-7890"
 }

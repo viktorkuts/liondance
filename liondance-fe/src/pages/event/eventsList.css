@@ -122,10 +122,6 @@ button:hover {
   text-align: center;
 }
 
-.button_view_feedback {
-  /* remove margin-top: 5px; */
-}
-
 .search-container {
   display: flex;
   justify-content: center;

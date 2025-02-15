@@ -16,8 +16,9 @@ const ContactClientModal: React.FC<ContactClientModalProps> = ({
 }) => {
   const { t } = useTranslation();
   const [message, setMessage] = useState("");
-  const [footerText, setFooterText] = useState("\n\nBest regards,\nLVH Lion Dance Team\nWebsite: www.lvhliondance.com\nEmail: info@lvhliondance.com\nPhone: (123) 456-7890");
-  const [includeFooter, setIncludeFooter] = useState(true);
+  const [footerText, setFooterText] = useState(
+    t("\n\nBest regards,\nLVH Lion Dance Team\nWebsite: www.lvhliondance.com\nEmail: info@lvhliondance.com\nPhone: (123) 456-7890")
+  );  const [includeFooter, setIncludeFooter] = useState(true);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
   const [isEditingFooter, setIsEditingFooter] = useState(false);
@@ -64,10 +65,8 @@ const ContactClientModal: React.FC<ContactClientModalProps> = ({
       const footerIndex = newValue.lastIndexOf(footerText);
       if (footerIndex !== -1) {
         if (isEditingFooter) {
-          // User is editing the footer
           setFooterText(newValue.substring(footerIndex));
         } else {
-          // User is editing the main message
           setMessage(newValue.substring(0, footerIndex));
         }
       } else {
@@ -87,7 +86,6 @@ const ContactClientModal: React.FC<ContactClientModalProps> = ({
       const cursorPosition = e.currentTarget.selectionStart;
       const footerPosition = getDisplayMessage().lastIndexOf(footerText);
       
-      // Update editing mode based on cursor position
       setIsEditingFooter(cursorPosition > footerPosition);
     }
   };
@@ -102,7 +100,7 @@ const ContactClientModal: React.FC<ContactClientModalProps> = ({
             value={getDisplayMessage()}
             onChange={handleMessageChange}
             onKeyDown={handleKeyDown}
-            onClick={handleKeyDown}  // Also update on click
+            onClick={handleKeyDown}
             placeholder={t("Enter your message here...")}
             required
           />
