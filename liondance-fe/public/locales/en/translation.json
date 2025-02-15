@@ -277,5 +277,10 @@
     "No past events available.": "No past events available.",
     "Back to Client List": "Back to Client List",
     "Completed Events": "Completed Events",
-    "COMPLETED": "COMPLETED"
+    "COMPLETED": "COMPLETED",
+    "Give Feedback": "Give Feedback",
+    "Rating (1-5)": "Rating (1-5)",
+    "Event ID is missing.": "Event ID is missing.",
+    "Submitting...": "Submitting...",
+    "Back to My Events": "Back to My Events"
 }

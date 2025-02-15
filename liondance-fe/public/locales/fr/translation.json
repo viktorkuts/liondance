@@ -277,5 +277,10 @@
     "No past events available.": "Aucun événement passé disponible.",
     "Back to Client List": "Retour à la liste des clients",
     "Completed Events": "Événements terminés",
-    "CONFIRMED": "CONFIRMÉ"
+    "CONFIRMED": "CONFIRMÉ",
+    "Give Feedback": "Donner un avis",
+    "Rating (1-5)": "Évaluation (1-5)",
+    "Submitting...": "Soumission en cours...",
+    "Event ID is missing.": "L'ID de l'événement est manquant.",
+    "Back to My Events": "Retour à mes événements"
 }

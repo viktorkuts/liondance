@@ -108,12 +108,7 @@ public class EventController {
             @Valid @RequestBody Mono<FeedbackRequestModel> feedbackRequestModel,
             @AuthenticationPrincipal JwtAuthenticationToken jwt) {
 
-        // Log user details
-        logger.info("User: " + jwt.getName());
-        logger.info("Authorities: " + jwt.getAuthorities());
-        logger.info("JWT Token Claims: " + jwt.getTokenAttributes());
-
-        return userService.validate(jwt.getName())  // Validate user from JWT
+        return userService.validate(jwt.getName())
                 .flatMap(user -> eventService.submitFeedback(eventId, feedbackRequestModel, user))
                 .map(response -> ResponseEntity.status(HttpStatus.CREATED).body(response));
     }

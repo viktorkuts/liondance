@@ -4,10 +4,12 @@ package com.liondance.liondance_backend.presentationlayer.Event;
 import com.liondance.liondance_backend.datalayer.Event.*;
 import com.liondance.liondance_backend.datalayer.User.*;
 import com.liondance.liondance_backend.datalayer.common.Address;
+import com.liondance.liondance_backend.logiclayer.Event.EventService;
 import com.liondance.liondance_backend.utils.WebTestAuthConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.mockito.Mockito;
 import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
@@ -18,6 +20,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.reactive.server.WebTestClientConfigurer;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.time.Instant;
@@ -39,6 +42,9 @@ class EventControllerIntegrationTest {
 
     @Autowired
     private WebTestClient webTestClient;
+
+    @Autowired
+    private EventService eventService;
 
     @Autowired
     private EventRepository eventRepository;
@@ -653,6 +659,21 @@ class EventControllerIntegrationTest {
                     return true;
                 })
                 .verifyComplete();
+    }
+
+    @Test
+    void requestFeedback_withValidEventId_shouldReturnOk() {
+        EventService mockEventService = Mockito.mock(EventService.class);
+        Mockito.when(mockEventService.requestFeedback(event1.getEventId()))
+                .thenReturn(Mono.empty());
+
+        webTestClient
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .post()
+                .uri("/api/v1/events/" + event1.getEventId() + "/request-feedback")
+                .exchange()
+                .expectStatus().isOk();
     }
 
 }
