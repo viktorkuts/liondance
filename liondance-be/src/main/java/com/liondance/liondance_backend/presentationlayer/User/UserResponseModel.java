@@ -26,6 +26,7 @@ public class UserResponseModel {
     private Address address;
     private EnumSet<Role> roles;
     private String associatedId;
+    private Boolean isSubscribed;
 
     public static UserResponseModel from(User user) {
         UserResponseModel responseModel = new UserResponseModel();

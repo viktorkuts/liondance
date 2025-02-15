@@ -175,3 +175,88 @@ select.form-input {
   font-size: 16px;
   margin-top: 4px;
 }
+
+/* Modal Container Styling */
+.mantine-Modal-modal {
+  background-color: #ffcc33; /* Yellow background */
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+  max-width: 400px;
+  margin: auto;
+}
+
+/* Title Styling */
+.mantine-Modal-title {
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  color: #000000;
+  margin-bottom: 20px;
+}
+
+/* Label Styling */
+label {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #000000;
+  margin-bottom: 8px;
+  display: block;
+}
+
+/* Input Field Styling */
+.mantine-Checkbox-input {
+  background-color: #cc4c4c; /* Red background for inputs */
+  color: #ffffff; /* White text */
+}
+
+/* Button Styling */
+.mantine-Button-root {
+  background-color: #a94444; /* Dark red */
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  padding: 12px 20px;
+  margin-top: 20px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+.mantine-Button-root:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.mantine-Button-root:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Error Message Styling */
+.error {
+  background-color: #f8d7da; /* Light red background */
+  color: #721c24; /* Dark red text */
+  border: 1px solid #f5c6cb;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 15px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+/* General Modal Layout */
+.mantine-Modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Centered Alignment for the Submit Button */
+.mantine-Modal-footer {
+  text-align: center;
+}

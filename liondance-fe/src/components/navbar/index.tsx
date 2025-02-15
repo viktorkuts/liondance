@@ -25,12 +25,11 @@ function Navbar() {
         <h2>{t("Welcome!")}</h2>
       </a>
       <div className={classes.rightSection}>
-        <Anchor href="/reviews" fw={1000} fz="h2">
-          {t("Reviews")}
-        </Anchor>
-        <Anchor href="/contact-us" fw={1000} fz="h2">
-          {t("Contact")}
-        </Anchor>
+      {user && (
+          <Anchor href={`/${user.userId}/subscription`} fw={1000} fz="h2">
+            {t("Promotions!")}
+          </Anchor>
+        )}
         {user && user.roles?.includes(Role.STUDENT) ? (
           <Anchor href="/student-courses" fw={1000} fz={"h2"}>
             {t("Courses")}

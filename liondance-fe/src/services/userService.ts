@@ -14,7 +14,7 @@ export const useUserService = () => {
 
   const getAllUsers = async () => {
     const response = await axiosInstance.get("/users");
-    return response.data;
+    return response;
   };
 
   const getUserProfile = async (userId: string) => {
@@ -131,6 +131,17 @@ export const useUserService = () => {
     );
   };
 
+  const subscribeToPromotions = async (
+    userId: string,
+    isSubscribed: boolean
+  ): Promise<User> => {
+    const response = await axiosInstance.patch<User>(
+      `/users/${userId}/subscription`, 
+      { isSubscribed }
+    );
+    return response.data;
+  };
+
   return {
     getAllUsers,
     getUserProfile,
@@ -150,5 +161,6 @@ export const useUserService = () => {
     registerClient,
     getClientProfile,
     registerUser,
+    subscribeToPromotions,
   };
 };

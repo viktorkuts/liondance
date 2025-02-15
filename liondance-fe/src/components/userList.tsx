@@ -14,7 +14,7 @@ const UserList: React.FC = () => {
 
   useEffect(() => {
     userService.getAllUsers().then((data) => {
-      setUsers(data);
+      setUsers(data.data);
       setLoading(false);
     });
   }, [userService]);
