@@ -55,6 +55,7 @@ class UserControllerIntegrationTest {
             .email("test.user@null.local")
             .dob(LocalDate.parse("1990-01-01"))
             .roles(EnumSet.of(Role.CLIENT))
+            .isSubscribed(false)
             .address(Address.builder()
                     .streetAddress("123 Test St")
                     .city("TestCity")
@@ -727,7 +728,7 @@ class UserControllerIntegrationTest {
         Map<String, String> requestBody = Map.of("isSubscribed", "true");
 
         client.patch()
-                .uri("/api/v1/users/test-user-id/subscribe")
+                .uri("/api/v1/users/test-user-id/subscription")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(requestBody)
                 .accept(MediaType.APPLICATION_JSON)
@@ -744,7 +745,7 @@ class UserControllerIntegrationTest {
         Map<String, String> requestBody = Map.of("isSubscribed", "false");
 
         client.patch()
-                .uri("/api/v1/users/test-user-id/subscribe")
+                .uri("/api/v1/users/test-user-id/subscription")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(requestBody)
                 .accept(MediaType.APPLICATION_JSON)
@@ -760,7 +761,7 @@ class UserControllerIntegrationTest {
         Map<String, String> requestBody = Map.of("isSubscribed", "");
 
         client.patch()
-                .uri("/api/v1/users/test-user-id/subscribe")
+                .uri("/api/v1/users/test-user-id/subscription")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(requestBody)
                 .accept(MediaType.APPLICATION_JSON)
