@@ -14,4 +14,5 @@ public enum NotificationType {
     EVENT_UPDATE,
     USER_REGISTRATION,
     AUTHORIZATION,
+    ADMIN_MESSAGE
 }
