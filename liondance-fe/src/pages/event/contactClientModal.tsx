@@ -52,7 +52,7 @@ const ContactClientModal: React.FC<ContactClientModalProps> = ({
         message: getDisplayMessage()
       });
       onClose();
-    } catch (err) {
+    } catch {
       setError(t("Failed to send message. Please try again."));
     } finally {
       setSending(false);
@@ -100,7 +100,6 @@ const ContactClientModal: React.FC<ContactClientModalProps> = ({
             value={getDisplayMessage()}
             onChange={handleMessageChange}
             onKeyDown={handleKeyDown}
-            onClick={handleKeyDown}
             placeholder={t("Enter your message here...")}
             required
           />
