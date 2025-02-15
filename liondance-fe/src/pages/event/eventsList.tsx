@@ -135,14 +135,16 @@ const ExpandableEventTable: React.FC<ExpandableEventTableProps> = ({
                   <button onClick={() => handleRescheduleClick(event)}>
                     {t("Reschedule")}
                   </button>
-                  <button
-                    onClick={() =>
-                      event.eventId && handleViewFeedback(event.eventId)
-                    }
-                    className="button_view_feedback"
-                  >
-                    {t("View Feedback")}
-                  </button>
+                  {event.eventStatus === 'COMPLETED' && (
+                    <button
+                      onClick={() =>
+                        event.eventId && handleViewFeedback(event.eventId)
+                      }
+                      className="button_view_feedback"
+                    >
+                      {t("View Feedback")}
+                    </button>
+                  )}
                   <button onClick={() => handleUpdateDetailsClick(event)} className="button_view_feedback">
                     {t("Update Details")}
                   </button>
@@ -200,7 +202,7 @@ function GetAllEvents() {
             break;
           case 'phone':
             aValue = a.client?.phone ?? '';
-            bValue = b.client?.phone ?? '';
+            bValue = a.client?.phone ?? '';
             break;
           case 'location':
             aValue = `${a.venue?.streetAddress ?? ''} ${a.venue?.city ?? ''}`.trim();
@@ -353,6 +355,7 @@ function GetAllEvents() {
   const pendingEvents = sortedEvents.filter(event => event.eventStatus === 'PENDING');
   const confirmedEvents = sortedEvents.filter(event => event.eventStatus === 'CONFIRMED');
   const cancelledEvents = sortedEvents.filter(event => event.eventStatus === 'CANCELLED');
+  const completedEvents = sortedEvents.filter(event => event.eventStatus === 'COMPLETED');
 
   if (loading) return <div className="loading">{t("Loading...")}</div>;
   if (error) return <div className="error">{t(error)}</div>;
@@ -419,6 +422,16 @@ function GetAllEvents() {
           <ExpandableEventTable
             title={t("Cancelled Events")}
             events={cancelledEvents}
+            sortConfig={sortConfig}
+            handleSort={handleSort}
+            handleStatusClick={handleStatusClick}
+            handleRescheduleClick={handleRescheduleClick}
+            handleUpdateDetailsClick={handleUpdateDetailsClick}
+            handleViewFeedback={handleViewFeedback}
+          />
+          <ExpandableEventTable
+            title={t("Completed Events")}
+            events={completedEvents}
             sortConfig={sortConfig}
             handleSort={handleSort}
             handleStatusClick={handleStatusClick}
