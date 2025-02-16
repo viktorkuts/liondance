@@ -372,6 +372,11 @@ public class UserServiceImpl implements UserService {
                                 user.setAssociatedId(jwt.getName());
                                 return userRepository.save(user);
                             });
+                     })
+                .map(UserResponseModel::from);
+    }
+    
+    @Override
     public Mono<UserResponseModel> subscribeToPromotions(String userId, Boolean isSubscribed) {
         return userRepository.findUserByUserId(userId)
                 .switchIfEmpty(Mono.error(new NotFoundException("User with userId: " + userId + " not found")))
