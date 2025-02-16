@@ -70,7 +70,6 @@ const AddPerformersModal: React.FC<AddPerformersModalProps> = ({ event, onClose,
                 value={performerIds}
                 onChange={setPerformerIds}
                 searchable
-                nothingfound={t("No students found")}
                 clearable
             />
             {error && <div className="error">{error}</div>}

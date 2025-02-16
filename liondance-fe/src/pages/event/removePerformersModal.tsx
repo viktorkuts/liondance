@@ -69,7 +69,6 @@ const RemovePerformersModal: React.FC<RemovePerformersModalProps> = ({ event, on
         value={performerIds}
         onChange={setPerformerIds}
         searchable
-        nothingfound={t("No performers found")}
         clearable
       />
       {error && <div className="error">{error}</div>}
