@@ -1,6 +1,7 @@
 package com.liondance.liondance_backend.presentationlayer.Event;
 
 import com.liondance.liondance_backend.datalayer.Event.*;
+import com.liondance.liondance_backend.datalayer.User.Student;
 import com.liondance.liondance_backend.datalayer.common.Address;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -14,6 +15,7 @@ import org.springframework.beans.BeanUtils;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @SuperBuilder(toBuilder = true)
@@ -32,6 +34,7 @@ public class EventRequestModel {
     private EventStatus eventStatus;
     @NotNull(message = "eventPrivacy is required")
     private EventPrivacy eventPrivacy;
+    private List<String> performers;
 
     public static Event toEntity(EventRequestModel eventRequestModel) {
         Event newEvent = new Event();

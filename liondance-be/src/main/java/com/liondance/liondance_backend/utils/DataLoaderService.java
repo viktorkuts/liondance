@@ -68,7 +68,8 @@ public class DataLoaderService implements CommandLineRunner {
                         .middleName("Jane")
                         .lastName("Smith")
                         .dob(LocalDate.parse("2000-01-01"))
-                        .email("Sarah.Smith@myfunnywebsite.org")
+//                      .email("Sarah.Smith@myfunnywebsite.org")
+                        .email("jhondoesnthack@gmail.com")
                         .phone("123-456-7890")
                         .address(Address.builder()
                                 .streetAddress("1234 Main St")
@@ -728,7 +729,8 @@ public class DataLoaderService implements CommandLineRunner {
                         .middleName("Rachel")
                         .lastName("Taylor")
                         .dob(LocalDate.parse("1999-12-20"))
-                        .email("samprasad7220@gmail.com")
+//                        .email("samprasad7220@gmail.com")
+                        .email("jhondoesnthack@gmail.com")
                         .phone("102-345-6789")
                         .address(Address.builder()
                                 .streetAddress("6789 Willow Way")
@@ -993,6 +995,10 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .specialRequest("I just got out of jail")
                         .eventStatus(EventStatus.PENDING)
                         .eventPrivacy(EventPrivacy.PUBLIC)
+                        .performers(List.of(
+                                students.get(0).getUserId(),
+                                students.get(1).getUserId()
+                        ))
                         .clientId(students.stream().filter(user -> user.getRoles().contains(Role.CLIENT)).toList().get(0).getUserId())
                         .build()
         );
@@ -1010,6 +1016,10 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .paymentMethod(PaymentMethod.CREDIT)
                         .eventStatus(EventStatus.PENDING)
                         .eventPrivacy(EventPrivacy.PUBLIC)
+                        .performers(List.of(
+                                students.get(2).getUserId(),
+                                students.get(3).getUserId()
+                        ))
                         .clientId(students.stream().filter(user -> user.getRoles().contains(Role.CLIENT)).toList().get(0).getUserId())
                         .build()
         );
@@ -1028,6 +1038,10 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .specialRequest("Aint no party like a Diddy party")
                         .eventStatus(EventStatus.PENDING)
                         .eventPrivacy(EventPrivacy.PUBLIC)
+                        .performers(List.of(
+                                students.get(2).getUserId(),
+                                students.get(3).getUserId()
+                        ))
                         .clientId(students.stream().filter(user -> user.getRoles().contains(Role.CLIENT)).toList().get(0).getUserId())
                         .build()
         );
@@ -1046,6 +1060,12 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .specialRequest("bring lean")
                         .eventStatus(EventStatus.CANCELLED)
                         .eventPrivacy(EventPrivacy.PRIVATE)
+                        .performers(List.of(
+                                students.get(2).getUserId(),
+                                students.get(3).getUserId(),
+                                students.get(4).getUserId(),
+                                students.get(5).getUserId()
+                        ))
                         .clientId(students.stream().filter(user -> user.getRoles().contains(Role.CLIENT)).toList().get(1).getUserId())
                         .build()
         );
@@ -1063,6 +1083,18 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .paymentMethod(PaymentMethod.CASH)
                         .eventStatus(EventStatus.CONFIRMED)
                         .eventPrivacy(EventPrivacy.PUBLIC)
+                        .performers(List.of(
+                                students.get(0).getUserId(),
+                                students.get(1).getUserId(),
+                                students.get(2).getUserId(),
+                                students.get(3).getUserId(),
+                                students.get(4).getUserId(),
+                                students.get(5).getUserId(),
+                                students.get(6).getUserId(),
+                                students.get(7).getUserId(),
+                                students.get(8).getUserId(),
+                                students.get(9).getUserId()
+                        ))
                         .clientId(students.stream().filter(user -> user.getRoles().contains(Role.CLIENT)).toList().get(1).getUserId())
                         .build()
         );
@@ -1080,6 +1112,14 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .paymentMethod(PaymentMethod.CASH)
                         .eventStatus(EventStatus.CONFIRMED)
                         .eventPrivacy(EventPrivacy.PRIVATE)
+                        .performers(List.of(
+                                students.get(0).getUserId(),
+                                students.get(2).getUserId(),
+                                students.get(3).getUserId(),
+                                students.get(4).getUserId(),
+                                students.get(8).getUserId(),
+                                students.get(9).getUserId()
+                        ))
                         .clientId(students.stream().filter(user -> user.getRoles().contains(Role.CLIENT)).toList().get(1).getUserId())
                         .build()
         );
@@ -1097,6 +1137,14 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .paymentMethod(PaymentMethod.CASH)
                         .eventStatus(EventStatus.CANCELLED)
                         .eventPrivacy(EventPrivacy.PUBLIC)
+                        .performers(List.of(
+                                students.get(1).getUserId(),
+                                students.get(3).getUserId(),
+                                students.get(4).getUserId(),
+                                students.get(5).getUserId(),
+                                students.get(6).getUserId(),
+                                students.get(9).getUserId()
+                        ))
                         .clientId(students.stream().filter(user -> user.getRoles().contains(Role.CLIENT)).toList().get(2).getUserId())
                         .build()
         );
@@ -1115,6 +1163,18 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .specialRequest("No special requests")
                         .eventStatus(EventStatus.PENDING)
                         .eventPrivacy(EventPrivacy.PRIVATE)
+                        .performers(List.of(
+                                students.get(0).getUserId(),
+                                students.get(1).getUserId(),
+                                students.get(2).getUserId(),
+                                students.get(3).getUserId(),
+                                students.get(4).getUserId(),
+                                students.get(5).getUserId(),
+                                students.get(6).getUserId(),
+                                students.get(7).getUserId(),
+                                students.get(8).getUserId(),
+                                students.get(9).getUserId()
+                        ))
                         .clientId(students.stream().filter(user -> user.getRoles().contains(Role.CLIENT)).toList().get(2).getUserId())
                         .build()
         );
@@ -1133,6 +1193,18 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .specialRequest("No special requests")
                         .eventStatus(EventStatus.PENDING)
                         .eventPrivacy(EventPrivacy.PUBLIC)
+                        .performers(List.of(
+                        students.get(0).getUserId(),
+                        students.get(1).getUserId(),
+                        students.get(2).getUserId(),
+                        students.get(3).getUserId(),
+                        students.get(4).getUserId(),
+                        students.get(5).getUserId(),
+                        students.get(6).getUserId(),
+                        students.get(7).getUserId(),
+                        students.get(8).getUserId(),
+                        students.get(9).getUserId()
+                ))
                         .clientId(students.stream().filter(user -> user.getRoles().contains(Role.CLIENT)).toList().get(2).getUserId())
                         .build()
         );
@@ -1151,6 +1223,18 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .specialRequest("i have chair")
                         .eventStatus(EventStatus.PENDING)
                         .eventPrivacy(EventPrivacy.PRIVATE)
+                        .performers(List.of(
+                                students.get(0).getUserId(),
+                                students.get(1).getUserId(),
+                                students.get(2).getUserId(),
+                                students.get(3).getUserId(),
+                                students.get(4).getUserId(),
+                                students.get(5).getUserId(),
+                                students.get(6).getUserId(),
+                                students.get(7).getUserId(),
+                                students.get(8).getUserId(),
+                                students.get(9).getUserId()
+                        ))
                         .clientId(students.stream().filter(user -> user.getRoles().contains(Role.CLIENT)).toList().get(3).getUserId())
                         .build()
         );
@@ -1169,6 +1253,18 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .specialRequest("No special requests")
                         .eventStatus(EventStatus.PENDING)
                         .eventPrivacy(EventPrivacy.PRIVATE)
+                        .performers(List.of(
+                                students.get(0).getUserId(),
+                                students.get(1).getUserId(),
+                                students.get(2).getUserId(),
+                                students.get(3).getUserId(),
+                                students.get(4).getUserId(),
+                                students.get(5).getUserId(),
+                                students.get(6).getUserId(),
+                                students.get(7).getUserId(),
+                                students.get(8).getUserId(),
+                                students.get(9).getUserId()
+                        ))
                         .clientId(students.stream().filter(user -> user.getRoles().contains(Role.CLIENT)).toList().get(3).getUserId())
                         .build()
         );
@@ -1187,6 +1283,18 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .specialRequest("No special requests")
                         .eventStatus(EventStatus.PENDING)
                         .eventPrivacy(EventPrivacy.PRIVATE)
+                        .performers(List.of(
+                                students.get(0).getUserId(),
+                                students.get(1).getUserId(),
+                                students.get(2).getUserId(),
+                                students.get(3).getUserId(),
+                                students.get(4).getUserId(),
+                                students.get(5).getUserId(),
+                                students.get(6).getUserId(),
+                                students.get(7).getUserId(),
+                                students.get(8).getUserId(),
+                                students.get(9).getUserId()
+                        ))
                         .clientId(students.stream().filter(user -> user.getRoles().contains(Role.CLIENT)).toList().get(3).getUserId())
                         .build()
         );
@@ -1205,6 +1313,18 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .specialRequest("Vegetarian meal")
                         .eventStatus(EventStatus.PENDING)
                         .eventPrivacy(EventPrivacy.PRIVATE)
+                        .performers(List.of(
+                                students.get(0).getUserId(),
+                                students.get(1).getUserId(),
+                                students.get(2).getUserId(),
+                                students.get(3).getUserId(),
+                                students.get(4).getUserId(),
+                                students.get(5).getUserId(),
+                                students.get(6).getUserId(),
+                                students.get(7).getUserId(),
+                                students.get(8).getUserId(),
+                                students.get(9).getUserId()
+                        ))
                         .clientId(students.stream().filter(user -> user.getRoles().contains(Role.CLIENT)).toList().get(4).getUserId())
                         .build()
         );
@@ -1223,6 +1343,18 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .specialRequest("Projector needed")
                         .eventStatus(EventStatus.PENDING)
                         .eventPrivacy(EventPrivacy.PUBLIC)
+                        .performers(List.of(
+                                students.get(0).getUserId(),
+                                students.get(1).getUserId(),
+                                students.get(2).getUserId(),
+                                students.get(3).getUserId(),
+                                students.get(4).getUserId(),
+                                students.get(5).getUserId(),
+                                students.get(6).getUserId(),
+                                students.get(7).getUserId(),
+                                students.get(8).getUserId(),
+                                students.get(9).getUserId()
+                        ))
                         .clientId(students.stream().filter(user -> user.getRoles().contains(Role.CLIENT)).toList().get(4).getUserId())
                         .build()
         );
@@ -1241,6 +1373,18 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .specialRequest("Whiteboard needed")
                         .eventStatus(EventStatus.PENDING)
                         .eventPrivacy(EventPrivacy.PUBLIC)
+                        .performers(List.of(
+                                students.get(0).getUserId(),
+                                students.get(1).getUserId(),
+                                students.get(2).getUserId(),
+                                students.get(3).getUserId(),
+                                students.get(4).getUserId(),
+                                students.get(5).getUserId(),
+                                students.get(6).getUserId(),
+                                students.get(7).getUserId(),
+                                students.get(8).getUserId(),
+                                students.get(9).getUserId()
+                        ))
                         .clientId(students.stream().filter(user -> user.getRoles().contains(Role.CLIENT)).toList().get(4).getUserId())
                         .build()
         );
@@ -1259,6 +1403,7 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .specialRequest("Handouts needed")
                         .eventStatus(EventStatus.PENDING)
                         .eventPrivacy(EventPrivacy.PRIVATE)
+                        .performers(List.of())
                         .clientId(students.stream().filter(user -> user.getRoles().contains(Role.CLIENT)).toList().get(4).getUserId())
                         .build()
         );
@@ -1278,6 +1423,7 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .specialRequest("Handouts needed")
                         .eventStatus(EventStatus.COMPLETED)
                         .eventPrivacy(EventPrivacy.PRIVATE)
+                        .performers(List.of())
                         .clientId("c56a8e9d-4362-42c8-965d-2b8b98f9f4d9")
                         .build()
         );

@@ -7,6 +7,7 @@ import com.liondance.liondance_backend.datalayer.Feedback.Feedback;
 import com.liondance.liondance_backend.datalayer.Feedback.FeedbackRepository;
 import com.liondance.liondance_backend.datalayer.Notification.NotificationType;
 import com.liondance.liondance_backend.datalayer.User.Role;
+import com.liondance.liondance_backend.datalayer.User.Student;
 import com.liondance.liondance_backend.datalayer.User.User;
 import com.liondance.liondance_backend.datalayer.User.UserRepository;
 import com.liondance.liondance_backend.logiclayer.Notification.NotificationService;
@@ -28,7 +29,9 @@ import reactor.core.publisher.Mono;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.liondance.liondance_backend.datalayer.Event.EventStatus.PENDING;
 import static de.flapdoodle.os.Platform.logger;
@@ -289,6 +292,76 @@ public class EventServiceImpl implements EventService {
                             return Mono.<Void>empty();
                         })
                 );
+    }
+
+    @Override
+    public Mono<EventResponseModel> assignPerformers(String eventId, List<String> performerIds) {
+        return eventRepository.findEventByEventId(eventId)
+                .switchIfEmpty(Mono.error(new NotFoundException("Event not found with ID: " + eventId)))
+                .flatMap(event -> {
+                    event.getPerformers().addAll(performerIds);
+                    performerIds.forEach(performerId -> {
+                        userRepository.findUserByUserId(performerId)
+                                .switchIfEmpty(Mono.error(new NotFoundException("User associated with performer not found")))
+                                .flatMap(user -> {
+                                    String message = new StringBuilder()
+                                            .append("You have been asked to participate at the event on ")
+                                            .append(event.getEventDateTime().atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("MMMM dd, yyyy 'at' hh:mm a")))
+                                            .append(". If you cannot attend, please contact us.")
+                                            .toString();
+
+                                    Boolean success = notificationService.sendMail(
+                                            user.getEmail(),
+                                            "Participation Request for Event",
+                                            message,
+                                            NotificationType.PERFORMANCE_REQUEST
+                                    );
+
+                                    if (!success) {
+                                        throw new MailSendException("Failed to send email to " + user.getEmail());
+                                    }
+                                    return Mono.empty();
+                                }).subscribe();
+                    });
+                    return Mono.just(event);
+                })
+                .flatMap(eventRepository::save)
+                .map(EventResponseModel::from);
+    }
+
+    @Override
+    public Mono<EventResponseModel> removePerformers(String eventId, List<String> performerIds) {
+        return eventRepository.findEventByEventId(eventId)
+                .switchIfEmpty(Mono.error(new NotFoundException("Event not found with ID: " + eventId)))
+                .flatMap(event -> {
+                    event.getPerformers().removeIf(performerIds::contains);
+                    performerIds.forEach(performerId -> {
+                        userRepository.findUserByUserId(performerId)
+                                .switchIfEmpty(Mono.error(new NotFoundException("User associated with performer not found")))
+                                .flatMap(user -> {
+                                    String message = new StringBuilder()
+                                            .append("You have been removed from the event on ")
+                                            .append(event.getEventDateTime().atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("MMMM dd, yyyy 'at' hh:mm a")))
+                                            .append(". If you have any questions, please contact us.")
+                                            .toString();
+
+                                    Boolean success = notificationService.sendMail(
+                                            user.getEmail(),
+                                            "Performance Cancellation for Event",
+                                            message,
+                                            NotificationType.PERFORMANCE_UPDATE
+                                    );
+
+                                    if (!success) {
+                                        throw new MailSendException("Failed to send email to " + user.getEmail());
+                                    }
+                                    return Mono.empty();
+                                }).subscribe();
+                    });
+                    return Mono.just(event);
+                })
+                .flatMap(eventRepository::save)
+                .map(EventResponseModel::from);
     }
 
 }

@@ -73,6 +73,29 @@ export const useEventService = () => {
     }
   };
 
+  const assignPerformers = async (
+    eventId: string,
+    performers: string[]
+  ): Promise<Event> => {
+    const response = await axiosInstance.patch<Event>(
+      `/events/${eventId}/assign-performers`,
+      { performers }
+    );
+    return response.data;
+  }
+
+  const removePerformers = async (
+    eventId: string,
+    performers: string[]
+  ): Promise<Event> => {
+    const response = await axiosInstance.patch<Event>(
+      `/events/${eventId}/remove-performers`,
+      { performers }
+    );
+    return response.data;
+  }
+
+
   return {
     getAllEvents,
     bookEvent,
@@ -83,5 +106,7 @@ export const useEventService = () => {
     fetchPublicEvents,
     updateEventDetails,
     handleRequestFeedback,
+    assignPerformers,
+    removePerformers,
   };
 };

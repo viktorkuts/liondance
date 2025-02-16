@@ -43,4 +43,5 @@ export interface Event {
   specialRequest?: string;
   eventStatus: EventStatus;
   eventPrivacy: EventPrivacy;
+  performers: string[];
 }

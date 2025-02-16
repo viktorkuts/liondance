@@ -27,8 +27,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
-import java.util.EnumSet;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
@@ -113,6 +112,7 @@ class EventControllerIntegrationTest {
                 .paymentMethod(PaymentMethod.CASH)
                 .specialRequest("Special request")
                 .clientId(client1.getUserId())
+            .performers(List.of("performer1", "performer2"))
             .build();
 
     Event event2 = Event.builder()
@@ -129,6 +129,7 @@ class EventControllerIntegrationTest {
                 .paymentMethod(PaymentMethod.CASH)
                 .specialRequest("Special request")
                 .clientId(client2.getUserId())
+            .performers(List.of("performer1", "performer2"))
             .build();
 
     @Autowired
@@ -676,5 +677,105 @@ class EventControllerIntegrationTest {
                 .expectStatus().isOk();
     }
 
+    @Test
+    void whenAssignPerformers_thenReturnEventResponseModel() {
+        Event event = eventRepository.findAll().blockFirst();
+        String eventId = event.getEventId();
+        List<String> performerIds = List.of("performer1", "performer2");
+
+        webTestClient
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .patch()
+                .uri("/api/v1/events/" + eventId + "/assign-performers")
+                .header("Content-Type", "application/json")
+                .bodyValue(Map.of("performers", performerIds))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(EventResponseModel.class);
+    }
+
+
+    @Test
+    void whenAssignPerformers_withNullPerformers_thenReturnServerError() {
+        Event event = eventRepository.findAll().blockFirst();
+        String eventId = event.getEventId();
+
+        webTestClient
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .patch()
+                .uri("/api/v1/events/" + eventId + "/assign-performers")
+                .header("Content-Type", "application/json")
+                .bodyValue(Collections.singletonMap("performers", null))
+                .exchange()
+                .expectStatus().is5xxServerError();
+    }
+
+    @Test
+    void whenAssignPerformers_withEmptyPerformers_thenReturnServerError() {
+        Event event = eventRepository.findAll().blockFirst();
+        String eventId = event.getEventId();
+
+        webTestClient
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .patch()
+                .uri("/api/v1/events/" + eventId + "/assign-performers")
+                .header("Content-Type", "application/json")
+                .bodyValue(Map.of("performers", List.of()))
+                .exchange()
+                .expectStatus().is5xxServerError();
+    }
+
+    @Test
+    void whenRemovePerformers_thenReturnEventResponseModel() {
+        Event event = eventRepository.findAll().blockFirst();
+        String eventId = event.getEventId();
+        List<String> performerIds = List.of("performer1", "performer2");
+
+        webTestClient
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .patch()
+                .uri("/api/v1/events/" + eventId + "/remove-performers")
+                .header("Content-Type", "application/json")
+                .bodyValue(Map.of("performers", performerIds))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(EventResponseModel.class);
+    }
+
+    @Test
+    void whenRemovePerformers_withNullPerformers_thenReturnServerError() {
+        Event event = eventRepository.findAll().blockFirst();
+        String eventId = event.getEventId();
+
+        webTestClient
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .patch()
+                .uri("/api/v1/events/" + eventId + "/remove-performers")
+                .header("Content-Type", "application/json")
+                .bodyValue(Collections.singletonMap("performers", null))
+                .exchange()
+                .expectStatus().is5xxServerError();
+    }
+
+    @Test
+    void whenRemovePerformers_withEmptyPerformers_thenReturnServerError() {
+        Event event = eventRepository.findAll().blockFirst();
+        String eventId = event.getEventId();
+
+        webTestClient
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .patch()
+                .uri("/api/v1/events/" + eventId + "/remove-performers")
+                .header("Content-Type", "application/json")
+                .bodyValue(Map.of("performers", List.of()))
+                .exchange()
+                .expectStatus().is5xxServerError();
+    }
 }
 
