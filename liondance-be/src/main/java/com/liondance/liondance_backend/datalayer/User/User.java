@@ -29,4 +29,5 @@ public class User {
     private Address address;
     private EnumSet<Role> roles;
     private String associatedId;
+    private Boolean isSubscribed;
 }

@@ -2,6 +2,8 @@ package com.liondance.liondance_backend.logiclayer.User;
 
 import com.liondance.liondance_backend.datalayer.Event.EventStatus;
 import com.liondance.liondance_backend.datalayer.Notification.NotificationType;
+import com.liondance.liondance_backend.datalayer.Promotion.PromotionRepository;
+import com.liondance.liondance_backend.datalayer.Promotion.PromotionStatus;
 import com.liondance.liondance_backend.datalayer.User.*;
 import com.liondance.liondance_backend.logiclayer.Event.EventService;
 import com.liondance.liondance_backend.logiclayer.Notification.NotificationService;
@@ -23,12 +25,14 @@ import com.liondance.liondance_backend.utils.exceptions.StudentNotPending;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.mail.MailSendException;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
@@ -40,11 +44,13 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final NotificationService notificationService;
     private final EventService eventService;
+    private final PromotionRepository promotionRepository;
 
-    public UserServiceImpl(UserRepository userRepository, NotificationService notificationService, @Lazy EventService eventService) {
+    public UserServiceImpl(UserRepository userRepository, NotificationService notificationService, @Lazy EventService eventService, PromotionRepository promotionRepository) {
         this.userRepository = userRepository;
         this.notificationService = notificationService;
         this.eventService = eventService;
+        this.promotionRepository = promotionRepository;
     }
 
     @Override
@@ -53,7 +59,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Flux<UserResponseModel> getAllUsers(Role role){
+    public Flux<UserResponseModel> getAllUsers(Role role) {
         return userRepository.findUsersByRolesContaining(role).map(UserResponseModel::from);
     }
 
@@ -87,9 +93,9 @@ public class UserServiceImpl implements UserService {
         return studentRequestModel
                 .flatMap(request -> Mono.just(userRepository.findUserByEmail(request.getEmail()))
                         .flatMap(user -> user.hasElement().flatMap(exists -> {
-                            if(exists){
+                            if (exists) {
                                 return Mono.error(new EmailInUse("Email: " + request.getEmail() + " is already in use"));
-                            }else{
+                            } else {
                                 return Mono.just(request);
                             }
                         }))
@@ -103,7 +109,7 @@ public class UserServiceImpl implements UserService {
                     return student;
                 })
                 .doOnNext(user -> {
-                    String  message = new StringBuilder()
+                    String message = new StringBuilder()
                             .append("Welcome to Lion Dance, ")
                             .append(user.getFirstName())
                             .append("!")
@@ -119,7 +125,7 @@ public class UserServiceImpl implements UserService {
                             NotificationType.STUDENT_REGISTRATION
                     );
 
-                    if(!success){
+                    if (!success) {
                         throw new MailSendException("Failed to send email to " + user.getEmail());
                     }
 
@@ -143,9 +149,8 @@ public class UserServiceImpl implements UserService {
                     student.setRegistrationStatus(registrationStatus.getRegistrationStatus());
 
                     if(registrationStatus.getRegistrationStatus() == RegistrationStatus.ACTIVE) {
-                        // Create link with userId as parameter for frontend to handle account linking
                         String accountLinkUrl = "https://fe.dev.kleff.io/link-account?userId=" + student.getUserId();
-                        
+ 
                         message = new StringBuilder()
                                 .append("Congratulations, ")
                                 .append(student.getFirstName())
@@ -206,7 +211,7 @@ public class UserServiceImpl implements UserService {
                 .map(user -> {
                     user.setUserId(UUID.randomUUID().toString());
                     user.setRoles(EnumSet.of(Role.valueOf(role)));
-                    if(jwt != null){
+                    if (jwt != null) {
                         user.setAssociatedId(jwt.getName());
                     }
                     return user;
@@ -227,7 +232,7 @@ public class UserServiceImpl implements UserService {
                             NotificationType.USER_REGISTRATION
                     );
 
-                    if(!success){
+                    if (!success) {
                         throw new MailSendException("Failed to send email to " + user.getEmail());
                     }
                 })
@@ -266,7 +271,7 @@ public class UserServiceImpl implements UserService {
                             NotificationType.AUTHORIZATION
                     );
 
-                    if(!success){
+                    if (!success) {
                         throw new MailSendException("Failed to send email to " + user.getEmail());
                     }
                 })
@@ -339,7 +344,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Mono<User> validate(String subId){
+    public Mono<User> validate(String subId) {
         return userRepository.findUserByAssociatedId(subId)
                 .switchIfEmpty(Mono.error(new NotFoundException("Session user is not associated")));
     }
@@ -367,8 +372,78 @@ public class UserServiceImpl implements UserService {
                                 user.setAssociatedId(jwt.getName());
                                 return userRepository.save(user);
                             });
+    public Mono<UserResponseModel> subscribeToPromotions(String userId, Boolean isSubscribed) {
+        return userRepository.findUserByUserId(userId)
+                .switchIfEmpty(Mono.error(new NotFoundException("User with userId: " + userId + " not found")))
+                .map(user -> {
+                    user.setIsSubscribed(isSubscribed);
+                    return user;
+                })
+                .flatMap(userRepository::save)
+                .doOnNext(user -> {
+                    String message;
+                    if (isSubscribed) {
+                        message = new StringBuilder()
+                                .append("Hello, ")
+                                .append(user.getFirstName())
+                                .append("!\n\n")
+                                .append("You have successfully subscribed to promotion notifications.")
+                                .append("\n\nThank you for choosing Lion Dance!")
+                                .toString();
+                    } else {
+                        message = new StringBuilder()
+                                .append("Hello, ")
+                                .append(user.getFirstName())
+                                .append("!\n\n")
+                                .append("You have successfully unsubscribed from promotion notifications.")
+                                .append("\n\nThank you for choosing Lion Dance!")
+                                .toString();
+                    }
+
+                    Boolean success = notificationService.sendMail(
+                            user.getEmail(),
+                            "Lion Dance - Subscription Update",
+                            message,
+                            NotificationType.SUBSCRIPTION
+                    );
+
+                    if (!success) {
+                        throw new MailSendException("Failed to send subscription update email to " + user.getEmail());
+                    }
                 })
                 .map(UserResponseModel::from);
     }
 
+
+    @Scheduled(cron = "0 0 0 * * *") // Runs daily at midnight
+    public void checkForUpcomingPromotions() {
+    LocalDate today = LocalDate.now();
+
+    promotionRepository.findAll()
+            .filter(promotion -> {
+                LocalDate startDate = promotion.getStartDate();
+                return startDate.minusDays(7).isEqual(today) || startDate.minusDays(3).isEqual(today) || startDate.isEqual(today);
+            })
+            .flatMap(promotion -> {
+                LocalDate startDate = promotion.getStartDate();
+                String message = new StringBuilder()
+                        .append("Hello! ")
+                        .append("!\n\n")
+                        .append("We are excited to announce our upcoming promotion: ")
+                        .append(promotion.getPromotionName())
+                        .append(".\n")
+                        .append("Don't miss out! It starts on ")
+                        .append(startDate)
+                        .append(".\n\nThank you for choosing Lion Dance!")
+                        .toString();
+                return userRepository.findUsersByIsSubscribed(true)
+                        .flatMap(user -> notificationService.sendMail(
+                                user.getEmail(),
+                                "Lion Dance - Upcoming Promotion",
+                                message,
+                                NotificationType.PROMOTION
+                        ) ? Mono.just(user) : Mono.error(new MailSendException("Failed to send email to " + user.getEmail())));
+            })
+            .subscribe();
+    }
 }

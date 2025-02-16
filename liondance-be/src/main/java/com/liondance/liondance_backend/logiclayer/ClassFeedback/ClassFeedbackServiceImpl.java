@@ -75,8 +75,7 @@ public class ClassFeedbackServiceImpl implements ClassFeedbackService{
                     log.debug("Scheduling feedback for course {} at {}", course.getName(), taskTime);
                     taskScheduler.schedule(() -> sendScheduledFeedbackRequests(course), java.sql.Timestamp.valueOf(taskTime));
 
-                    //LocalDateTime reportGenerationTime = taskTime.plusDays(1);
-                    LocalDateTime reportGenerationTime = taskTime.plusMinutes(10); //this is for testing. Delete after
+                    LocalDateTime reportGenerationTime = taskTime.plusDays(1);
                     taskScheduler.schedule(() -> generateClassFeedbackReport(course, today), java.sql.Timestamp.valueOf(reportGenerationTime));
                 })
                 .doOnComplete(() -> log.debug("Scheduled task finished"))

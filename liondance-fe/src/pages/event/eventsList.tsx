@@ -9,7 +9,10 @@ import UpdateEventDetails from "./updateEventDetails.tsx";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useUserService } from "@/services/userService.ts";
+import { useEventService } from "@/services/eventService.ts";
 import ContactClientModal from "./contactClientModal";
+import AddPerformersModal from "./addPerformersModal.tsx";
+import RemovePerformersModal from "./removePerformersModal.tsx";
 
 interface EventWithClient extends Event {
   client?: User;
@@ -29,9 +32,11 @@ interface ExpandableEventTableProps {
   handleRescheduleClick: (event: EventWithClient) => void;
   handleUpdateDetailsClick: (event: EventWithClient) => void;
   handleViewFeedback: (eventId: string) => void;
+  handleRequestFeedback: (eventId: string) => void;
   handleContactClick: (event: EventWithClient) => void;
+  handleAddPerformersClick: (event: EventWithClient) => void;
+  handleRemovePerformersClick: (event: EventWithClient) => void;
 }
-
 
 const ExpandableEventTable: React.FC<ExpandableEventTableProps> = ({
   title,
@@ -42,7 +47,10 @@ const ExpandableEventTable: React.FC<ExpandableEventTableProps> = ({
   handleRescheduleClick,
   handleUpdateDetailsClick,
   handleViewFeedback,
+  handleRequestFeedback,
   handleContactClick,
+  handleAddPerformersClick,
+  handleRemovePerformersClick,
 }) => {
   const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -139,19 +147,30 @@ const ExpandableEventTable: React.FC<ExpandableEventTableProps> = ({
                   <button onClick={() => handleRescheduleClick(event)}>
                     {t("Reschedule")}
                   </button>
-                  <button
-                    onClick={() =>
-                      event.eventId && handleViewFeedback(event.eventId)
-                    }
-                    className="button_view_feedback"
-                  >
-                    {t("View Feedback")}
-                  </button>
+                  {event.eventStatus === 'COMPLETED' && (
+                    <button
+                      onClick={() =>
+                        event.eventId && handleViewFeedback(event.eventId)
+                      }
+                      className="button_view_feedback"
+                    >
+                      {t("View Feedback")}
+                    </button>
+                  )}
                   <button onClick={() => handleUpdateDetailsClick(event)} className="button_view_feedback">
                     {t("Update Details")}
                   </button>
+                  <button onClick={() => event.eventId && handleRequestFeedback(event.eventId)}>
+                    {t("Request Feedback")}
+                  </button>
                   <button onClick={() => handleContactClick(event)} className="button_contact_client">
                     {t("Contact Client")}
+                  </button>
+                  <button onClick={() => handleAddPerformersClick(event)} className="button_add_performers">
+                    {t("Add Performers")}
+                  </button>
+                  <button onClick={() => handleRemovePerformersClick(event)} className="button_remove_performers">
+                    {t("Remove Performers")}
                   </button>
                 </td>
               </tr>
@@ -173,6 +192,8 @@ function GetAllEvents() {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showRescheduleModal, setShowRescheduleModal] = useState<boolean>(false);
   const [showUpdateDetailsModal, setShowUpdateDetailsModal] = useState<boolean>(false);
+  const [showAddPerformersModal, setShowAddPerformersModal] = useState<boolean>(false);
+  const [showRemovePerformersModal, setShowRemovePerformersModal] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: '', direction: 'none' });
   const [showContactModal, setShowContactModal] = useState<boolean>(false);
@@ -180,6 +201,7 @@ function GetAllEvents() {
 
   const axiosInstance = useAxiosInstance();
   const userService = useUserService();
+  const eventService = useEventService();
 
   const handleSort = (key: string) => {
     setSortConfig((prevConfig) => ({
@@ -209,7 +231,7 @@ function GetAllEvents() {
             break;
           case 'phone':
             aValue = a.client?.phone ?? '';
-            bValue = b.client?.phone ?? '';
+            bValue = a.client?.phone ?? '';
             break;
           case 'location':
             aValue = `${a.venue?.streetAddress ?? ''} ${a.venue?.city ?? ''}`.trim();
@@ -279,7 +301,7 @@ function GetAllEvents() {
       }
     };
     fetchEvents();
-  }, [axiosInstance]);
+  }, []);
 
   const handleStatusClick = (event: EventWithClient): void => {
     setSelectedEvent(event);
@@ -296,6 +318,16 @@ function GetAllEvents() {
     setShowUpdateDetailsModal(true);
   };
 
+  const handleAddPerformersClick = (event: EventWithClient): void => {
+    setSelectedEvent(event);
+    setShowAddPerformersModal(true);
+  };
+
+  const handleRemovePerformersClick = (event: EventWithClient): void => {
+    setSelectedEvent(event);
+    setShowRemovePerformersModal(true);
+  };
+
   const handleModalClose = (): void => {
     setShowModal(false);
     setSelectedEvent(null);
@@ -308,6 +340,16 @@ function GetAllEvents() {
 
   const handleUpdateDetailsModalClose = (): void => {
     setShowUpdateDetailsModal(false);
+    setSelectedEvent(null);
+  };
+
+  const handleAddPerformersModalClose = (): void => {
+    setShowAddPerformersModal(false);
+    setSelectedEvent(null);
+  };
+
+  const handleRemovePerformersModalClose = (): void => {
+    setShowRemovePerformersModal(false);
     setSelectedEvent(null);
   };
 
@@ -333,6 +375,14 @@ function GetAllEvents() {
           : event
       )
     );
+  };
+
+  const handleRequestFeedback = async (eventId: string) => {
+    try {
+      await eventService.handleRequestFeedback(eventId);
+    } catch (error) {
+      console.error("Error sending feedback request:", error);
+    }
   };
 
   const handleContactClick = (event: EventWithClient): void => {
@@ -372,6 +422,7 @@ function GetAllEvents() {
   const pendingEvents = sortedEvents.filter(event => event.eventStatus === 'PENDING');
   const confirmedEvents = sortedEvents.filter(event => event.eventStatus === 'CONFIRMED');
   const cancelledEvents = sortedEvents.filter(event => event.eventStatus === 'CANCELLED');
+  const completedEvents = sortedEvents.filter(event => event.eventStatus === 'COMPLETED');
 
   if (loading) return <div className="loading">{t("Loading...")}</div>;
   if (error) return <div className="error">{t(error)}</div>;
@@ -414,7 +465,10 @@ function GetAllEvents() {
             handleRescheduleClick={handleRescheduleClick}
             handleUpdateDetailsClick={handleUpdateDetailsClick}
             handleViewFeedback={handleViewFeedback}
+            handleRequestFeedback={handleRequestFeedback}
             handleContactClick={handleContactClick}
+            handleAddPerformersClick={handleAddPerformersClick}
+            handleRemovePerformersClick={handleRemovePerformersClick}
           />
           <ExpandableEventTable
             title={t("Pending Events")}
@@ -425,7 +479,10 @@ function GetAllEvents() {
             handleRescheduleClick={handleRescheduleClick}
             handleUpdateDetailsClick={handleUpdateDetailsClick}
             handleViewFeedback={handleViewFeedback}
+            handleRequestFeedback={handleRequestFeedback}
             handleContactClick={handleContactClick}
+            handleAddPerformersClick={handleAddPerformersClick}
+            handleRemovePerformersClick={handleRemovePerformersClick}
           />
           <ExpandableEventTable
             title={t("Confirmed Events")}
@@ -436,7 +493,10 @@ function GetAllEvents() {
             handleRescheduleClick={handleRescheduleClick}
             handleUpdateDetailsClick={handleUpdateDetailsClick}
             handleViewFeedback={handleViewFeedback}
+            handleRequestFeedback={handleRequestFeedback}
             handleContactClick={handleContactClick}
+            handleAddPerformersClick={handleAddPerformersClick}
+            handleRemovePerformersClick={handleRemovePerformersClick}
           />
           <ExpandableEventTable
             title={t("Cancelled Events")}
@@ -447,7 +507,24 @@ function GetAllEvents() {
             handleRescheduleClick={handleRescheduleClick}
             handleUpdateDetailsClick={handleUpdateDetailsClick}
             handleViewFeedback={handleViewFeedback}
+            handleRequestFeedback={handleRequestFeedback}
             handleContactClick={handleContactClick}
+            handleAddPerformersClick={handleAddPerformersClick}
+            handleRemovePerformersClick={handleRemovePerformersClick}
+          />
+          <ExpandableEventTable
+            title={t("Completed Events")}
+            events={completedEvents}
+            sortConfig={sortConfig}
+            handleSort={handleSort}
+            handleStatusClick={handleStatusClick}
+            handleRescheduleClick={handleRescheduleClick}
+            handleUpdateDetailsClick={handleUpdateDetailsClick}
+            handleViewFeedback={handleViewFeedback}
+            handleRequestFeedback={handleRequestFeedback}
+            handleContactClick={handleContactClick}
+            handleAddPerformersClick={handleAddPerformersClick}
+            handleRemovePerformersClick={handleRemovePerformersClick}
           />
         </div>
       )}
@@ -471,6 +548,20 @@ function GetAllEvents() {
           event={selectedEvent}
           onClose={handleUpdateDetailsModalClose}
           onUpdate={handleEventUpdate}
+        />
+      )}
+      {selectedEvent && showAddPerformersModal && (
+        <AddPerformersModal
+          event={selectedEvent}
+          onClose={handleAddPerformersModalClose}
+          onAddPerformers={handleEventUpdate}
+        />
+      )}
+      {selectedEvent && showRemovePerformersModal && (
+        <RemovePerformersModal
+          event={selectedEvent}
+          onClose={handleRemovePerformersModalClose}
+          onRemovePerformers={handleEventUpdate}
         />
       )}
       {selectedClientToContact && showContactModal && (
