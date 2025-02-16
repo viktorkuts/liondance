@@ -1,6 +1,8 @@
 package com.liondance.liondance_backend.logiclayer.Promotion;
 
+import com.liondance.liondance_backend.datalayer.Promotion.Promotion;
 import com.liondance.liondance_backend.datalayer.Promotion.PromotionRepository;
+import com.liondance.liondance_backend.datalayer.Promotion.PromotionStatus;
 import com.liondance.liondance_backend.presentationlayer.Promotion.PromotionRequestModel;
 import com.liondance.liondance_backend.presentationlayer.Promotion.PromotionResponseModel;
 import com.liondance.liondance_backend.utils.exceptions.InvalidInputException;
@@ -46,5 +48,30 @@ public class PromotionServiceImpl implements PromotionService {
                     return promotionRepository.save(promotion);
                 })
                 .map(PromotionResponseModel::from);
+    }
+    @Override
+    public Mono<PromotionResponseModel> createPromotion(PromotionRequestModel promotionRequestModel) {
+
+        if (promotionRequestModel.getDiscountRate() < 0 || promotionRequestModel.getDiscountRate() > 1) {
+            return Mono.error(new InvalidInputException("Discount rate must be between 0% and 100%"));
+        }
+
+
+        Promotion newPromotion = PromotionRequestModel.from(promotionRequestModel);
+
+
+        if (newPromotion.getPromotionStatus() == null) {
+            newPromotion.setPromotionStatus(PromotionStatus.ACTIVE);
+        }
+
+        return promotionRepository.save(newPromotion)
+                .map(PromotionResponseModel::from);
+    }
+
+    @Override
+    public Mono<Void> deletePromotion(String promotionId) {
+        return promotionRepository.findByPromotionId(promotionId)
+                .switchIfEmpty(Mono.error(new NotFoundException("Promotion not found")))
+                .flatMap(promotionRepository::delete);
     }
 }

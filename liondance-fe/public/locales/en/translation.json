@@ -308,5 +308,7 @@
     "Pick performers": "Pick performers",
     "No students found": "No students found",
     "No performers found": "No performers found",
-    "Select Performers to remove": "Select Performers to remove"
+    "Select Performers to remove": "Select Performers to remove",
+    "Create Promotion": "Create Promotion",
+    "Discount Rate (%)" : "Discount Rate (%)"
 }

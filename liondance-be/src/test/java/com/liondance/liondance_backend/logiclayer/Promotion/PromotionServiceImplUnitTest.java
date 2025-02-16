@@ -206,4 +206,88 @@ class PromotionServiceImplUnitTest {
         Mockito.verify(promotionRepository).findByPromotionId(invalidPromotionId);
         Mockito.verify(promotionRepository, Mockito.never()).save(Mockito.any(Promotion.class));
     }
+
+    @Test
+    void whenCreatePromotion_withValidRequest_thenReturnCreatedPromotion() {
+        PromotionRequestModel requestModel = PromotionRequestModel.builder()
+                .promotionName("New Year Sale")
+                .discountRate(0.30)
+                .startDate(LocalDate.of(2025, 1, 1))
+                .endDate(LocalDate.of(2025, 1, 31))
+                .promotionStatus(PromotionStatus.ACTIVE)
+                .build();
+
+
+        Promotion toSave = PromotionRequestModel.from(requestModel);
+        toSave.setId("123");
+
+        Mockito.when(promotionRepository.save(Mockito.any(Promotion.class)))
+                .thenReturn(Mono.just(toSave));
+
+        Mono<PromotionResponseModel> result = promotionService.createPromotion(requestModel);
+
+        StepVerifier.create(result)
+                .expectNextMatches(response ->
+                        response.getPromotionName().equals("New Year Sale") &&
+                                response.getDiscountRate().equals(0.30) &&
+                                response.getPromotionStatus() == PromotionStatus.ACTIVE
+                )
+                .verifyComplete();
+
+        Mockito.verify(promotionRepository, Mockito.times(1)).save(Mockito.any(Promotion.class));
+    }
+
+    @Test
+    void whenCreatePromotion_withInvalidDiscount_thenThrowInvalidInputException() {
+        PromotionRequestModel requestModel = PromotionRequestModel.builder()
+                .promotionName("Bad Discount")
+                .discountRate(1.5) // invalid discount
+                .startDate(LocalDate.of(2025, 1, 1))
+                .endDate(LocalDate.of(2025, 1, 31))
+                .promotionStatus(PromotionStatus.ACTIVE)
+                .build();
+
+        Mono<PromotionResponseModel> result = promotionService.createPromotion(requestModel);
+
+        StepVerifier.create(result)
+                .expectErrorMatches(ex -> ex instanceof InvalidInputException &&
+                        ex.getMessage().contains("Discount rate must be between 0% and 100%"))
+                .verify();
+
+        Mockito.verify(promotionRepository, Mockito.never()).save(Mockito.any(Promotion.class));
+    }
+
+    @Test
+    void whenDeletePromotion_withExistingPromotionId_thenDeleteSuccessfully() {
+        Mockito.when(promotionRepository.findByPromotionId("PROMO1"))
+                .thenReturn(Mono.just(promotion1));
+
+        Mockito.when(promotionRepository.delete(promotion1))
+                .thenReturn(Mono.empty());
+
+        Mono<Void> result = promotionService.deletePromotion("PROMO1");
+
+        StepVerifier.create(result)
+                .verifyComplete();
+
+        Mockito.verify(promotionRepository).findByPromotionId("PROMO1");
+        Mockito.verify(promotionRepository).delete(promotion1);
+    }
+
+    @Test
+    void whenDeletePromotion_withNonExistingPromotionId_thenThrowNotFoundException() {
+        Mockito.when(promotionRepository.findByPromotionId("DOES_NOT_EXIST"))
+                .thenReturn(Mono.empty());
+
+        Mono<Void> result = promotionService.deletePromotion("DOES_NOT_EXIST");
+
+        StepVerifier.create(result)
+                .expectErrorMatches(ex -> ex instanceof NotFoundException &&
+                        ex.getMessage().contains("Promotion not found"))
+                .verify();
+
+        Mockito.verify(promotionRepository).findByPromotionId("DOES_NOT_EXIST");
+        Mockito.verify(promotionRepository, Mockito.never()).delete(Mockito.any());
+    }
+
 }
