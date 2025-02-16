@@ -130,6 +130,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Mono<UserResponseModel> updateStudentRegistrationStatus(String userId, RegistrationStatusPatchRequestModel registrationStatus) {
+        String frontendUrl = System.getenv("FRONTEND_URL");
+        if (frontendUrl == null || frontendUrl.isEmpty()) {
+            return Mono.error(new IllegalStateException("FRONTEND_URL environment variable is not set"));
+        }
         return userRepository.findUserByUserId(userId)
                 .switchIfEmpty(Mono.error(new NotFoundException("User with userId: " + userId + " not found")))
                 .filter(user -> user instanceof Student)
@@ -144,8 +148,8 @@ public class UserServiceImpl implements UserService {
 
                     if(registrationStatus.getRegistrationStatus() == RegistrationStatus.ACTIVE) {
                         // Create link with userId as parameter for frontend to handle account linking
-                        String accountLinkUrl = "https://fe.dev.kleff.io/link-account?userId=" + student.getUserId();
-                        
+                        String accountLinkUrl = frontendUrl + "/link-account?userId=" + student.getUserId();
+
                         message = new StringBuilder()
                                 .append("Congratulations, ")
                                 .append(student.getFirstName())

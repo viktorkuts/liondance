@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.BeanUtils;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -286,5 +287,117 @@ class UserServiceImplUnitTest {
         
         verify(userRepository, times(1)).findByUserId(clientId);
         verify(eventService, times(1)).getEventsByClientId(clientId); // Expect 1 call
+    }
+
+    @Test
+    void whenLinkUserAccount_thenReturnUpdatedUser() {
+        String userId = "user-id";
+        String jwtName = "jwt-name";
+
+        // Create JWT mock
+        JwtAuthenticationToken jwt = Mockito.mock(JwtAuthenticationToken.class);
+        when(jwt.getName()).thenReturn(jwtName);
+
+        // Create user and update it with the expected associatedId
+        User user = new User();
+        user.setUserId(userId);
+
+        // Create updated user with associatedId that will be returned by save
+        User updatedUser = new User();
+        updatedUser.setUserId(userId);
+        updatedUser.setAssociatedId(jwtName);
+
+        when(userRepository.findUserByUserId(userId)).thenReturn(Mono.just(user));
+        when(userRepository.findUserByAssociatedId(jwtName)).thenReturn(Mono.empty());
+        when(userRepository.save(any(User.class))).thenReturn(Mono.just(updatedUser));
+
+        Mono<UserResponseModel> result = userService.linkUserAccount(userId, jwt);
+
+        StepVerifier.create(result)
+                .expectNext(UserResponseModel.from(updatedUser))
+                .verifyComplete();
+
+        verify(userRepository, times(1)).findUserByUserId(userId);
+        verify(userRepository, times(1)).findUserByAssociatedId(jwtName);
+        verify(userRepository, times(1)).save(any(User.class));
+    }
+
+    @Test
+    void whenLinkUserAccount_userNotFound_thenThrowNotFoundException() {
+        String userId = "non-existent-user-id";
+        JwtAuthenticationToken jwt = Mockito.mock(JwtAuthenticationToken.class);
+        when(jwt.getName()).thenReturn("jwt-name");
+
+        when(userRepository.findUserByUserId(userId)).thenReturn(Mono.empty());
+
+        Mono<UserResponseModel> result = userService.linkUserAccount(userId, jwt);
+
+        StepVerifier.create(result)
+                .expectErrorMatches(throwable -> throwable instanceof NotFoundException &&
+                        throwable.getMessage().equals("User with userId: " + userId + " not found"))
+                .verify();
+
+        verify(userRepository, times(1)).findUserByUserId(userId);
+    }
+
+    @Test
+    void whenLinkUserAccount_accountAlreadyLinked_thenThrowIllegalStateException() {
+        String userId = "user-id";
+        String jwtName = "jwt-name";
+        JwtAuthenticationToken jwt = Mockito.mock(JwtAuthenticationToken.class);
+        when(jwt.getName()).thenReturn(jwtName);
+
+        User user = new User();
+        user.setUserId(userId);
+        user.setAssociatedId("existing-associated-id");
+
+        when(userRepository.findUserByUserId(userId)).thenReturn(Mono.just(user));
+
+        Mono<UserResponseModel> result = userService.linkUserAccount(userId, jwt);
+
+        StepVerifier.create(result)
+                .expectErrorMatches(throwable -> throwable instanceof IllegalStateException &&
+                        throwable.getMessage().equals("Account is already linked"))
+                .verify();
+
+        verify(userRepository, times(1)).findUserByUserId(userId);
+    }
+
+    @Test
+    void whenLinkUserAccount_googleAccountAlreadyLinked_thenThrowIllegalStateException() {
+        String userId = "user-id";
+        String jwtName = "jwt-name";
+        JwtAuthenticationToken jwt = Mockito.mock(JwtAuthenticationToken.class);
+        when(jwt.getName()).thenReturn(jwtName);
+
+        User user = new User();
+        user.setUserId(userId);
+        user.setAssociatedId(null);
+
+        when(userRepository.findUserByUserId(userId)).thenReturn(Mono.just(user));
+        when(userRepository.findUserByAssociatedId(jwtName)).thenReturn(Mono.just(new User()));
+
+        Mono<UserResponseModel> result = userService.linkUserAccount(userId, jwt);
+
+        StepVerifier.create(result)
+                .expectErrorMatches(throwable -> throwable instanceof IllegalStateException &&
+                        throwable.getMessage().equals("Google account is already linked to another user"))
+                .verify();
+
+        verify(userRepository, times(1)).findUserByUserId(userId);
+        verify(userRepository, times(1)).findUserByAssociatedId(jwtName);
+    }
+
+    @Test
+    void whenLinkUserAccount_noJwt_thenThrowIllegalArgumentException() {
+        String userId = "user-id";
+        JwtAuthenticationToken jwt = null;
+
+        Mono<UserResponseModel> result = userService.linkUserAccount(userId, jwt);
+
+        StepVerifier.create(result)
+                .expectErrorMatches(throwable -> throwable instanceof IllegalArgumentException &&
+                        throwable.getMessage().equals("Authentication token is required"))
+                .verify();
     }
 }
