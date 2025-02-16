@@ -303,15 +303,12 @@ class UserServiceImplUnitTest {
         String userId = "user-id";
         String jwtName = "jwt-name";
 
-        // Create JWT mock
         JwtAuthenticationToken jwt = Mockito.mock(JwtAuthenticationToken.class);
         when(jwt.getName()).thenReturn(jwtName);
 
-        // Create user and update it with the expected associatedId
         User user = new User();
         user.setUserId(userId);
 
-        // Create updated user with associatedId that will be returned by save
         User updatedUser = new User();
         updatedUser.setUserId(userId);
         updatedUser.setAssociatedId(jwtName);
