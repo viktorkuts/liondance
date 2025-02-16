@@ -260,3 +260,12 @@ label {
 .mantine-Modal-footer {
   text-align: center;
 }
+
+.delete-button {
+  background-color: #555;
+  color: white;
+}
+
+.delete-button:hover {
+  background-color: #333;
+}
