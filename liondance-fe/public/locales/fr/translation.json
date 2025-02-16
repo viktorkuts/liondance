@@ -302,5 +302,11 @@
     "Back to My Events": "Retour à mes événements",
     "Request Feedback": "Demander des commentaires",
     "Add Performers": "Ajouter des artistes",
-    "Remove Performers": "Supprimer des artistes"
+    "Remove Performers": "Supprimer des artistes",
+    "Current Performers": "Artistes actuels",
+    "Select Performers to add": "Sélectionnez les artistes à ajouter",
+    "Pick performers": "Choisissez les artistes",
+    "No students found": "Aucun étudiant trouvé",
+    "No performers found": "Aucun artiste trouvé",
+    "Select Performers to remove": "Sélectionnez les artistes à supprimer"
 }

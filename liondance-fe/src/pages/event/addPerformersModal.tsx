@@ -4,6 +4,7 @@ import { Event } from "@/models/Event";
 import { useEventService } from "@/services/eventService";
 import { useUserService } from "@/services/userService";
 import { Student } from "@/models/Users";
+import { useTranslation } from "react-i18next";
 
 interface AddPerformersModalProps {
     event: Event;
@@ -12,6 +13,7 @@ interface AddPerformersModalProps {
 }
 
 const AddPerformersModal: React.FC<AddPerformersModalProps> = ({ event, onClose, onAddPerformers }) => {
+    const { t } = useTranslation();
     const [performerIds, setPerformerIds] = useState<string[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
@@ -29,7 +31,7 @@ const AddPerformersModal: React.FC<AddPerformersModalProps> = ({ event, onClose,
                 const currentPerformersData = studentsData.filter(student => event.performers.includes(student.userId!));
                 setCurrentPerformers(currentPerformersData);
             } catch {
-                setError("Failed to fetch students. Please try again.");
+                setError(t("Failed to fetch students. Please try again."));
             }
         };
 
@@ -44,16 +46,16 @@ const AddPerformersModal: React.FC<AddPerformersModalProps> = ({ event, onClose,
             onAddPerformers(updatedEvent);
             onClose();
         } catch {
-            setError("Failed to add performers. Please try again.");
+            setError(t("Failed to add performers. Please try again."));
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <Modal opened={true} onClose={onClose} title="Add Performers">
+        <Modal opened={true} onClose={onClose} title={t("Add Performers")}>
             <div>
-                <h3>Current Performers</h3>
+                <h3>{t("Current Performers")}</h3>
                 <ul>
                     {currentPerformers.map(performer => (
                         <li key={performer.userId}>{`${performer.firstName} ${performer.lastName}`}</li>
@@ -61,18 +63,18 @@ const AddPerformersModal: React.FC<AddPerformersModalProps> = ({ event, onClose,
                 </ul>
             </div>
             <MultiSelect
-                label="Select Performers to add"
-                placeholder="Pick performers"
+                label={t("Select Performers to add")}
+                placeholder={t("Pick performers")}
                 data={students.map(student => ({ value: student.userId!, label: `${student.firstName} ${student.lastName}` }))}
                 value={performerIds}
                 onChange={setPerformerIds}
                 searchable
-                nothingFound="No students found"
+                nothingfound={t("No students found")}
                 clearable
             />
             {error && <div className="error">{error}</div>}
             <Button onClick={handleAddPerformers} loading={loading}>
-                Add Performers
+                {t("Add Performers")}
             </Button>
         </Modal>
     );

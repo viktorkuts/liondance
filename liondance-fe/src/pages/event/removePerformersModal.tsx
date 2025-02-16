@@ -4,6 +4,7 @@ import { Event } from "@/models/Event";
 import { useEventService } from "@/services/eventService";
 import { useUserService } from "@/services/userService";
 import { Student } from "@/models/Users";
+import { useTranslation } from "react-i18next";
 
 interface RemovePerformersModalProps {
   event: Event;
@@ -12,6 +13,7 @@ interface RemovePerformersModalProps {
 }
 
 const RemovePerformersModal: React.FC<RemovePerformersModalProps> = ({ event, onClose, onRemovePerformers }) => {
+  const { t } = useTranslation();
   const [performerIds, setPerformerIds] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -28,7 +30,7 @@ const RemovePerformersModal: React.FC<RemovePerformersModalProps> = ({ event, on
         setStudents(currentPerformersData);
         setCurrentPerformers(currentPerformersData);
       } catch {
-        setError("Failed to fetch students. Please try again.");
+        setError(t("Failed to fetch students. Please try again."));
       }
     };
 
@@ -43,16 +45,16 @@ const RemovePerformersModal: React.FC<RemovePerformersModalProps> = ({ event, on
       onRemovePerformers(updatedEvent);
       onClose();
     } catch {
-      setError("Failed to remove performers. Please try again.");
+      setError(t("Failed to remove performers. Please try again."));
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Modal opened={true} onClose={onClose} title="Remove Performers">
+    <Modal opened={true} onClose={onClose} title={t("Remove Performers")}>
       <div>
-        <h3>Current Performers</h3>
+        <h3>{t("Current Performers")}</h3>
         <ul>
           {currentPerformers.map(performer => (
             <li key={performer.userId}>{`${performer.firstName} ${performer.lastName}`}</li>
@@ -60,18 +62,18 @@ const RemovePerformersModal: React.FC<RemovePerformersModalProps> = ({ event, on
         </ul>
       </div>
       <MultiSelect
-        label="Select Performers to remove"
-        placeholder="Pick performers"
+        label={t("Select Performers to remove")}
+        placeholder={t("Pick performers")}
         data={students.map(student => ({ value: student.userId!, label: `${student.firstName} ${student.lastName}` }))}
         value={performerIds}
         onChange={setPerformerIds}
         searchable
-        nothingFound="No performers found"
+        nothingfound={t("No performers found")}
         clearable
       />
       {error && <div className="error">{error}</div>}
       <Button onClick={handleRemovePerformers} loading={loading}>
-        Remove Performers
+        {t("Remove Performers")}
       </Button>
     </Modal>
   );
