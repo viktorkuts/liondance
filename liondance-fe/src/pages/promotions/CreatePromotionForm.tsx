@@ -30,8 +30,8 @@ const CreatePromotionForm: React.FC<CreatePromotionFormProps> = ({ onSuccess, on
       await createPromotion({
         promotionName,
         discountRate: discountRate / 100, 
-        startDate,
-        endDate,
+        startDate: new Date(startDate),
+        endDate: new Date(endDate),
         promotionStatus: status,
       });
       onSuccess();
