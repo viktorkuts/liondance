@@ -33,6 +33,7 @@ public class UserRequestModel {
     private Address address;
 
     private String phone;
+    private Boolean isSubscribed;
 
     public static User from(UserRequestModel userRequestModel){
      User user = new User();

@@ -25,6 +25,7 @@ export enum EventStatus {
   PENDING = "PENDING",
   CONFIRMED = "CONFIRMED",
   CANCELLED = "CANCELLED",
+  COMPLETED = "COMPLETED",
 }
 
 export enum EventPrivacy {
@@ -42,4 +43,5 @@ export interface Event {
   specialRequest?: string;
   eventStatus: EventStatus;
   eventPrivacy: EventPrivacy;
+  performers: string[];
 }

@@ -24,6 +24,9 @@ import java.time.LocalDate;
 import java.util.EnumSet;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"spring.data.mongodb.port= 0"})
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -187,6 +190,90 @@ Promotion promotion3 =   Promotion.builder()
                 .bodyValue(updateRequest)
                 .exchange()
                 .expectStatus().isEqualTo(422);
+    }
+
+    @Test
+    void whenCreatePromotion_withValidData_thenReturnCreatedPromotion() {
+        PromotionRequestModel requestModel = PromotionRequestModel.builder()
+                .promotionName("New Year Sale")
+                .discountRate(0.30)
+                .startDate(LocalDate.of(2025, 1, 1))
+                .endDate(LocalDate.of(2025, 1, 15))
+                .promotionStatus(PromotionStatus.ACTIVE)
+                .build();
+
+        webTestClient
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .post()
+                .uri("/api/v1/promotions")
+                .bodyValue(requestModel)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(PromotionResponseModel.class)
+                .value(response -> {
+
+                    assertNotNull(response.getPromotionId());
+                    assertEquals("New Year Sale", response.getPromotionName());
+                    assertEquals(0.30, response.getDiscountRate());
+                    assertEquals(PromotionStatus.ACTIVE, response.getPromotionStatus());
+                });
+
+
+        StepVerifier.create(promotionRepository.findAll())
+                .expectNextCount(4) // we started with 3
+                .verifyComplete();
+    }
+
+    @Test
+    void whenCreatePromotion_withInvalidDiscount_thenReturnError() {
+        PromotionRequestModel requestModel = PromotionRequestModel.builder()
+                .promotionName("Impossible Discount")
+                .discountRate(1.5)
+                .startDate(LocalDate.of(2025, 2, 1))
+                .endDate(LocalDate.of(2025, 2, 10))
+                .promotionStatus(PromotionStatus.ACTIVE)
+                .build();
+
+        webTestClient
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .post()
+                .uri("/api/v1/promotions")
+                .bodyValue(requestModel)
+                .exchange()
+                .expectStatus().is4xxClientError();
+
+        StepVerifier.create(promotionRepository.findAll())
+                .expectNextCount(3)
+                .verifyComplete();
+    }
+
+    @Test
+    void whenDeletePromotion_withValidId_thenPromotionIsDeleted() {
+
+        webTestClient
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .delete()
+                .uri("/api/v1/promotions/{promotionId}", promotion1.getPromotionId())
+                .exchange()
+                .expectStatus().isNoContent();
+
+
+        StepVerifier.create(promotionRepository.findByPromotionId(promotion1.getPromotionId()))
+                .verifyComplete();
+    }
+
+    @Test
+    void whenDeletePromotion_withNonExistentId_thenNotFound() {
+        webTestClient
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .delete()
+                .uri("/api/v1/promotions/{promotionId}", "DOES_NOT_EXIST")
+                .exchange()
+                .expectStatus().isNotFound();
     }
 
 }

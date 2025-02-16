@@ -1,10 +1,14 @@
 package com.liondance.liondance_backend.logiclayer.User;
 
 import com.liondance.liondance_backend.datalayer.Event.EventStatus;
+import com.liondance.liondance_backend.datalayer.Notification.NotificationType;
+import com.liondance.liondance_backend.datalayer.Promotion.Promotion;
+import com.liondance.liondance_backend.datalayer.Promotion.PromotionRepository;
 import com.liondance.liondance_backend.datalayer.User.*;
 import com.liondance.liondance_backend.datalayer.common.Address;
 import com.liondance.liondance_backend.logiclayer.Event.EventService;
 import com.liondance.liondance_backend.logiclayer.Event.EventServiceImpl;
+import com.liondance.liondance_backend.logiclayer.Notification.NotificationService;
 import com.liondance.liondance_backend.presentationlayer.Event.EventResponseModel;
 import com.liondance.liondance_backend.presentationlayer.User.*;
 import com.liondance.liondance_backend.presentationlayer.User.StudentResponseModel;
@@ -17,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.BeanUtils;
+import org.springframework.mail.MailSendException;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -36,7 +41,11 @@ class UserServiceImplUnitTest {
     @Mock
     private UserRepository userRepository;
     @Mock
+    private PromotionRepository promotionRepository;
+    @Mock
     private EventService eventService;
+    @Mock
+    private NotificationService notificationService;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -399,5 +408,235 @@ class UserServiceImplUnitTest {
                 .expectErrorMatches(throwable -> throwable instanceof IllegalArgumentException &&
                         throwable.getMessage().equals("Authentication token is required"))
                 .verify();
+    }
+
+    @Test
+    void whenSubscribeToPromotions_thenReturnUpdatedUser() {
+        String userId = "7876ea26-3f76-4e50-870f-5e5dad6d63d1";
+        Boolean isSubscribed = true;
+        User user = new User();
+        user.setUserId(userId);
+        user.setFirstName("Jane");
+        user.setEmail("jane.doe@null.local");
+        user.setIsSubscribed(false);
+
+        when(userRepository.findUserByUserId(userId)).thenReturn(Mono.just(user));
+        when(userRepository.save(user)).thenReturn(Mono.just(user));
+        when(notificationService.sendMail(
+                eq("jane.doe@null.local"),
+                eq("Lion Dance - Subscription Update"),
+                anyString(),
+                eq(NotificationType.SUBSCRIPTION)
+        )).thenReturn(true);
+
+        Mono<UserResponseModel> result = userService.subscribeToPromotions(userId, isSubscribed);
+        StepVerifier.create(result)
+                .expectNextMatches(updatedUser -> updatedUser.getIsSubscribed().equals(isSubscribed))
+                .verifyComplete();
+        verify(userRepository, times(1)).findUserByUserId(userId);
+        verify(userRepository, times(1)).save(user);
+        verify(notificationService, times(1)).sendMail(
+                eq(user.getEmail()),
+                eq("Lion Dance - Subscription Update"),
+                anyString(),
+                eq(NotificationType.SUBSCRIPTION)
+        );
+    }
+
+    @Test
+    void whenUnsubscribeFromPromotions_thenReturnUpdatedUser() {
+        String userId = "7876ea26-3f76-4e50-870f-5e5dad6d63d1";
+        Boolean isSubscribed = false;
+        User user = new User();
+        user.setUserId(userId);
+        user.setFirstName("Jane");
+        user.setEmail("jane.doe@null.local");
+        user.setIsSubscribed(true);
+
+        when(userRepository.findUserByUserId(userId)).thenReturn(Mono.just(user));
+        when(userRepository.save(user)).thenReturn(Mono.just(user));
+        when(notificationService.sendMail(
+                eq("jane.doe@null.local"),
+                eq("Lion Dance - Subscription Update"),
+                anyString(),
+                eq(NotificationType.SUBSCRIPTION)
+        )).thenReturn(true);
+
+        Mono<UserResponseModel> result = userService.subscribeToPromotions(userId, isSubscribed);
+        StepVerifier.create(result)
+                .expectNextMatches(updatedUser -> updatedUser.getIsSubscribed().equals(isSubscribed))
+                .verifyComplete();
+        verify(userRepository, times(1)).findUserByUserId(userId);
+        verify(userRepository, times(1)).save(user);
+        verify(notificationService, times(1)).sendMail(
+                eq(user.getEmail()),
+                eq("Lion Dance - Subscription Update"),
+                anyString(),
+                eq(NotificationType.SUBSCRIPTION)
+        );
+    }
+
+    @Test
+    void whenSubscribeToPromotionsWithNonExistentUser_thenThrowNotFoundException() {
+        String userId = "non-existent-id";
+        Boolean isSubscribed = true;
+
+        when(userRepository.findUserByUserId(userId)).thenReturn(Mono.empty());
+
+        Mono<UserResponseModel> result = userService.subscribeToPromotions(userId, isSubscribed);
+        StepVerifier.create(result)
+                .expectErrorMatches(throwable -> throwable instanceof NotFoundException &&
+                        throwable.getMessage().equals("User with userId: " + userId + " not found"))
+                .verify();
+        verify(userRepository, times(1)).findUserByUserId(userId);
+        verify(userRepository, times(0)).save(Mockito.any(User.class));
+    }
+
+    @Test
+    void whenCheckForUpcomingPromotions_thenSendEmails() {
+        LocalDate today = LocalDate.now();
+        Promotion promotion = new Promotion();
+        promotion.setStartDate(today.plusDays(7));
+        promotion.setPromotionName("New Year Promotion");
+
+        User user = new User();
+        user.setUserId("7876ea26-3f76-4e50-870f-5e5dad6d63d1");
+        user.setFirstName("Jane");
+        user.setEmail("jane.doe@null.local");
+        user.setIsSubscribed(true);
+
+        when(promotionRepository.findAll()).thenReturn(Flux.just(promotion));
+        when(userRepository.findUsersByIsSubscribed(true)).thenReturn(Flux.just(user));
+        when(notificationService.sendMail(
+                eq(user.getEmail()),
+                eq("Lion Dance - Upcoming Promotion"),
+                anyString(),
+                eq(NotificationType.PROMOTION)
+        )).thenReturn(true);
+
+        userService.checkForUpcomingPromotions();
+
+        verify(promotionRepository, times(1)).findAll();
+        verify(userRepository, times(1)).findUsersByIsSubscribed(true);
+        verify(notificationService, times(1)).sendMail(
+                eq(user.getEmail()),
+                eq("Lion Dance - Upcoming Promotion"),
+                anyString(),
+                eq(NotificationType.PROMOTION)
+        );
+    }
+
+    @Test
+    void whenSubscribeToPromotions_thenThrowMailSendException() {
+        String userId = "7876ea26-3f76-4e50-870f-5e5dad6d63d1";
+        Boolean isSubscribed = true;
+        User user = new User();
+        user.setUserId(userId);
+        user.setFirstName("Jane");
+        user.setEmail("jane.doe@null.local");
+        user.setIsSubscribed(false);
+
+        when(userRepository.findUserByUserId(userId)).thenReturn(Mono.just(user));
+        when(userRepository.save(user)).thenReturn(Mono.just(user));
+        when(notificationService.sendMail(
+                eq("jane.doe@null.local"),
+                eq("Lion Dance - Subscription Update"),
+                anyString(),
+                eq(NotificationType.SUBSCRIPTION)
+        )).thenReturn(false);
+
+        Mono<UserResponseModel> result = userService.subscribeToPromotions(userId, isSubscribed);
+        StepVerifier.create(result)
+                .expectErrorMatches(throwable -> throwable instanceof MailSendException &&
+                        throwable.getMessage().equals("Failed to send subscription update email to " + user.getEmail()))
+                .verify();
+        verify(userRepository, times(1)).findUserByUserId(userId);
+        verify(userRepository, times(1)).save(user);
+        verify(notificationService, times(1)).sendMail(
+                eq(user.getEmail()),
+                eq("Lion Dance - Subscription Update"),
+                anyString(),
+                eq(NotificationType.SUBSCRIPTION)
+        );
+    }
+
+    @Test
+    void whenCheckForUpcomingPromotions_thenFilterPromotionsCorrectly() {
+        LocalDate today = LocalDate.now();
+        Promotion promotion1 = new Promotion();
+        promotion1.setStartDate(today.plusDays(7));
+        promotion1.setPromotionName("Promotion 1");
+
+        Promotion promotion2 = new Promotion();
+        promotion2.setStartDate(today.plusDays(3));
+        promotion2.setPromotionName("Promotion 2");
+
+        Promotion promotion3 = new Promotion();
+        promotion3.setStartDate(today);
+        promotion3.setPromotionName("Promotion 3");
+
+        Promotion promotion4 = new Promotion();
+        promotion4.setStartDate(today.plusDays(10));
+        promotion4.setPromotionName("Promotion 4");
+
+        User user = new User();
+        user.setUserId("7876ea26-3f76-4e50-870f-5e5dad6d63d1");
+        user.setFirstName("Jane");
+        user.setEmail("jane.doe@null.local");
+        user.setIsSubscribed(true);
+
+        when(promotionRepository.findAll()).thenReturn(Flux.just(promotion1, promotion2, promotion3, promotion4));
+        when(userRepository.findUsersByIsSubscribed(true)).thenReturn(Flux.just(user));
+        when(notificationService.sendMail(
+                eq(user.getEmail()),
+                eq("Lion Dance - Upcoming Promotion"),
+                anyString(),
+                eq(NotificationType.PROMOTION)
+        )).thenReturn(true);
+
+        userService.checkForUpcomingPromotions();
+
+        verify(promotionRepository, times(1)).findAll();
+        verify(userRepository, times(3)).findUsersByIsSubscribed(true);
+        verify(notificationService, times(3)).sendMail(
+                eq(user.getEmail()),
+                eq("Lion Dance - Upcoming Promotion"),
+                anyString(),
+                eq(NotificationType.PROMOTION)
+        );
+    }
+
+    @Test
+    void whenCheckForUpcomingPromotions_thenSendEmailsToSubscribedUsers() {
+        LocalDate today = LocalDate.now();
+        Promotion promotion = new Promotion();
+        promotion.setStartDate(today.plusDays(7));
+        promotion.setPromotionName("New Year Promotion");
+
+        User user = new User();
+        user.setUserId("7876ea26-3f76-4e50-870f-5e5dad6d63d1");
+        user.setFirstName("Jane");
+        user.setEmail("jane.doe@null.local");
+        user.setIsSubscribed(true);
+
+        when(promotionRepository.findAll()).thenReturn(Flux.just(promotion));
+        when(userRepository.findUsersByIsSubscribed(true)).thenReturn(Flux.just(user));
+        when(notificationService.sendMail(
+                eq(user.getEmail()),
+                eq("Lion Dance - Upcoming Promotion"),
+                anyString(),
+                eq(NotificationType.PROMOTION)
+        )).thenReturn(true);
+
+        userService.checkForUpcomingPromotions();
+
+        verify(promotionRepository, times(1)).findAll();
+        verify(userRepository, times(1)).findUsersByIsSubscribed(true);
+        verify(notificationService, times(1)).sendMail(
+                eq(user.getEmail()),
+                eq("Lion Dance - Upcoming Promotion"),
+                anyString(),
+                eq(NotificationType.PROMOTION)
+        );
     }
 }

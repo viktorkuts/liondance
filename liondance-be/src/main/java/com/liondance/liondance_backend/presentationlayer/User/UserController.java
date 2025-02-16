@@ -14,6 +14,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.Map;
 import java.util.Set;
 
 @RestController
@@ -74,5 +75,17 @@ public class UserController {
     @PatchMapping("/{userId}/link-account")
     public Mono<UserResponseModel> linkUserAccount(@PathVariable String userId, JwtAuthenticationToken jwt) {
         return userService.linkUserAccount(userId, jwt);
+    }
+
+    @PatchMapping("{userId}/subscription")
+    public Mono<UserResponseModel> subscribeToPromotions(@PathVariable String userId, @RequestBody Mono<Map<String, Boolean>> requestBody) {
+        return requestBody
+                .flatMap(body -> {
+                    Boolean isSubscribed = body.get("isSubscribed");
+                    if (isSubscribed == null) {
+                        return Mono.error(new IllegalArgumentException("isSubscribed cannot be null or empty"));
+                    }
+                    return userService.subscribeToPromotions(userId, isSubscribed);
+                });
     }
 }

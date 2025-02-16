@@ -68,7 +68,8 @@ public class DataLoaderService implements CommandLineRunner {
                         .middleName("Jane")
                         .lastName("Smith")
                         .dob(LocalDate.parse("2000-01-01"))
-                        .email("Sarah.Smith@myfunnywebsite.org")
+//                      .email("Sarah.Smith@myfunnywebsite.org")
+                        .email("jhondoesnthack@gmail.com")
                         .phone("123-456-7890")
                         .address(Address.builder()
                                 .streetAddress("1234 Main St")
@@ -79,6 +80,7 @@ public class DataLoaderService implements CommandLineRunner {
                         .roles(EnumSet.of(Role.STAFF))
                         // TODO: Remove this id after presentation
                         .associatedId("google-oauth2|111158373482141727647")
+                        .isSubscribed(false)
                         .build()
         );
         students.add(
@@ -100,6 +102,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .build())
                         .roles(EnumSet.of(Role.STAFF))
                         .associatedId("google-oauth2|111871631735892967671")
+                        .isSubscribed(false)
                         .build()
         );
         students.add(
@@ -121,6 +124,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .build())
                         .associatedId("google-oauth2|106264117745944422000")
                         .roles(EnumSet.of(Role.STAFF))
+                        .isSubscribed(false)
                         .build()
         );
         students.add(
@@ -142,6 +146,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .build())
                         .associatedId("auth0|67a0600de5c3b505111da424")
                         .roles(EnumSet.of(Role.STAFF))
+                        .isSubscribed(false)
                         .build()
         );
         students.add(
@@ -163,6 +168,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .build())
                         .roles(EnumSet.of(Role.STUDENT))
                         .associatedId("auth0|67a060b8afb46e45088b2b63")
+                        .isSubscribed(false)
                         .build()
         );
         students.add(
@@ -183,6 +189,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Brossard")
                                 .build())
                         .roles(EnumSet.of(Role.STUDENT))
+                        .isSubscribed(false)
                         .build()
         );
         students.add(
@@ -203,6 +210,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Longueuil")
                                 .build())
                         .roles(EnumSet.of(Role.STUDENT))
+                        .isSubscribed(false)
                         .build()
         );
         students.add(
@@ -223,6 +231,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Montreal")
                                 .build())
                         .roles(EnumSet.of(Role.STUDENT))
+                        .isSubscribed(false)
                         .build()
         );
         students.add(
@@ -243,6 +252,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Saint-Lambert")
                                 .build())
                         .roles(EnumSet.of(Role.STUDENT))
+                        .isSubscribed(false)
                         .build()
         );
         students.add(
@@ -263,6 +273,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Montreal")
                                 .build())
                         .roles(EnumSet.of(Role.STUDENT))
+                        .isSubscribed(false)
                         .build()
         );
         students.add(
@@ -283,6 +294,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Laval")
                                 .build())
                         .roles(EnumSet.of(Role.STUDENT))
+                        .isSubscribed(false)
                         .build()
         );
         students.add(
@@ -303,6 +315,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Brossard")
                                 .build())
                         .roles(EnumSet.of(Role.STUDENT))
+                        .isSubscribed(false)
                         .build()
         );
         students.add(
@@ -323,6 +336,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Longueuil")
                                 .build())
                         .roles(EnumSet.of(Role.STUDENT))
+                        .isSubscribed(false)
                         .build()
         );
         students.add(
@@ -343,6 +357,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Montreal")
                                 .build())
                         .roles(EnumSet.of(Role.STUDENT))
+                        .isSubscribed(false)
                         .build()
         );
 
@@ -364,6 +379,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Montreal")
                                 .build())
                         .roles(EnumSet.of(Role.STUDENT))
+                        .isSubscribed(false)
                         .build()
         );
         students.add(
@@ -384,6 +400,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Montreal")
                                 .build())
                         .roles(EnumSet.of(Role.STUDENT))
+                        .isSubscribed(false)
                         .build()
         );
         students.add(
@@ -404,6 +421,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Montreal")
                                 .build())
                         .roles(EnumSet.of(Role.STUDENT))
+                        .isSubscribed(false)
                         .build()
         );
         students.add(
@@ -424,6 +442,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Montreal")
                                 .build())
                         .roles(EnumSet.of(Role.STUDENT))
+                        .isSubscribed(false)
                         .build()
         );
         students.add(
@@ -444,6 +463,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Montreal")
                                 .build())
                         .roles(EnumSet.of(Role.STUDENT))
+                        .isSubscribed(false)
                         .build()
         );
         students.add(
@@ -464,6 +484,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Montreal")
                                 .build())
                         .roles(EnumSet.of(Role.STUDENT))
+                        .isSubscribed(false)
                         .build()
         );
         students.add(
@@ -484,6 +505,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Montreal")
                                 .build())
                         .roles(EnumSet.of(Role.STUDENT))
+                        .isSubscribed(false)
                         .build()
         );
         students.add(
@@ -504,6 +526,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Montreal")
                                 .build())
                         .roles(EnumSet.of(Role.STUDENT))
+                        .isSubscribed(false)
                         .build()
         );
 
@@ -525,6 +548,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Montreal")
                                 .build())
                         .roles(EnumSet.of(Role.STUDENT))
+                        .isSubscribed(false)
                         .build()
         );
         students.add(
@@ -546,6 +570,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .build())
                         .roles(EnumSet.of(Role.CLIENT))
                         .associatedId("auth0|67a441ddb02082c6c00f7718")
+                        .isSubscribed(false)
                         .build()
         );
         students.add(
@@ -566,6 +591,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Vancouver")
                                 .build())
                         .roles(EnumSet.of(Role.CLIENT))
+                        .isSubscribed(true)
                         .build()
         );
         students.add(
@@ -586,6 +612,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Calgary")
                                 .build())
                         .roles(EnumSet.of(Role.CLIENT))
+                        .isSubscribed(false)
                         .build()
         );
         students.add(
@@ -606,6 +633,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Halifax")
                                 .build())
                         .roles(EnumSet.of(Role.CLIENT))
+                        .isSubscribed(false)
                         .build()
         );
         students.add(
@@ -626,6 +654,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Winnipeg")
                                 .build())
                         .roles(EnumSet.of(Role.CLIENT))
+                        .isSubscribed(false)
                         .build()
         );
         students.add(
@@ -646,6 +675,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Regina")
                                 .build())
                         .roles(EnumSet.of(Role.CLIENT))
+                        .isSubscribed(false)
                         .build()
         );
         students.add(
@@ -666,6 +696,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Quebec City")
                                 .build())
                         .roles(EnumSet.of(Role.CLIENT))
+                        .isSubscribed(false)
                         .build()
         );
         students.add(
@@ -686,6 +717,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("Charlottetown")
                                 .build())
                         .roles(EnumSet.of(Role.CLIENT))
+                        .isSubscribed(false)
                         .build()
         );
         students.add(
@@ -697,7 +729,8 @@ public class DataLoaderService implements CommandLineRunner {
                         .middleName("Rachel")
                         .lastName("Taylor")
                         .dob(LocalDate.parse("1999-12-20"))
-                        .email("samprasad7220@gmail.com")
+//                        .email("samprasad7220@gmail.com")
+                        .email("jhondoesnthack@gmail.com")
                         .phone("102-345-6789")
                         .address(Address.builder()
                                 .streetAddress("6789 Willow Way")
@@ -706,6 +739,7 @@ public class DataLoaderService implements CommandLineRunner {
                                 .city("St. John's")
                                 .build())
                         .roles(EnumSet.of(Role.STUDENT))
+                        .isSubscribed(true)
                         .build()
         );
 ArrayList<Promotion> promotions = new ArrayList<>();
@@ -819,6 +853,16 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .promotionStatus(PromotionStatus.INACTIVE)
                         .build()
         );
+        promotions.add(
+                Promotion.builder()
+                        .promotionId("test-promotion-7days")
+                        .promotionName("Test Promotion 7 Days")
+                        .startDate(LocalDateTime.now().plusDays(7).plusSeconds(10).toLocalDate())
+                        .endDate(LocalDate.now().plusDays(14))
+                        .discountRate(0.10)
+                        .promotionStatus(PromotionStatus.INACTIVE)
+                        .build()
+        );
 
         ArrayList<Feedback> feedbacks = new ArrayList<>();
         feedbacks.add(
@@ -924,16 +968,16 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                 .instructorId("eb07c6c6-dc48-489f-aa20-0d7d6fb12448")
                 .cancelledDates(List.of(Instant.parse("2025-12-25T00:00:00Z"), Instant.parse("2025-01-01T00:00:00Z"), Instant.parse("2025-02-14T00:00:00Z")))
                 .build();
-        Course coursetest = Course.builder()
-                .courseId("40374c92-6c55-417e-b8bc-9dfb38740255")
-                .name("Martial Arts")
-                .userIds(userIds)
-                .startTime(Instant.now())
-                .endTime(Instant.now().plus(Duration.ofMinutes(5)))
-                .dayOfWeek(LocalDate.now().getDayOfWeek())
-                .instructorId("eb07c6c6-dc48-489f-aa20-0d7d6fb12448")
-                .cancelledDates(new ArrayList<>())
-                .build();
+//        Course coursetest = Course.builder()
+//                .courseId("40374c92-6c55-417e-b8bc-9dfb38740255")
+//                .name("Martial Arts")
+//                .userIds(userIds)
+//                .startTime(Instant.now())
+//                .endTime(Instant.now().plus(Duration.ofMinutes(5)))
+//                .dayOfWeek(LocalDate.now().getDayOfWeek())
+//                .instructorId("eb07c6c6-dc48-489f-aa20-0d7d6fb12448")
+//                .cancelledDates(new ArrayList<>())
+//                .build();
 
         ArrayList<Event> events = new ArrayList<>();
         events.add(
@@ -951,6 +995,10 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .specialRequest("I just got out of jail")
                         .eventStatus(EventStatus.PENDING)
                         .eventPrivacy(EventPrivacy.PUBLIC)
+                        .performers(List.of(
+                                students.get(0).getUserId(),
+                                students.get(1).getUserId()
+                        ))
                         .clientId(students.stream().filter(user -> user.getRoles().contains(Role.CLIENT)).toList().get(0).getUserId())
                         .build()
         );
@@ -968,6 +1016,10 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .paymentMethod(PaymentMethod.CREDIT)
                         .eventStatus(EventStatus.PENDING)
                         .eventPrivacy(EventPrivacy.PUBLIC)
+                        .performers(List.of(
+                                students.get(2).getUserId(),
+                                students.get(3).getUserId()
+                        ))
                         .clientId(students.stream().filter(user -> user.getRoles().contains(Role.CLIENT)).toList().get(0).getUserId())
                         .build()
         );
@@ -986,6 +1038,10 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .specialRequest("Aint no party like a Diddy party")
                         .eventStatus(EventStatus.PENDING)
                         .eventPrivacy(EventPrivacy.PUBLIC)
+                        .performers(List.of(
+                                students.get(2).getUserId(),
+                                students.get(3).getUserId()
+                        ))
                         .clientId(students.stream().filter(user -> user.getRoles().contains(Role.CLIENT)).toList().get(0).getUserId())
                         .build()
         );
@@ -1004,6 +1060,12 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .specialRequest("bring lean")
                         .eventStatus(EventStatus.CANCELLED)
                         .eventPrivacy(EventPrivacy.PRIVATE)
+                        .performers(List.of(
+                                students.get(2).getUserId(),
+                                students.get(3).getUserId(),
+                                students.get(4).getUserId(),
+                                students.get(5).getUserId()
+                        ))
                         .clientId(students.stream().filter(user -> user.getRoles().contains(Role.CLIENT)).toList().get(1).getUserId())
                         .build()
         );
@@ -1021,6 +1083,18 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .paymentMethod(PaymentMethod.CASH)
                         .eventStatus(EventStatus.CONFIRMED)
                         .eventPrivacy(EventPrivacy.PUBLIC)
+                        .performers(List.of(
+                                students.get(0).getUserId(),
+                                students.get(1).getUserId(),
+                                students.get(2).getUserId(),
+                                students.get(3).getUserId(),
+                                students.get(4).getUserId(),
+                                students.get(5).getUserId(),
+                                students.get(6).getUserId(),
+                                students.get(7).getUserId(),
+                                students.get(8).getUserId(),
+                                students.get(9).getUserId()
+                        ))
                         .clientId(students.stream().filter(user -> user.getRoles().contains(Role.CLIENT)).toList().get(1).getUserId())
                         .build()
         );
@@ -1038,6 +1112,14 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .paymentMethod(PaymentMethod.CASH)
                         .eventStatus(EventStatus.CONFIRMED)
                         .eventPrivacy(EventPrivacy.PRIVATE)
+                        .performers(List.of(
+                                students.get(0).getUserId(),
+                                students.get(2).getUserId(),
+                                students.get(3).getUserId(),
+                                students.get(4).getUserId(),
+                                students.get(8).getUserId(),
+                                students.get(9).getUserId()
+                        ))
                         .clientId(students.stream().filter(user -> user.getRoles().contains(Role.CLIENT)).toList().get(1).getUserId())
                         .build()
         );
@@ -1055,6 +1137,14 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .paymentMethod(PaymentMethod.CASH)
                         .eventStatus(EventStatus.CANCELLED)
                         .eventPrivacy(EventPrivacy.PUBLIC)
+                        .performers(List.of(
+                                students.get(1).getUserId(),
+                                students.get(3).getUserId(),
+                                students.get(4).getUserId(),
+                                students.get(5).getUserId(),
+                                students.get(6).getUserId(),
+                                students.get(9).getUserId()
+                        ))
                         .clientId(students.stream().filter(user -> user.getRoles().contains(Role.CLIENT)).toList().get(2).getUserId())
                         .build()
         );
@@ -1073,6 +1163,18 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .specialRequest("No special requests")
                         .eventStatus(EventStatus.PENDING)
                         .eventPrivacy(EventPrivacy.PRIVATE)
+                        .performers(List.of(
+                                students.get(0).getUserId(),
+                                students.get(1).getUserId(),
+                                students.get(2).getUserId(),
+                                students.get(3).getUserId(),
+                                students.get(4).getUserId(),
+                                students.get(5).getUserId(),
+                                students.get(6).getUserId(),
+                                students.get(7).getUserId(),
+                                students.get(8).getUserId(),
+                                students.get(9).getUserId()
+                        ))
                         .clientId(students.stream().filter(user -> user.getRoles().contains(Role.CLIENT)).toList().get(2).getUserId())
                         .build()
         );
@@ -1091,6 +1193,18 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .specialRequest("No special requests")
                         .eventStatus(EventStatus.PENDING)
                         .eventPrivacy(EventPrivacy.PUBLIC)
+                        .performers(List.of(
+                        students.get(0).getUserId(),
+                        students.get(1).getUserId(),
+                        students.get(2).getUserId(),
+                        students.get(3).getUserId(),
+                        students.get(4).getUserId(),
+                        students.get(5).getUserId(),
+                        students.get(6).getUserId(),
+                        students.get(7).getUserId(),
+                        students.get(8).getUserId(),
+                        students.get(9).getUserId()
+                ))
                         .clientId(students.stream().filter(user -> user.getRoles().contains(Role.CLIENT)).toList().get(2).getUserId())
                         .build()
         );
@@ -1109,6 +1223,18 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .specialRequest("i have chair")
                         .eventStatus(EventStatus.PENDING)
                         .eventPrivacy(EventPrivacy.PRIVATE)
+                        .performers(List.of(
+                                students.get(0).getUserId(),
+                                students.get(1).getUserId(),
+                                students.get(2).getUserId(),
+                                students.get(3).getUserId(),
+                                students.get(4).getUserId(),
+                                students.get(5).getUserId(),
+                                students.get(6).getUserId(),
+                                students.get(7).getUserId(),
+                                students.get(8).getUserId(),
+                                students.get(9).getUserId()
+                        ))
                         .clientId(students.stream().filter(user -> user.getRoles().contains(Role.CLIENT)).toList().get(3).getUserId())
                         .build()
         );
@@ -1127,6 +1253,18 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .specialRequest("No special requests")
                         .eventStatus(EventStatus.PENDING)
                         .eventPrivacy(EventPrivacy.PRIVATE)
+                        .performers(List.of(
+                                students.get(0).getUserId(),
+                                students.get(1).getUserId(),
+                                students.get(2).getUserId(),
+                                students.get(3).getUserId(),
+                                students.get(4).getUserId(),
+                                students.get(5).getUserId(),
+                                students.get(6).getUserId(),
+                                students.get(7).getUserId(),
+                                students.get(8).getUserId(),
+                                students.get(9).getUserId()
+                        ))
                         .clientId(students.stream().filter(user -> user.getRoles().contains(Role.CLIENT)).toList().get(3).getUserId())
                         .build()
         );
@@ -1145,6 +1283,18 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .specialRequest("No special requests")
                         .eventStatus(EventStatus.PENDING)
                         .eventPrivacy(EventPrivacy.PRIVATE)
+                        .performers(List.of(
+                                students.get(0).getUserId(),
+                                students.get(1).getUserId(),
+                                students.get(2).getUserId(),
+                                students.get(3).getUserId(),
+                                students.get(4).getUserId(),
+                                students.get(5).getUserId(),
+                                students.get(6).getUserId(),
+                                students.get(7).getUserId(),
+                                students.get(8).getUserId(),
+                                students.get(9).getUserId()
+                        ))
                         .clientId(students.stream().filter(user -> user.getRoles().contains(Role.CLIENT)).toList().get(3).getUserId())
                         .build()
         );
@@ -1163,6 +1313,18 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .specialRequest("Vegetarian meal")
                         .eventStatus(EventStatus.PENDING)
                         .eventPrivacy(EventPrivacy.PRIVATE)
+                        .performers(List.of(
+                                students.get(0).getUserId(),
+                                students.get(1).getUserId(),
+                                students.get(2).getUserId(),
+                                students.get(3).getUserId(),
+                                students.get(4).getUserId(),
+                                students.get(5).getUserId(),
+                                students.get(6).getUserId(),
+                                students.get(7).getUserId(),
+                                students.get(8).getUserId(),
+                                students.get(9).getUserId()
+                        ))
                         .clientId(students.stream().filter(user -> user.getRoles().contains(Role.CLIENT)).toList().get(4).getUserId())
                         .build()
         );
@@ -1181,6 +1343,18 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .specialRequest("Projector needed")
                         .eventStatus(EventStatus.PENDING)
                         .eventPrivacy(EventPrivacy.PUBLIC)
+                        .performers(List.of(
+                                students.get(0).getUserId(),
+                                students.get(1).getUserId(),
+                                students.get(2).getUserId(),
+                                students.get(3).getUserId(),
+                                students.get(4).getUserId(),
+                                students.get(5).getUserId(),
+                                students.get(6).getUserId(),
+                                students.get(7).getUserId(),
+                                students.get(8).getUserId(),
+                                students.get(9).getUserId()
+                        ))
                         .clientId(students.stream().filter(user -> user.getRoles().contains(Role.CLIENT)).toList().get(4).getUserId())
                         .build()
         );
@@ -1199,6 +1373,18 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .specialRequest("Whiteboard needed")
                         .eventStatus(EventStatus.PENDING)
                         .eventPrivacy(EventPrivacy.PUBLIC)
+                        .performers(List.of(
+                                students.get(0).getUserId(),
+                                students.get(1).getUserId(),
+                                students.get(2).getUserId(),
+                                students.get(3).getUserId(),
+                                students.get(4).getUserId(),
+                                students.get(5).getUserId(),
+                                students.get(6).getUserId(),
+                                students.get(7).getUserId(),
+                                students.get(8).getUserId(),
+                                students.get(9).getUserId()
+                        ))
                         .clientId(students.stream().filter(user -> user.getRoles().contains(Role.CLIENT)).toList().get(4).getUserId())
                         .build()
         );
@@ -1217,6 +1403,7 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .specialRequest("Handouts needed")
                         .eventStatus(EventStatus.PENDING)
                         .eventPrivacy(EventPrivacy.PRIVATE)
+                        .performers(List.of())
                         .clientId(students.stream().filter(user -> user.getRoles().contains(Role.CLIENT)).toList().get(4).getUserId())
                         .build()
         );
@@ -1236,6 +1423,7 @@ ArrayList<Promotion> promotions = new ArrayList<>();
                         .specialRequest("Handouts needed")
                         .eventStatus(EventStatus.COMPLETED)
                         .eventPrivacy(EventPrivacy.PRIVATE)
+                        .performers(List.of())
                         .clientId("c56a8e9d-4362-42c8-965d-2b8b98f9f4d9")
                         .build()
         );
@@ -1263,7 +1451,7 @@ ArrayList<Promotion> promotions = new ArrayList<>();
         eventRepository.insert(events).subscribe();
         userRepository.insert(students).subscribe();
         courseRepository.insert(course).subscribe();
-        courseRepository.insert(coursetest).subscribe();
+//        courseRepository.insert(coursetest).subscribe();
         promotionRepository.insert(promotions).subscribe();
         feedbackRepository.insert(feedbacks).subscribe();
         classFeedbackRepository.insert(classFeedbacks).subscribe();

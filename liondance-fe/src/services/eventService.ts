@@ -63,6 +63,39 @@ export const useEventService = () => {
     return response.data;
   };
 
+  const handleRequestFeedback = async (eventId: string) => {
+    try {
+      await axiosInstance.post(`/events/${eventId}/request-feedback`);
+      alert("Feedback request sent successfully.");
+    } catch (error) {
+      console.error("Error sending feedback request:", error);
+      alert("Failed to send feedback request.");
+    }
+  };
+
+  const assignPerformers = async (
+    eventId: string,
+    performers: string[]
+  ): Promise<Event> => {
+    const response = await axiosInstance.patch<Event>(
+      `/events/${eventId}/assign-performers`,
+      { performers }
+    );
+    return response.data;
+  }
+
+  const removePerformers = async (
+    eventId: string,
+    performers: string[]
+  ): Promise<Event> => {
+    const response = await axiosInstance.patch<Event>(
+      `/events/${eventId}/remove-performers`,
+      { performers }
+    );
+    return response.data;
+  }
+
+
   return {
     getAllEvents,
     bookEvent,
@@ -72,5 +105,8 @@ export const useEventService = () => {
     getSelfEvents,
     fetchPublicEvents,
     updateEventDetails,
+    handleRequestFeedback,
+    assignPerformers,
+    removePerformers,
   };
 };

@@ -1,0 +1,283 @@
+.promotions-container {
+    padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+
+.promotion-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1000px;
+    padding: 30px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #ECBA4B;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); 
+    transition: box-shadow 0.3s ease; 
+    flex-direction: column;
+}
+
+h3 {
+    font-size: 24px;
+    color: #333;
+    font-weight: bold;
+    margin: 20px 0;
+    text-align: center;
+    background-color: #ECBA4B;
+    padding: 10px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.promotion-card:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+.promotion-info {
+    width: 100%;
+    padding-right: 20px;
+    text-align: center;
+}
+
+.promotion-header {
+    font-size: 28px;
+    color: #d10000;
+    font-weight: bold;
+}
+
+.promotion-details {
+    margin-top: 15px;
+    width: 100%;
+    text-align: center;
+}
+
+.promotion-detail {
+    margin: 8px 0;
+    font-size: 22px;
+    color: #333;
+}
+
+.promotion-status {
+    font-weight: bold;
+    color: #007BFF;
+}
+
+.loading, .error {
+    text-align: center;
+    font-size: 1.2rem;
+    margin: 2rem;
+}
+
+.promotions-title {
+    font-size: 32px;
+    color: #000000;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 900;
+    width: 100%;
+    max-width: 600px;
+    letter-spacing: 0.5px;
+    background-color: #ECBA4B;
+    padding: 15px 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.promotion-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    justify-content: center;
+}
+
+.action-button {
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+}
+
+.edit-button {
+    background-color: #d10000;
+    color: white;
+}
+
+.edit-button:hover {
+    background-color: #b00000;
+}
+
+.back-button {
+    background-color: #FFDB58;
+    color: #333;
+}
+
+.back-button:hover {
+    background-color: #FFD700;
+}
+
+.promotion-form {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.promotion-form-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
+.form-group label {
+    font-size: 22px;
+    font-weight: bold;
+    color: #333;
+}
+
+.form-input {
+    padding: 12px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    font-size: 20px;
+    width: 100%;
+    background-color: white;
+    transition: all 0.3s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #d10000;
+    box-shadow: 0 0 0 3px rgba(209, 0, 0, 0.1);
+}
+
+.form-input:disabled {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+}
+
+select.form-input {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 36px;
+}
+
+.form-error {
+    color: #d10000;
+    font-size: 16px;
+    margin-top: 4px;
+}
+
+/* Modal Container Styling */
+.mantine-Modal-modal {
+    background-color: #ffcc33; /* Yellow background */
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+    margin: auto;
+}
+
+/* Title Styling */
+.mantine-Modal-title {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    color: #000000;
+    margin-bottom: 20px;
+}
+
+/* Label Styling */
+label {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #000000;
+    margin-bottom: 8px;
+    display: block;
+}
+
+/* Input Field Styling */
+.mantine-Checkbox-input {
+    background-color: #cc4c4c; /* Red background for inputs */
+    color: #ffffff; /* White text */
+}
+
+/* Button Styling */
+.mantine-Button-root {
+    background-color: #a94444; /* Dark red */
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    padding: 12px 20px;
+    margin-top: 20px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+
+.mantine-Button-root:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.mantine-Button-root:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Error Message Styling */
+.error {
+    background-color: #f8d7da; /* Light red background */
+    color: #721c24; /* Dark red text */
+    border: 1px solid #f5c6cb;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+/* General Modal Layout */
+.mantine-Modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Centered Alignment for the Submit Button */
+.mantine-Modal-footer {
+    text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .promotion-card, .promotions-title, .promotion-form {
+        width: 90%;
+    }
+
+    .promotion-info, .promotion-details {
+        width: 100%;
+    }
+}

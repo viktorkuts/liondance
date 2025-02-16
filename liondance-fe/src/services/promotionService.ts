@@ -20,9 +20,23 @@ export const usePromotionService = () => {
     return response.data;
   };
 
+ 
+ const createPromotion = async (promotionData: Partial<Promotion>): Promise<Promotion> => {
+  const response = await axiosInstance.post<Promotion>("/promotions", promotionData);
+  return response.data;
+};
+
+
+const deletePromotion = async (promotionId: string): Promise<void> => {
+  await axiosInstance.delete(`/promotions/${promotionId}`);
+};
+
+
   return {
     getAllPromotions,
     getPromotionById,
-    updatePromotion
+    updatePromotion,
+    createPromotion,
+    deletePromotion
   };
 };

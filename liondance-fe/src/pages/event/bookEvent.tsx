@@ -177,6 +177,7 @@ function BookEvent() {
       specialRequest: values.specialRequest,
       eventStatus: EventStatus.PENDING,
       eventPrivacy: values.eventPrivacy as EventPrivacy,
+      performers: [],
     };
 
     await eventService.bookEvent(newEvent);

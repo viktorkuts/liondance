@@ -33,6 +33,7 @@ export interface User {
   phone?: string;
   address: Address;
   roles?: Role[];
+  isSubscribed?: boolean;
 }
 
 export interface Student extends User {

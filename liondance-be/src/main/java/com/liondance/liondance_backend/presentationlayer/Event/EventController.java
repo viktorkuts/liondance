@@ -1,8 +1,11 @@
 package com.liondance.liondance_backend.presentationlayer.Event;
 
 import com.liondance.liondance_backend.datalayer.Event.EventStatus;
+import com.liondance.liondance_backend.datalayer.User.Student;
 import com.liondance.liondance_backend.logiclayer.Event.EventService;
 import com.liondance.liondance_backend.logiclayer.User.UserService;
+import com.liondance.liondance_backend.presentationlayer.Feedback.FeedbackRequestModel;
+import com.liondance.liondance_backend.presentationlayer.Feedback.FeedbackResponseModel;
 import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -17,6 +20,7 @@ import reactor.core.publisher.Mono;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,4 +102,52 @@ public class EventController {
     public Mono<EventResponseModel> updateEventDetails(@PathVariable String eventId, @Valid @RequestBody EventRequestModel eventRequestModel) {
         return eventService.updateEventDetails(eventId, eventRequestModel);
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping(value = "/{eventId}/feedback")
+    public Mono<ResponseEntity<FeedbackResponseModel>> submitFeedback(
+            @PathVariable String eventId,
+            @Valid @RequestBody Mono<FeedbackRequestModel> feedbackRequestModel,
+            @AuthenticationPrincipal JwtAuthenticationToken jwt) {
+
+        return userService.validate(jwt.getName())
+                .flatMap(user -> eventService.submitFeedback(eventId, feedbackRequestModel, user))
+                .map(response -> ResponseEntity.status(HttpStatus.CREATED).body(response));
+    }
+
+    @PreAuthorize("hasAuthority('STAFF')")
+    @PostMapping("/{eventId}/request-feedback")
+    public Mono<ResponseEntity<Void>> requestFeedback(@PathVariable String eventId) {
+        return eventService.requestFeedback(eventId)
+                .then(Mono.just(ResponseEntity.ok().build()));
+    }
+
+//    @PreAuthorize("hasAuthority('STAFF')")
+    @PatchMapping("/{eventId}/assign-performers")
+    public Mono<ResponseEntity<EventResponseModel>> assignPerformers(@PathVariable String eventId, @RequestBody Mono<Map<String, List<String>>> requestBody) {
+    return requestBody
+            .flatMap(body -> {
+                List<String> performerIds = body.get("performers");
+                if (performerIds == null || performerIds.isEmpty()) {
+                    return Mono.error(new IllegalArgumentException("Performers cannot be null or empty"));
+                }
+                return eventService.assignPerformers(eventId, performerIds);
+            })
+            .map(eventResponseModel -> ResponseEntity.ok().body(eventResponseModel));
+    }
+
+//    @PreAuthorize("hasAuthority('STAFF')")
+    @PatchMapping("/{eventId}/remove-performers")
+    public Mono<ResponseEntity<EventResponseModel>> removePerformers(@PathVariable String eventId, @RequestBody Mono<Map<String, List<String>>> requestBody) {
+        return requestBody
+                .flatMap(body -> {
+                    List<String> performerIds = body.get("performers");
+                    if (performerIds == null || performerIds.isEmpty()) {
+                        return Mono.error(new IllegalArgumentException("Performers cannot be null or empty"));
+                    }
+                    return eventService.removePerformers(eventId, performerIds);
+                })
+                .map(eventResponseModel -> ResponseEntity.ok().body(eventResponseModel));
+    }
+
 }

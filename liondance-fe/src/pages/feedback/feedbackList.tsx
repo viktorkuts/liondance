@@ -5,28 +5,26 @@ import "./feedbackList.css";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-interface FeedbackListProps {
-  eventId: string;
-}
-
-const FeedbackList: React.FC<FeedbackListProps> = () => {
+const FeedbackList: React.FC = () => {
   const { t } = useTranslation();
-  const feedbackService = useFeedbackService();
   const { eventId } = useParams<{ eventId: string }>();
+  const feedbackService = useFeedbackService();
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!eventId) {
+      setError(t("Event ID is not defined"));
+      setLoading(false);
+      return;
+    }
+
     const fetchFeedbacks = async () => {
       try {
-        if (eventId) {
-          const data = await feedbackService.getFeedbacksByEventId(eventId);
-          setFeedbacks(data);
-        } else {
-          setError(t("Event ID is not defined"));
-        }
+        const data = await feedbackService.getFeedbacksByEventId(eventId);
+        setFeedbacks(data);
       } catch {
         setError(t("Failed to fetch feedback"));
       } finally {
@@ -35,7 +33,7 @@ const FeedbackList: React.FC<FeedbackListProps> = () => {
     };
 
     fetchFeedbacks();
-  }, [eventId, feedbackService, t]);
+  }, [eventId]);
 
   if (loading) {
     return <div>{t("Loading...")}</div>;
