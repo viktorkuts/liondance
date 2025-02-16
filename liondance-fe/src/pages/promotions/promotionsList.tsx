@@ -5,6 +5,7 @@ import { usePromotionService } from "@/services/promotionService";
 import { Promotion } from "@/models/Promotion";
 import { useTranslation } from "react-i18next";
 import "./promotions.css";
+import CreatePromotionForm from "./CreatePromotionForm";
 
 const PromotionsList: React.FC = () => {
   const { t } = useTranslation();
@@ -12,26 +13,33 @@ const PromotionsList: React.FC = () => {
   const [promotions, setPromotions] = useState<Promotion[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [showCreateForm, setShowCreateForm] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchPromotions = async () => {
-      try {
-        const data = await promotionService.getAllPromotions();
-        if (Array.isArray(data)) {
-          setPromotions(data);
-        } else {
-          throw new Error("Unexpected response format");
-        }
-      } catch (err) {
-        setError(t("Failed to fetch promotions. Please try again later.") + err);
-      } finally {
-        setLoading(false);
+  const fetchPromotions = async () => {
+    try {
+      const data = await promotionService.getAllPromotions();
+      if (Array.isArray(data)) {
+        setPromotions(data);
+      } else {
+        throw new Error("Unexpected response format");
       }
-    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      setError(t("Failed to fetch promotions. Please try again later.") + " " + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchPromotions();
   }, [promotionService, t]);
+
+  const handleCreateSuccess = () => {
+    setShowCreateForm(false);
+    fetchPromotions();
+  };
 
   if (loading) return <Loader />;
   if (error) return <div className="error">{error}</div>;
@@ -39,6 +47,20 @@ const PromotionsList: React.FC = () => {
   return (
     <div className="promotions-container">
       <h1 className="promotions-title">{t("All Promotions")}</h1>
+      <button 
+        className="action-button edit-button" 
+        onClick={() => setShowCreateForm(!showCreateForm)}
+      >
+        {showCreateForm ? t("Cancel") : t("Create Promotion")}
+      </button>
+      {showCreateForm && (
+        <div className="promotion-card">
+          <CreatePromotionForm 
+            onSuccess={handleCreateSuccess} 
+            onCancel={() => setShowCreateForm(false)} 
+          />
+        </div>
+      )}
       {promotions.length > 0 ? promotions.map((promotion, index) => (
         <div 
           key={promotion.promotionId || `promotion-${index}`} 
