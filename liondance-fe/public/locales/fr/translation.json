@@ -288,7 +288,7 @@
     "Promotions!": "Promotions!",
     "Subscribe to Promotions": "S'abonner aux promotions",
     "I want to receive promotional emails": "Je veux recevoir des e-mails promotionnels",
-    "*leave unchecked to stop receiving emails": "*laissez décoché pour arrêter de recevoir des e-mails"
+    "*leave unchecked to stop receiving emails": "*laissez décoché pour arrêter de recevoir des e-mails",
     "Class Feedback Reports": "Rapports de retour sur les cours",
     "No reports available.": "Aucun rapport disponible.",
     "Average Score": "Note moyenne",
@@ -299,5 +299,7 @@
     "Rating (1-5)": "Évaluation (1-5)",
     "Submitting...": "Soumission en cours...",
     "Event ID is missing.": "L'ID de l'événement est manquant.",
-    "Back to My Events": "Retour à mes événements"
+    "Back to My Events": "Retour à mes événements",
+    "Create Promotion": "Créer une promotion",
+    "Discount Rate (%)": "Taux de réduction (%)"
 }

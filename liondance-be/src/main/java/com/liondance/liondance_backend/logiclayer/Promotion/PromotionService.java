@@ -9,4 +9,6 @@ public interface PromotionService {
     Flux<PromotionResponseModel> getAllPromotions();
     Mono<PromotionResponseModel> getPromotionById(String promotionId);
     Mono<PromotionResponseModel> updatePromotion(String promotionId, PromotionRequestModel promotionRequestModel);
+    Mono<PromotionResponseModel> createPromotion(PromotionRequestModel promotionRequestModel);
+    Mono<Void> deletePromotion(String promotionId);
 }

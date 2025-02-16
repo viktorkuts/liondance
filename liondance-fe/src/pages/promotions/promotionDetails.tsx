@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { Loader } from "@mantine/core";
 import { usePromotionService } from "@/services/promotionService";
 import { Promotion } from "@/models/Promotion";
@@ -15,6 +15,7 @@ const PromotionDetails: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const navigate = useNavigate();
 
   const fetchPromotion = async () => {
     try {
@@ -45,6 +46,18 @@ const PromotionDetails: React.FC = () => {
     setIsEditing(false);
     fetchPromotion(); 
 
+  };
+
+  const handleDelete = async () => {
+    if (window.confirm(t("Are you sure you want to delete this promotion?"))) {
+      try {
+        await promotionService.deletePromotion(promotionId!);
+        navigate("/promotions");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (err: any) {
+        setError(t("Failed to delete promotion. Please try again later.") + " " + err.message);
+      }
+    }
   };
 
   if (loading) return <Loader />;
@@ -83,6 +96,12 @@ const PromotionDetails: React.FC = () => {
                   onClick={handleEditClick}
                 >
                   {t("Edit")}
+                </button>
+                <button 
+                  className="action-button delete-button"
+                  onClick={handleDelete}
+                >
+                  {t("Delete")}
                 </button>
               </div>
             </div>

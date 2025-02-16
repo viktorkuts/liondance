@@ -288,7 +288,7 @@
     "Promotions!": "Promotions!",
     "Subscribe to Promotions": "Subscribe to Promotions",
     "I want to receive promotional emails": "I want to receive promotional emails",
-    "*leave unchecked to stop receiving emails": "*leave unchecked to stop receiving emails"
+    "*leave unchecked to stop receiving emails": "*leave unchecked to stop receiving emails",
     "Class Feedback Reports": "Class Feedback Reports",
     "No reports available.": "No reports available.",
     "Average Score": "Average Score",
@@ -299,5 +299,7 @@
     "Rating (1-5)": "Rating (1-5)",
     "Event ID is missing.": "Event ID is missing.",
     "Submitting...": "Submitting...",
-    "Back to My Events": "Back to My Events"
+    "Back to My Events": "Back to My Events",
+    "Create Promotion": "Create Promotion",
+    "Discount Rate (%)" : "Discount Rate (%)"
 }
