@@ -791,7 +791,6 @@ class UserControllerIntegrationTest {
                     assertEquals(user1.getLastName(), response.getLastName());
                 });
 
-        // Verify the user was updated in the repository
         StepVerifier.create(userRepository.findUserByUserId(userId))
                 .assertNext(user -> {
                     assertEquals(staff.getAssociatedId(), user.getAssociatedId());
@@ -819,7 +818,6 @@ class UserControllerIntegrationTest {
         String userId = user1.getUserId();
         String existingAssociatedId = "existingAssociatedId";
 
-        // First, set an existing associated ID
         StepVerifier.create(userRepository.findUserByUserId(userId)
                 .flatMap(user -> {
                     user.setAssociatedId(existingAssociatedId);
