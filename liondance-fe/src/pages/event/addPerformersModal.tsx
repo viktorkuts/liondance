@@ -12,20 +12,20 @@ interface AddPerformersModalProps {
 }
 
 const AddPerformersModal: React.FC<AddPerformersModalProps> = ({ event, onClose, onAddPerformers }) => {
-    const [selectedPerformers, setSelectedPerformers] = useState<string[]>([]);
-    const [students, setStudents] = useState<Student[]>([]);
+    const [performerIds, setPerformerIds] = useState<string[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
+    const [students, setStudents] = useState<Student[]>([]);
     const eventService = useEventService();
-    const studentService = useUserService();
+    const userService = useUserService();
 
     useEffect(() => {
         const fetchStudents = async () => {
             try {
-                const data = await studentService.getAllStudents();
-                setStudents(data);
-            } catch (error) {
-                console.error("Failed to fetch students", error);
+                const studentsData = await userService.getAllStudents();
+                setStudents(studentsData);
+            } catch {
+                setError("Failed to fetch students. Please try again.");
             }
         };
 
@@ -36,7 +36,7 @@ const AddPerformersModal: React.FC<AddPerformersModalProps> = ({ event, onClose,
         setLoading(true);
         setError(null);
         try {
-            const updatedEvent = await eventService.addPerformers(event.eventId!, selectedPerformers);
+            const updatedEvent = await eventService.assignPerformers(event.eventId!, performerIds);
             onAddPerformers(updatedEvent);
             onClose();
         } catch {
@@ -49,11 +49,14 @@ const AddPerformersModal: React.FC<AddPerformersModalProps> = ({ event, onClose,
     return (
         <Modal opened={true} onClose={onClose} title="Add Performers">
             <MultiSelect
-                data={students.map(student => ({ value: student.userId, label: `${student.firstName} ${student.lastName}` }))}
-                value={selectedPerformers}
-                onChange={setSelectedPerformers}
-                placeholder="Select performers"
-                label="Performers"
+                label="Select Performers"
+                placeholder="Pick performers"
+                data={students.map(student => ({ value: student.userId!, label: `${student.firstName} ${student.lastName}` }))}
+                value={performerIds}
+                onChange={setPerformerIds}
+                searchable
+                nothingFound="No students found"
+                clearable
             />
             {error && <div className="error">{error}</div>}
             <Button onClick={handleAddPerformers} loading={loading}>
