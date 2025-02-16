@@ -143,17 +143,22 @@ public class UserServiceImpl implements UserService {
                     student.setRegistrationStatus(registrationStatus.getRegistrationStatus());
 
                     if(registrationStatus.getRegistrationStatus() == RegistrationStatus.ACTIVE) {
+                        // Create link with userId as parameter for frontend to handle account linking
+                        String accountLinkUrl = "https://fe.dev.kleff.io/link-account?userId=" + student.getUserId();
+                        
                         message = new StringBuilder()
                                 .append("Congratulations, ")
                                 .append(student.getFirstName())
                                 .append("!")
                                 .append("\nYour registration has been approved.")
-                                .append("\nYou can now access all features of Lion Dance.")
+                                .append("\n\nTo complete your registration and access Lion Dance, please link your Google account:")
+                                .append("\n" + accountLinkUrl)
+                                .append("\n\nOnce linked, you can sign in using your Google account.")
                                 .append("\n\nThank you for joining Lion Dance!")
                                 .toString();
 
                         userRepository.save(student).subscribe();
-                    }else{
+                    } else {
                         message = new StringBuilder()
                                 .append("We're sorry, ")
                                 .append(student.getFirstName())
@@ -166,7 +171,7 @@ public class UserServiceImpl implements UserService {
                         userRepository.delete(student).subscribe();
                     }
 
-                    Boolean status = notificationService.sendMail(
+                    notificationService.sendMail(
                             student.getEmail(),
                             "Lion Dance - Registration Update",
                             message,
@@ -337,6 +342,33 @@ public class UserServiceImpl implements UserService {
     public Mono<User> validate(String subId){
         return userRepository.findUserByAssociatedId(subId)
                 .switchIfEmpty(Mono.error(new NotFoundException("Session user is not associated")));
+    }
+
+    @Override
+    public Mono<UserResponseModel> linkUserAccount(String userId, JwtAuthenticationToken jwt) {
+        if (jwt == null || jwt.getName() == null) {
+            return Mono.error(new IllegalArgumentException("Authentication token is required"));
+        }
+
+        return userRepository.findUserByUserId(userId)
+                .switchIfEmpty(Mono.error(new NotFoundException("User with userId: " + userId + " not found")))
+                .flatMap(user -> {
+                    if (user.getAssociatedId() != null) {
+                        return Mono.error(new IllegalStateException("Account is already linked"));
+                    }
+                    
+                    return userRepository.findUserByAssociatedId(jwt.getName())
+                            .hasElement()
+                            .flatMap(exists -> {
+                                if (exists) {
+                                    return Mono.error(new IllegalStateException("Google account is already linked to another user"));
+                                }
+                                
+                                user.setAssociatedId(jwt.getName());
+                                return userRepository.save(user);
+                            });
+                })
+                .map(UserResponseModel::from);
     }
 
 }

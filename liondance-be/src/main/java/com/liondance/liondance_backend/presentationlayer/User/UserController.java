@@ -70,4 +70,9 @@ public class UserController {
     public Mono<UserResponseModel> updateUserRole(@PathVariable String userId, @RequestBody UserRolePatchRequestModel role) {
         return userService.updateUserRole(userId, role);
     }
+
+    @PatchMapping("/{userId}/link-account")
+    public Mono<UserResponseModel> linkUserAccount(@PathVariable String userId, JwtAuthenticationToken jwt) {
+        return userService.linkUserAccount(userId, jwt);
+    }
 }

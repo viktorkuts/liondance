@@ -131,6 +131,10 @@ export const useUserService = () => {
     );
   };
 
+  const linkUserAccount = async (userId: string): Promise<AxiosResponse<User>> => {
+    return await axiosInstance.patch<User>(`/users/${userId}/link-account`);
+  };
+
   return {
     getAllUsers,
     getUserProfile,
@@ -150,5 +154,6 @@ export const useUserService = () => {
     registerClient,
     getClientProfile,
     registerUser,
+    linkUserAccount,
   };
 };
