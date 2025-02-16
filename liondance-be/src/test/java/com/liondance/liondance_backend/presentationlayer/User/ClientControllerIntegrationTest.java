@@ -167,10 +167,8 @@ public class ClientControllerIntegrationTest {
 
     @Test
     void addClientExists_thenReturnsClient() {
-        // Clear the database to ensure a clean state
         userRepository.deleteAll().block();
 
-        // Insert the initial test data (client1 and client2)
         userRepository.save(client1).block();
         userRepository.save(client2).block();
 
@@ -182,7 +180,6 @@ public class ClientControllerIntegrationTest {
                 .phone("1234567890")
                 .build();
 
-        // Attempt to add a new client with the same email as client1
         webTestClient
                 .mutateWith(WebTestAuthConfig.getAuthFor(client1))
                 .mutateWith(WebTestAuthConfig.csrfConfig)
@@ -196,7 +193,6 @@ public class ClientControllerIntegrationTest {
                 .jsonPath("$.lastName").isEqualTo(client1.getLastName())
                 .jsonPath("$.email").isEqualTo(client1.getEmail());
 
-        // Verify that no new records were added (total records should still be 2)
         StepVerifier.create(userRepository.findAll())
                 .expectNextMatches(user -> user.getUserId().equals(client1.getUserId()))
                 .expectNextMatches(user -> user.getUserId().equals(client2.getUserId()))
