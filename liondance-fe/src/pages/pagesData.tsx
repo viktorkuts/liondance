@@ -23,6 +23,7 @@ import ClientProfile from "@/components/clientProfile";
 import GetMyEvents from "./event/clientEventPage";
 import SubscribeToPromotions from "./promotions/subscribeToPromotions";
 import ClassFeedbackReportPage from "./feedback/ClassFeedbackReportPage";
+import { LinkAccount } from "@/components/LinkAccount";
 import FeedbackForm from "./feedback/feedbackForm";
 
 const pagesData: routerType[] = [
@@ -146,7 +147,12 @@ const pagesData: routerType[] = [
     element: <ClassFeedbackReportPage />,
     title: "Class Feedback Reports",
   },
-    {
+  {
+    path: "link-account",
+    element: <LinkAccount />,
+    title: "Link Account",
+  },
+  {
     path: "feedback-form/:eventId",
     element: <FeedbackForm />,
     title: "Feedback Form",

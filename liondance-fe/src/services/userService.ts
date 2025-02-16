@@ -131,6 +131,10 @@ export const useUserService = () => {
     );
   };
 
+  const linkUserAccount = async (userId: string): Promise<AxiosResponse<User>> => {
+    return await axiosInstance.patch<User>(`/users/${userId}/link-account`);
+  };
+
   const subscribeToPromotions = async (
     userId: string,
     isSubscribed: boolean
@@ -161,6 +165,7 @@ export const useUserService = () => {
     registerClient,
     getClientProfile,
     registerUser,
+    linkUserAccount,
     subscribeToPromotions,
   };
 };

@@ -25,5 +25,6 @@ public interface UserService {
     Mono<UserResponseModel> updateStudent(String studentId, StudentRequestModel studentRequestModel);
     Mono<User> validate(String subId);
     Mono<UserResponseModel> getClientDetails(String clientId);
+    Mono<UserResponseModel> linkUserAccount(String userId, JwtAuthenticationToken jwt);
     Mono<UserResponseModel> subscribeToPromotions(String userId, Boolean isSubscribed);
 }

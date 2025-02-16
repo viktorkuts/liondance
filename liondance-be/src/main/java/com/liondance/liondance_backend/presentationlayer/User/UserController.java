@@ -72,6 +72,11 @@ public class UserController {
         return userService.updateUserRole(userId, role);
     }
 
+    @PatchMapping("/{userId}/link-account")
+    public Mono<UserResponseModel> linkUserAccount(@PathVariable String userId, JwtAuthenticationToken jwt) {
+        return userService.linkUserAccount(userId, jwt);
+    }
+
     @PatchMapping("{userId}/subscription")
     public Mono<UserResponseModel> subscribeToPromotions(@PathVariable String userId, @RequestBody Mono<Map<String, Boolean>> requestBody) {
         return requestBody

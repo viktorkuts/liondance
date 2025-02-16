@@ -770,5 +770,72 @@ class UserControllerIntegrationTest {
                 .expectBody()
                 .jsonPath("$.message").isEqualTo("isSubscribed cannot be null or empty");
     }
-    
+
+
+    @Test
+    void whenLinkUserAccountWithValidId_thenReturnUpdatedUserResponseModel() {
+        String userId = user1.getUserId();
+
+        client
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .patch()
+                .uri("/api/v1/users/{userId}/link-account", userId)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(UserResponseModel.class)
+                .value(response -> {
+                    assertEquals(userId, response.getUserId());
+                    assertEquals(staff.getAssociatedId(), response.getAssociatedId());
+                    assertEquals(user1.getFirstName(), response.getFirstName());
+                    assertEquals(user1.getLastName(), response.getLastName());
+                });
+
+        StepVerifier.create(userRepository.findUserByUserId(userId))
+                .assertNext(user -> {
+                    assertEquals(staff.getAssociatedId(), user.getAssociatedId());
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void whenLinkUserAccountWithInvalidId_thenReturnNotFound() {
+        String invalidUserId = "nonexistent-user-id";
+
+        client
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .patch()
+                .uri("/api/v1/users/{userId}/link-account", invalidUserId)
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody()
+                .jsonPath("$.message").isEqualTo("User with userId: " + invalidUserId + " not found");
+    }
+
+    @Test
+    void whenLinkUserAccountWithAlreadyLinkedAccount_thenReturnConflict() {
+        String userId = user1.getUserId();
+        String existingAssociatedId = "existingAssociatedId";
+
+        StepVerifier.create(userRepository.findUserByUserId(userId)
+                .flatMap(user -> {
+                    user.setAssociatedId(existingAssociatedId);
+                    return userRepository.save(user);
+                }))
+                .expectNextCount(1)
+                .verifyComplete();
+
+        client
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .patch()
+                .uri("/api/v1/users/{userId}/link-account", userId)
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR)
+                .expectBody()
+                .jsonPath("$.message").isEqualTo("Account is already linked");
+    }
+
+
 }
