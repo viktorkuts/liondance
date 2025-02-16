@@ -16,6 +16,7 @@ const AddPerformersModal: React.FC<AddPerformersModalProps> = ({ event, onClose,
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const [students, setStudents] = useState<Student[]>([]);
+    const [currentPerformers, setCurrentPerformers] = useState<Student[]>([]);
     const eventService = useEventService();
     const userService = useUserService();
 
@@ -23,7 +24,10 @@ const AddPerformersModal: React.FC<AddPerformersModalProps> = ({ event, onClose,
         const fetchStudents = async () => {
             try {
                 const studentsData = await userService.getAllStudents();
-                setStudents(studentsData);
+                const filteredStudents = studentsData.filter(student => !event.performers.includes(student.userId!));
+                setStudents(filteredStudents);
+                const currentPerformersData = studentsData.filter(student => event.performers.includes(student.userId!));
+                setCurrentPerformers(currentPerformersData);
             } catch {
                 setError("Failed to fetch students. Please try again.");
             }
@@ -48,8 +52,16 @@ const AddPerformersModal: React.FC<AddPerformersModalProps> = ({ event, onClose,
 
     return (
         <Modal opened={true} onClose={onClose} title="Add Performers">
+            <div>
+                <h3>Current Performers</h3>
+                <ul>
+                    {currentPerformers.map(performer => (
+                        <li key={performer.userId}>{`${performer.firstName} ${performer.lastName}`}</li>
+                    ))}
+                </ul>
+            </div>
             <MultiSelect
-                label="Select Performers"
+                label="Select Performers to add"
                 placeholder="Pick performers"
                 data={students.map(student => ({ value: student.userId!, label: `${student.firstName} ${student.lastName}` }))}
                 value={performerIds}

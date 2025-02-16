@@ -16,6 +16,7 @@ const RemovePerformersModal: React.FC<RemovePerformersModalProps> = ({ event, on
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [students, setStudents] = useState<Student[]>([]);
+  const [currentPerformers, setCurrentPerformers] = useState<Student[]>([]);
   const eventService = useEventService();
   const userService = useUserService();
 
@@ -23,7 +24,9 @@ const RemovePerformersModal: React.FC<RemovePerformersModalProps> = ({ event, on
     const fetchStudents = async () => {
       try {
         const studentsData = await userService.getAllStudents();
-        setStudents(studentsData);
+        const currentPerformersData = studentsData.filter(student => event.performers.includes(student.userId!));
+        setStudents(currentPerformersData);
+        setCurrentPerformers(currentPerformersData);
       } catch {
         setError("Failed to fetch students. Please try again.");
       }
@@ -48,14 +51,22 @@ const RemovePerformersModal: React.FC<RemovePerformersModalProps> = ({ event, on
 
   return (
     <Modal opened={true} onClose={onClose} title="Remove Performers">
+      <div>
+        <h3>Current Performers</h3>
+        <ul>
+          {currentPerformers.map(performer => (
+            <li key={performer.userId}>{`${performer.firstName} ${performer.lastName}`}</li>
+          ))}
+        </ul>
+      </div>
       <MultiSelect
-        label="Select Performers"
+        label="Select Performers to remove"
         placeholder="Pick performers"
         data={students.map(student => ({ value: student.userId!, label: `${student.firstName} ${student.lastName}` }))}
         value={performerIds}
         onChange={setPerformerIds}
         searchable
-        nothingFound="No students found"
+        nothingFound="No performers found"
         clearable
       />
       {error && <div className="error">{error}</div>}
