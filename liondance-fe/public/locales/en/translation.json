@@ -299,5 +299,7 @@
     "Rating (1-5)": "Rating (1-5)",
     "Event ID is missing.": "Event ID is missing.",
     "Submitting...": "Submitting...",
-    "Back to My Events": "Back to My Events"
+    "Back to My Events": "Back to My Events",
+    "Create Promotion": "Create Promotion",
+    "Discount Rate (%)" : "Discount Rate (%)"
 }

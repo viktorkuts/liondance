@@ -299,5 +299,7 @@
     "Rating (1-5)": "Évaluation (1-5)",
     "Submitting...": "Soumission en cours...",
     "Event ID is missing.": "L'ID de l'événement est manquant.",
-    "Back to My Events": "Retour à mes événements"
+    "Back to My Events": "Retour à mes événements",
+    "Create Promotion": "Créer une promotion",
+    "Discount Rate (%)": "Taux de réduction (%)"
 }
