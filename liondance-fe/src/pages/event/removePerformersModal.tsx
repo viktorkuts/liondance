@@ -26,7 +26,7 @@ const RemovePerformersModal: React.FC<RemovePerformersModalProps> = ({ event, on
     const fetchStudents = async () => {
       try {
         const studentsData = await userService.getAllStudents();
-        const currentPerformersData = studentsData.filter(student => event.performers.includes(student.userId!));
+        const currentPerformersData = studentsData.filter((student: Student) => event.performers.includes(student.userId!));
         setStudents(currentPerformersData);
         setCurrentPerformers(currentPerformersData);
       } catch {
@@ -35,6 +35,7 @@ const RemovePerformersModal: React.FC<RemovePerformersModalProps> = ({ event, on
     };
 
     fetchStudents();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleRemovePerformers = async () => {

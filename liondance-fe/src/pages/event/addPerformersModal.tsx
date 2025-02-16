@@ -26,9 +26,9 @@ const AddPerformersModal: React.FC<AddPerformersModalProps> = ({ event, onClose,
         const fetchStudents = async () => {
             try {
                 const studentsData = await userService.getAllStudents();
-                const filteredStudents = studentsData.filter(student => !event.performers.includes(student.userId!));
+                const filteredStudents = studentsData.filter((student: Student) => !event.performers.includes(student.userId!));
                 setStudents(filteredStudents);
-                const currentPerformersData = studentsData.filter(student => event.performers.includes(student.userId!));
+                const currentPerformersData = studentsData.filter((student: Student) => event.performers.includes(student.userId!));
                 setCurrentPerformers(currentPerformersData);
             } catch {
                 setError(t("Failed to fetch students. Please try again."));
@@ -36,6 +36,7 @@ const AddPerformersModal: React.FC<AddPerformersModalProps> = ({ event, onClose,
         };
 
         fetchStudents();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleAddPerformers = async () => {
