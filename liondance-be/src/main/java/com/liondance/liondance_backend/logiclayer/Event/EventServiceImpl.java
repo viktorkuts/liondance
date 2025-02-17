@@ -127,18 +127,18 @@ public class EventServiceImpl implements EventService {
                                                 : "Your event has been cancelled";
 
                                         String message = String.format("""
-                                            Hello %s!
-                                            
-                                            We are writing to give you an update on your event booking:
-                                            %s.
-                                            
-                                            Do not hesitate to contact us if you have any questions.
-                                            
-                                            Best regards,
-                                            
-                                            LVH Lion Dance Team
-                                            945 Chemin de Chambly, Longueuil, QC, Canada, Quebec
-                                            terry.chan@myliondance.com""",
+                                                        Hello %s!
+                                                        
+                                                        We are writing to give you an update on your event booking:
+                                                        %s.
+                                                        
+                                                        Do not hesitate to contact us if you have any questions.
+                                                        
+                                                        Best regards,
+                                                        
+                                                        LVH Lion Dance Team
+                                                        945 Chemin de Chambly, Longueuil, QC, Canada, Quebec
+                                                        terry.chan@myliondance.com""",
                                                 user.getFirstName(), statusMessage);
 
                                         Boolean success = notificationService.sendMail(
@@ -159,6 +159,7 @@ public class EventServiceImpl implements EventService {
                 .flatMap(eventRepository::save)
                 .map(EventResponseModel::from);
     }
+
 
     @Override
     public Mono<EventResponseModel> getEventById(String eventId) {
