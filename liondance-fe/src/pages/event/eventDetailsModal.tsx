@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Modal, Button, Table, Text } from "@mantine/core";
 import { Event } from "@/models/Event";
 import { useTranslation } from "react-i18next";
-import { Student } from "@/models/Users";
+import { Student, User } from "@/models/Users";
 import { useUserService } from "@/services/userService";
 import { useEventService } from "@/services/eventService"; 
 import AddPerformersModal from "./addPerformersModal";
@@ -24,11 +24,32 @@ const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
 }) => {
   const { t } = useTranslation();
   const [currentPerformers, setCurrentPerformers] = useState<Student[]>([]);
+  const [clientInfo, setClientInfo] = useState<User | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showRemoveModal, setShowRemoveModal] = useState(false);
   const userService = useUserService();
   const eventService = useEventService(); 
+
+  const fetchClientInfo = async () => {
+    try {
+      if (!event.clientId) {
+        setError(t("Client ID is missing."));
+        return;
+      }
+      const clientsResponse = await userService.getAllClients();
+      const foundClient = clientsResponse.find((client: User) => 
+        client.userId === event.clientId
+      );
+      if (foundClient) {
+        setClientInfo(foundClient);
+      } else {
+        setError(t("Client not found."));
+      }
+    } catch {
+      setError(t("Failed to fetch client information."));
+    }
+  };
 
   const fetchPerformers = async () => {
     try {
@@ -48,8 +69,9 @@ const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
   };
 
   useEffect(() => {
+    fetchClientInfo();
     fetchPerformers();
-  }, [event.performers]);
+  }, [event.clientId, event.performers]);
 
   return (
     <>
@@ -68,15 +90,15 @@ const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
             <tbody>
               <tr>
                 <td>{t("Name")}</td>
-                <td>{`${event.client?.firstName} ${event.client?.lastName}`}</td>
+                <td>{`${clientInfo?.firstName ?? t("N/A")} ${clientInfo?.lastName ?? ""}`}</td>
               </tr>
               <tr>
                 <td>{t("Email")}</td>
-                <td>{event.client?.email}</td>
+                <td>{clientInfo?.email ?? t("N/A")}</td>
               </tr>
               <tr>
                 <td>{t("Phone")}</td>
-                <td>{event.client?.phone}</td>
+                <td>{clientInfo?.phone ?? t("N/A")}</td>
               </tr>
             </tbody>
           </Table>
