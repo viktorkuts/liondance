@@ -835,4 +835,33 @@ class EventServiceImplUnitTest {
                 .expectNextMatches(performerList -> performerList.isEmpty())
                 .verifyComplete();
     }
+
+    @Test
+    void whenUpdateEventStatus_FailedToSendEmail_thenThrowMailSendException() {
+        UserResponseModel userResponse = UserResponseModel.from(client1);
+
+        Mockito.when(eventRepository.findEventByEventId(anyString()))
+                .thenReturn(Mono.just(event1));
+        Mockito.when(userService.getUserByUserId(anyString()))
+                .thenReturn(Mono.just(userResponse));
+        Mockito.when(notificationService.sendMail(
+                        eq(client1.getEmail()),
+                        eq("LVH Lion Dance Team - Event Status Update"),
+                        anyString(),
+                        eq(NotificationType.EVENT_STATUS_UPDATE)))
+                .thenReturn(false);
+
+        StepVerifier.create(eventService.updateEventStatus(event1.getEventId(), Mono.just(EventStatus.CONFIRMED)))
+                .expectErrorMatches(throwable ->
+                        throwable instanceof MailSendException &&
+                                throwable.getMessage().equals("Failed to send email to " + client1.getEmail()))
+                .verify();
+
+        verify(notificationService, times(1)).sendMail(
+                anyString(),
+                anyString(),
+                anyString(),
+                eq(NotificationType.EVENT_STATUS_UPDATE)
+        );
+    }
 }
