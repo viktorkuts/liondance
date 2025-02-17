@@ -310,5 +310,10 @@
     "No performers found": "Aucun artiste trouvé",
     "Select Performers to remove": "Sélectionnez les artistes à supprimer",
     "Create Promotion": "Créer une promotion",
-    "Discount Rate (%)": "Taux de réduction (%)"
+    "Discount Rate (%)": "Taux de réduction (%)",
+    "Event Details": "Détails de l'événement",
+    "Client Information": "Informations sur le client",
+    "Venue Information": "Informations sur le lieu",
+    "Performers": "Artistes",
+    "Date & Time": "Date et heure"
 }
