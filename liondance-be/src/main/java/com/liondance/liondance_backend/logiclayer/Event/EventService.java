@@ -27,5 +27,5 @@ public interface EventService {
     Mono<Void> requestFeedback(String eventId);
     Mono<EventResponseModel> assignPerformers(String eventId, List<String> performers);
     Mono<EventResponseModel> removePerformers(String eventId, List<String> performers);
-
+    Mono<List<String>> getPerformers(String eventId);
 }

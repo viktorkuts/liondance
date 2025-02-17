@@ -1,5 +1,6 @@
 package com.liondance.liondance_backend.logiclayer.Event;
 
+import com.liondance.liondance_backend.datalayer.Event.Event;
 import com.liondance.liondance_backend.datalayer.Event.EventPrivacy;
 import com.liondance.liondance_backend.datalayer.Event.EventRepository;
 import com.liondance.liondance_backend.datalayer.Event.EventStatus;
@@ -28,6 +29,7 @@ import reactor.core.publisher.Mono;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
@@ -362,6 +364,13 @@ public class EventServiceImpl implements EventService {
                 })
                 .flatMap(eventRepository::save)
                 .map(EventResponseModel::from);
+    }
+
+    @Override
+    public Mono<List<String>> getPerformers(String eventId) {
+        return eventRepository.findEventByEventId(eventId)
+                .switchIfEmpty(Mono.error(new NotFoundException("Event not found with ID: " + eventId)))
+                .map(event -> event.getPerformers() != null ? event.getPerformers() : new ArrayList<>());
     }
 
 }

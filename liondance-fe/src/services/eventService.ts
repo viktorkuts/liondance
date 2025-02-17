@@ -95,7 +95,11 @@ export const useEventService = () => {
     return response.data;
   }
 
-
+  const getEventPerformers = async (eventId: string): Promise<string[]> => {
+    const response = await axiosInstance.get<string[]>(`/events/${eventId}/performers`);
+    return response.data;
+  };
+  
   return {
     getAllEvents,
     bookEvent,
@@ -108,5 +112,6 @@ export const useEventService = () => {
     handleRequestFeedback,
     assignPerformers,
     removePerformers,
+    getEventPerformers,
   };
 };
