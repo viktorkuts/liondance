@@ -864,4 +864,5 @@ class EventServiceImplUnitTest {
                 eq(NotificationType.EVENT_STATUS_UPDATE)
         );
     }
+
 }
