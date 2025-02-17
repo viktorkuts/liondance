@@ -11,8 +11,7 @@ import { useTranslation } from "react-i18next";
 import { useUserService } from "@/services/userService.ts";
 import { useEventService } from "@/services/eventService.ts";
 import ContactClientModal from "./contactClientModal";
-import AddPerformersModal from "./addPerformersModal.tsx";
-import RemovePerformersModal from "./removePerformersModal.tsx";
+import EventDetailsModal from "./eventDetailsModal";
 
 interface EventWithClient extends Event {
   client?: User;
@@ -34,8 +33,7 @@ interface ExpandableEventTableProps {
   handleViewFeedback: (eventId: string) => void;
   handleRequestFeedback: (eventId: string) => void;
   handleContactClick: (event: EventWithClient) => void;
-  handleAddPerformersClick: (event: EventWithClient) => void;
-  handleRemovePerformersClick: (event: EventWithClient) => void;
+  handleRowClick: (event: EventWithClient) => void;
 }
 
 const ExpandableEventTable: React.FC<ExpandableEventTableProps> = ({
@@ -49,8 +47,7 @@ const ExpandableEventTable: React.FC<ExpandableEventTableProps> = ({
   handleViewFeedback,
   handleRequestFeedback,
   handleContactClick,
-  handleAddPerformersClick,
-  handleRemovePerformersClick,
+  handleRowClick,
 }) => {
   const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -112,7 +109,7 @@ const ExpandableEventTable: React.FC<ExpandableEventTableProps> = ({
           </thead>
           <tbody>
             {events.map((event: EventWithClient, index: number) => (
-              <tr key={event.eventId}>
+              <tr key={event.eventId} onClick={() => handleRowClick(event)}>
                 <td>{index + 1}</td>
                 <td>{`${event.client?.firstName ?? t("N/A")} ${event.client?.lastName ?? ""}`}</td>
                 <td>{event.client?.email ?? t("N/A")}</td>
@@ -139,38 +136,60 @@ const ExpandableEventTable: React.FC<ExpandableEventTableProps> = ({
                 </td>
                 <td>{t(event.eventPrivacy)}</td>
                 <td>
-                  <button onClick={() => handleStatusClick(event)}>
+                  <button onClick={(e) => { 
+                    e.stopPropagation(); 
+                    handleStatusClick(event); 
+                  }}>
                     {t(event.eventStatus) ?? t("N/A")}
                   </button>
                 </td>
                 <td>
-                  <button onClick={() => handleRescheduleClick(event)}>
+                  <button onClick={(e) => { 
+                    e.stopPropagation(); 
+                    handleRescheduleClick(event); 
+                  }}>
                     {t("Reschedule")}
                   </button>
                   {event.eventStatus === 'COMPLETED' && (
                     <button
-                      onClick={() =>
-                        event.eventId && handleViewFeedback(event.eventId)
-                      }
+                      onClick={(e) => { 
+                        e.stopPropagation();
+                        if (event.eventId) {
+                          handleViewFeedback(event.eventId);
+                        }
+                      }}
                       className="button_view_feedback"
                     >
                       {t("View Feedback")}
                     </button>
                   )}
-                  <button onClick={() => handleUpdateDetailsClick(event)} className="button_view_feedback">
+                  <button 
+                    onClick={(e) => { 
+                      e.stopPropagation(); 
+                      handleUpdateDetailsClick(event);
+                    }} 
+                    className="button_view_feedback"
+                  >
                     {t("Update Details")}
                   </button>
-                  <button onClick={() => event.eventId && handleRequestFeedback(event.eventId)}>
+                  <button 
+                    onClick={(e) => { 
+                      e.stopPropagation();
+                      if (event.eventId) {
+                        handleRequestFeedback(event.eventId);
+                      }
+                    }}
+                  >
                     {t("Request Feedback")}
                   </button>
-                  <button onClick={() => handleContactClick(event)} className="button_contact_client">
+                  <button 
+                    onClick={(e) => { 
+                      e.stopPropagation(); 
+                      handleContactClick(event);
+                    }} 
+                    className="button_contact_client"
+                  >
                     {t("Contact Client")}
-                  </button>
-                  <button onClick={() => handleAddPerformersClick(event)} className="button_add_performers">
-                    {t("Add Performers")}
-                  </button>
-                  <button onClick={() => handleRemovePerformersClick(event)} className="button_remove_performers">
-                    {t("Remove Performers")}
                   </button>
                 </td>
               </tr>
@@ -192,12 +211,11 @@ function GetAllEvents() {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showRescheduleModal, setShowRescheduleModal] = useState<boolean>(false);
   const [showUpdateDetailsModal, setShowUpdateDetailsModal] = useState<boolean>(false);
-  const [showAddPerformersModal, setShowAddPerformersModal] = useState<boolean>(false);
-  const [showRemovePerformersModal, setShowRemovePerformersModal] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: '', direction: 'none' });
   const [showContactModal, setShowContactModal] = useState<boolean>(false);
   const [selectedClientToContact, setSelectedClientToContact] = useState<EventWithClient | null>(null);
+  const [showEventDetailsModal, setShowEventDetailsModal] = useState(false);
 
   const axiosInstance = useAxiosInstance();
   const userService = useUserService();
@@ -231,7 +249,7 @@ function GetAllEvents() {
             break;
           case 'phone':
             aValue = a.client?.phone ?? '';
-            bValue = a.client?.phone ?? '';
+            bValue = b.client?.phone ?? '';
             break;
           case 'location':
             aValue = `${a.venue?.streetAddress ?? ''} ${a.venue?.city ?? ''}`.trim();
@@ -318,14 +336,9 @@ function GetAllEvents() {
     setShowUpdateDetailsModal(true);
   };
 
-  const handleAddPerformersClick = (event: EventWithClient): void => {
+  const handleRowClick = (event: EventWithClient) => {
     setSelectedEvent(event);
-    setShowAddPerformersModal(true);
-  };
-
-  const handleRemovePerformersClick = (event: EventWithClient): void => {
-    setSelectedEvent(event);
-    setShowRemovePerformersModal(true);
+    setShowEventDetailsModal(true);
   };
 
   const handleModalClose = (): void => {
@@ -343,30 +356,23 @@ function GetAllEvents() {
     setSelectedEvent(null);
   };
 
-  const handleAddPerformersModalClose = (): void => {
-    setShowAddPerformersModal(false);
-    setSelectedEvent(null);
-  };
-
-  const handleRemovePerformersModalClose = (): void => {
-    setShowRemovePerformersModal(false);
-    setSelectedEvent(null);
-  };
-
   const handleViewFeedback = (eventId: string): void => {
     navigate(`/feedbacks/${eventId}`);
   };
 
   const handleEventUpdate = (updatedEvent: Event): void => {
-    setEvents((prevEvents) =>
-      prevEvents.map((event) =>
+    setEvents(prevEvents =>
+      prevEvents.map(event => 
         event.eventId === updatedEvent.eventId 
-          ? { ...updatedEvent, client: event.client }
+          ? { ...updatedEvent, client: event.client } 
           : event
       )
     );
+    if(selectedEvent?.eventId === updatedEvent.eventId) {
+      setSelectedEvent(prev => prev ? {...prev, performers: updatedEvent.performers} : null);
+    }
   };
-
+  
   const handleReschedule = (updatedEvent: Event): void => {
     setEvents((prevEvents) =>
       prevEvents.map((event) =>
@@ -467,8 +473,7 @@ function GetAllEvents() {
             handleViewFeedback={handleViewFeedback}
             handleRequestFeedback={handleRequestFeedback}
             handleContactClick={handleContactClick}
-            handleAddPerformersClick={handleAddPerformersClick}
-            handleRemovePerformersClick={handleRemovePerformersClick}
+            handleRowClick={handleRowClick}
           />
           <ExpandableEventTable
             title={t("Pending Events")}
@@ -481,8 +486,7 @@ function GetAllEvents() {
             handleViewFeedback={handleViewFeedback}
             handleRequestFeedback={handleRequestFeedback}
             handleContactClick={handleContactClick}
-            handleAddPerformersClick={handleAddPerformersClick}
-            handleRemovePerformersClick={handleRemovePerformersClick}
+            handleRowClick={handleRowClick}
           />
           <ExpandableEventTable
             title={t("Confirmed Events")}
@@ -495,8 +499,7 @@ function GetAllEvents() {
             handleViewFeedback={handleViewFeedback}
             handleRequestFeedback={handleRequestFeedback}
             handleContactClick={handleContactClick}
-            handleAddPerformersClick={handleAddPerformersClick}
-            handleRemovePerformersClick={handleRemovePerformersClick}
+            handleRowClick={handleRowClick}
           />
           <ExpandableEventTable
             title={t("Cancelled Events")}
@@ -509,8 +512,7 @@ function GetAllEvents() {
             handleViewFeedback={handleViewFeedback}
             handleRequestFeedback={handleRequestFeedback}
             handleContactClick={handleContactClick}
-            handleAddPerformersClick={handleAddPerformersClick}
-            handleRemovePerformersClick={handleRemovePerformersClick}
+            handleRowClick={handleRowClick}
           />
           <ExpandableEventTable
             title={t("Completed Events")}
@@ -523,8 +525,7 @@ function GetAllEvents() {
             handleViewFeedback={handleViewFeedback}
             handleRequestFeedback={handleRequestFeedback}
             handleContactClick={handleContactClick}
-            handleAddPerformersClick={handleAddPerformersClick}
-            handleRemovePerformersClick={handleRemovePerformersClick}
+            handleRowClick={handleRowClick}
           />
         </div>
       )}
@@ -550,17 +551,11 @@ function GetAllEvents() {
           onUpdate={handleEventUpdate}
         />
       )}
-      {selectedEvent && showAddPerformersModal && (
-        <AddPerformersModal
+      {selectedEvent && showEventDetailsModal && (
+        <EventDetailsModal
           event={selectedEvent}
-          onClose={handleAddPerformersModalClose}
+          onClose={() => setShowEventDetailsModal(false)}
           onAddPerformers={handleEventUpdate}
-        />
-      )}
-      {selectedEvent && showRemovePerformersModal && (
-        <RemovePerformersModal
-          event={selectedEvent}
-          onClose={handleRemovePerformersModalClose}
           onRemovePerformers={handleEventUpdate}
         />
       )}

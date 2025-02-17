@@ -150,4 +150,10 @@ public class EventController {
                 .map(eventResponseModel -> ResponseEntity.ok().body(eventResponseModel));
     }
 
+    @GetMapping("/{eventId}/performers")
+    public Mono<ResponseEntity<List<String>>> getPerformers(@PathVariable String eventId) {
+        return eventService.getPerformers(eventId)
+                .map(performers -> ResponseEntity.ok().body(performers));
+    }
+
 }

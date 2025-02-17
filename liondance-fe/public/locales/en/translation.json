@@ -310,5 +310,10 @@
     "No performers found": "No performers found",
     "Select Performers to remove": "Select Performers to remove",
     "Create Promotion": "Create Promotion",
-    "Discount Rate (%)" : "Discount Rate (%)"
+    "Discount Rate (%)" : "Discount Rate (%)",
+    "Event Details": "Event Details",
+    "Client Information": "Client Information",
+    "Venue Information": "Venue Information",
+    "Performers": "Performers",
+    "Date & Time": "Date & Time"
 }

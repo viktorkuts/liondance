@@ -777,5 +777,84 @@ class EventControllerIntegrationTest {
                 .exchange()
                 .expectStatus().is5xxServerError();
     }
+
+    @Test
+    void whenGetPerformers_thenReturnPerformersList() {
+        Event event = eventRepository.findAll().blockFirst();
+        String eventId = event.getEventId();
+
+        webTestClient
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .get()
+                .uri("/api/v1/events/" + eventId + "/performers")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$").isArray()
+                .jsonPath("$[0]").isEqualTo("performer1")
+                .jsonPath("$[1]").isEqualTo("performer2");
+    }
+
+    @Test
+    void whenGetPerformers_IncorrectEndpoint_thenReturn404() {
+        Event event = eventRepository.findAll().blockFirst();
+        String eventId = event.getEventId();
+
+        webTestClient.get()
+                .uri("/api/v1/event/" + eventId + "/performers")
+                .exchange()
+                .expectStatus().isNotFound();
+    }
+
+    @Test
+    void whenGetPerformers_InvalidEventId_thenReturnNotFound() {
+        String invalidEventId = UUID.randomUUID().toString();
+
+        webTestClient
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .get()
+                .uri("/api/v1/events/" + invalidEventId + "/performers")
+                .exchange()
+                .expectStatus().isNotFound();
+    }
+
+    @Test
+    void whenGetPerformers_EventWithNoPerformers_thenReturnEmptyList() {
+        // Create an event with no performers
+        Event eventWithNoPerformers = Event.builder()
+                .eventId(UUID.randomUUID().toString())
+                .venue(
+                        new Address(
+                                "1234 Main St.",
+                                "Springfield",
+                                "Quebec",
+                                "J2X 2J4")
+                )
+                .eventDateTime(Instant.now())
+                .eventType(EventType.WEDDING)
+                .paymentMethod(PaymentMethod.CASH)
+                .specialRequest("Special request")
+                .clientId(client1.getUserId())
+                .performers(List.of())
+                .build();
+
+        // Save the event
+        StepVerifier.create(eventRepository.save(eventWithNoPerformers))
+                .expectNextCount(1)
+                .verifyComplete();
+
+        webTestClient
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .get()
+                .uri("/api/v1/events/" + eventWithNoPerformers.getEventId() + "/performers")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$").isArray()
+                .jsonPath("$.length()").isEqualTo(0);
+    }
 }
 

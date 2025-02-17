@@ -781,4 +781,58 @@ class EventServiceImplUnitTest {
                 .expectNextMatches(eventResponseModel -> eventResponseModel.getEventId().equals(event1.getEventId()))
                 .verifyComplete();
     }
+
+    @Test
+    void whenGetPerformers_withValidEventId_thenReturnPerformersList() {
+        List<String> performers = List.of("performer1", "performer2");
+        event1.setPerformers(performers);
+
+        Mockito.when(eventRepository.findEventByEventId(event1.getEventId()))
+                .thenReturn(Mono.just(event1));
+
+        StepVerifier.create(eventService.getPerformers(event1.getEventId()))
+                .expectNextMatches(performerList -> {
+                    assertEquals(2, performerList.size());
+                    assertTrue(performerList.contains("performer1"));
+                    assertTrue(performerList.contains("performer2"));
+                    return true;
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void whenGetPerformers_withNonExistentEventId_thenThrowNotFoundException() {
+        String nonExistentEventId = UUID.randomUUID().toString();
+
+        Mockito.when(eventRepository.findEventByEventId(nonExistentEventId))
+                .thenReturn(Mono.empty());
+
+        StepVerifier.create(eventService.getPerformers(nonExistentEventId))
+                .expectError(NotFoundException.class)
+                .verify();
+    }
+
+    @Test
+    void whenGetPerformers_withEmptyPerformersList_thenReturnEmptyList() {
+        event1.setPerformers(new ArrayList<>());
+
+        Mockito.when(eventRepository.findEventByEventId(event1.getEventId()))
+                .thenReturn(Mono.just(event1));
+
+        StepVerifier.create(eventService.getPerformers(event1.getEventId()))
+                .expectNextMatches(performerList -> performerList.isEmpty())
+                .verifyComplete();
+    }
+
+    @Test
+    void whenGetPerformers_withNullPerformersList_thenReturnEmptyList() {
+        event1.setPerformers(null);
+
+        Mockito.when(eventRepository.findEventByEventId(event1.getEventId()))
+                .thenReturn(Mono.just(event1));
+
+        StepVerifier.create(eventService.getPerformers(event1.getEventId()))
+                .expectNextMatches(performerList -> performerList.isEmpty())
+                .verifyComplete();
+    }
 }

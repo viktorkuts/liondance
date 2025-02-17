@@ -1,0 +1,101 @@
+.events-modal .mantine-Modal-content {
+    background-color: #ECBA4B !important;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  .events-modal .mantine-Modal-header {
+    background-color: #ECBA4B !important;
+    border-bottom: 1px solid #ffe4c4;
+    padding: 15px 20px;
+  }
+  
+  .events-modal .mantine-Modal-body {
+    background-color: #ECBA4B !important;
+    padding: 20px;
+  }
+  
+  .events-modal .mantine-Modal-title {
+    color: #000000;
+    font-size: 24px;
+    text-align: center;
+    font-weight: bold;
+    width: 100%;
+  }
+  
+  .events-modal .mantine-Modal-close {
+    color: #000000;
+    background-color: transparent;
+  }
+  
+  .events-modal .mantine-Modal-close:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  
+  .events-modal .events-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    background-color: transparent;
+  }
+  
+  .events-modal .events-table td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ffe4c4;
+    background-color: #fff7eb;
+  }
+  
+  .events-modal .events-table td:first-child {
+    background-color: #ffe4c4;
+    font-weight: 500;
+    width: 30%;
+  }
+  
+  .events-modal .events-table tr:nth-child(even) td:not(:first-child) {
+    background-color: #fff;
+  }
+  
+  .events-modal .mantine-Text-root[size="lg"] {
+    color: #000000;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+    font-weight: 500;
+  }
+  
+  .events-modal .mantine-Text-root[size="lg"]:first-of-type {
+    margin-top: 0;
+  }
+  
+  .events-modal .error {
+    color: #e53e3e;
+    text-align: center;
+    font-size: 16px;
+    margin: 10px 0;
+  }
+  
+  .events-modal .mantine-Button-root {
+    background-color: #f44336;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .events-modal .mantine-Button-root:hover {
+    background-color: #d32f2f;
+  }
+  
+  .events-modal .mantine-Modal-body div[style*="display: flex"] {
+    gap: 1rem;
+    margin-top: 1rem;
+    justify-content: center;
+  }
+  
+  .events-modal .mantine-Modal-overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
