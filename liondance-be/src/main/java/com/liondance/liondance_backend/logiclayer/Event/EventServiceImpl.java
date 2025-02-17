@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.liondance.liondance_backend.datalayer.Event.EventStatus.CONFIRMED;
 import static com.liondance.liondance_backend.datalayer.Event.EventStatus.PENDING;
 import static de.flapdoodle.os.Platform.logger;
 
@@ -112,9 +113,48 @@ public class EventServiceImpl implements EventService {
         return eventRepository.findEventByEventId(eventId)
                 .switchIfEmpty(Mono.error(new IllegalArgumentException("Event not found")))
                 .zipWith(eventStatus)
-                .map(tuple -> {
-                    tuple.getT1().setEventStatus(tuple.getT2());
-                    return tuple.getT1();
+                .flatMap(tuple -> {
+                    Event event = tuple.getT1();
+                    event.setEventStatus(tuple.getT2());
+
+                    switch (event.getEventStatus()) {
+                        case CONFIRMED:
+                        case CANCELLED:
+                            return userService.getUserByUserId(event.getClientId())
+                                    .flatMap(user -> {
+                                        String statusMessage = event.getEventStatus() == CONFIRMED
+                                                ? "Your event has been confirmed"
+                                                : "Your event has been cancelled";
+
+                                        String message = String.format("""
+                                            Hello %s!
+                                            
+                                            We are writing to give you an update on your event booking:
+                                            %s.
+                                            
+                                            Do not hesitate to contact us if you have any questions.
+                                            
+                                            Best regards,
+                                            
+                                            LVH Lion Dance Team
+                                            945 Chemin de Chambly, Longueuil, QC, Canada, Quebec
+                                            terry.chan@myliondance.com""",
+                                                user.getFirstName(), statusMessage);
+
+                                        Boolean success = notificationService.sendMail(
+                                                user.getEmail(),
+                                                "LVH Lion Dance Team - Event Status Update",
+                                                message,
+                                                NotificationType.EVENT_STATUS_UPDATE
+                                        );
+                                        if (!success) {
+                                            throw new MailSendException("Failed to send email to " + user.getEmail());
+                                        }
+                                        return Mono.just(event);
+                                    });
+                        default:
+                            return Mono.just(event);
+                    }
                 })
                 .flatMap(eventRepository::save)
                 .map(EventResponseModel::from);
