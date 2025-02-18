@@ -1,13 +1,14 @@
 package com.liondance.liondance_backend.logiclayer.Event;
 
 import com.liondance.liondance_backend.datalayer.Event.EventStatus;
-import com.liondance.liondance_backend.datalayer.User.Student;
 import com.liondance.liondance_backend.datalayer.User.User;
-import com.liondance.liondance_backend.presentationlayer.Event.EventDisplayDTO;
 import com.liondance.liondance_backend.presentationlayer.Event.EventRequestModel;
 import com.liondance.liondance_backend.presentationlayer.Event.EventResponseModel;
+import com.liondance.liondance_backend.presentationlayer.Event.PerformerResponseModel;
+import com.liondance.liondance_backend.presentationlayer.Event.PerformerStatusRequestModel;
 import com.liondance.liondance_backend.presentationlayer.Feedback.FeedbackRequestModel;
 import com.liondance.liondance_backend.presentationlayer.Feedback.FeedbackResponseModel;
+import com.liondance.liondance_backend.presentationlayer.User.UserResponseModel;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -27,5 +28,7 @@ public interface EventService {
     Mono<Void> requestFeedback(String eventId);
     Mono<EventResponseModel> assignPerformers(String eventId, List<String> performers);
     Mono<EventResponseModel> removePerformers(String eventId, List<String> performers);
-    Mono<List<String>> getPerformers(String eventId);
+    Flux<PerformerResponseModel> getPerformers(String eventId);
+    Flux<UserResponseModel> getAvailablePerformers(String eventId);
+    Mono<PerformerResponseModel> updatePerformerStatus(String eventId, String userId, PerformerStatusRequestModel requestModel);
 }

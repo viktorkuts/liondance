@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Modal, Button, Table, Text } from "@mantine/core";
 import { Event } from "@/models/Event";
 import { useTranslation } from "react-i18next";
-import { Student, User } from "@/models/Users";
+import { PerformerResponseModel, User } from "@/models/Users";
 import { useUserService } from "@/services/userService";
-import { useEventService } from "@/services/eventService"; 
+import { useEventService } from "@/services/eventService";
 import AddPerformersModal from "./addPerformersModal";
 import RemovePerformersModal from "./removePerformersModal";
 import "./eventDetailsModal.css";
+import { useNavigate } from "react-router";
 
 interface EventDetailsModalProps {
   event: Event;
@@ -23,13 +24,16 @@ const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
   onRemovePerformers,
 }) => {
   const { t } = useTranslation();
-  const [currentPerformers, setCurrentPerformers] = useState<Student[]>([]);
+  const [currentPerformers, setCurrentPerformers] = useState<
+    PerformerResponseModel[]
+  >([]);
   const [clientInfo, setClientInfo] = useState<User | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showRemoveModal, setShowRemoveModal] = useState(false);
   const userService = useUserService();
-  const eventService = useEventService(); 
+  const eventService = useEventService();
+  const navigate = useNavigate();
 
   const fetchClientInfo = async () => {
     try {
@@ -38,8 +42,8 @@ const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
         return;
       }
       const clientsResponse = await userService.getAllClients();
-      const foundClient = clientsResponse.find((client: User) => 
-        client.userId === event.clientId
+      const foundClient = clientsResponse.find(
+        (client: User) => client.userId === event.clientId
       );
       if (foundClient) {
         setClientInfo(foundClient);
@@ -58,11 +62,7 @@ const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
         return;
       }
       const performerIds = await eventService.getEventPerformers(event.eventId);
-      const studentsData = await userService.getAllStudents();
-      const performers = studentsData.filter((student: Student) =>
-        performerIds.includes(student.userId!)
-      );
-      setCurrentPerformers(performers);
+      setCurrentPerformers(performerIds);
     } catch {
       setError(t("Failed to fetch performers."));
     }
@@ -109,14 +109,16 @@ const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
           <Table className="events-table">
             <tbody>
               <tr>
+                <td>{t("Event Id")}</td>
+                <td>{event.eventId}</td>
+              </tr>
+              <tr>
                 <td>{t("Event Type")}</td>
                 <td>{event.eventType}</td>
               </tr>
               <tr>
                 <td>{t("Date & Time")}</td>
-                <td>
-                  {new Date(event.eventDateTime).toLocaleString()}
-                </td>
+                <td>{new Date(event.eventDateTime).toLocaleString()}</td>
               </tr>
               <tr>
                 <td>{t("Status")}</td>
@@ -158,8 +160,14 @@ const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
             <Table className="events-table">
               <tbody>
                 {currentPerformers.map((performer) => (
-                  <tr key={performer.userId}>
-                    <td>{`${performer.firstName} ${performer.lastName}`}</td>
+                  <tr
+                    key={performer.performer.userId}
+                    onClick={() => {
+                      navigate("/profile/" + performer.performer.userId);
+                    }}
+                  >
+                    <td>{`${performer.performer.firstName} ${performer.performer.lastName}`}</td>
+                    <td>{performer.status}</td>
                   </tr>
                 ))}
               </tbody>
@@ -183,7 +191,7 @@ const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
           onClose={() => setShowAddModal(false)}
           onAddPerformers={(updatedEvent) => {
             onAddPerformers(updatedEvent);
-            fetchPerformers(); 
+            fetchPerformers();
           }}
         />
       )}
@@ -194,7 +202,7 @@ const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
           onClose={() => setShowRemoveModal(false)}
           onRemovePerformers={(updatedEvent) => {
             onRemovePerformers(updatedEvent);
-            fetchPerformers(); 
+            fetchPerformers();
           }}
         />
       )}

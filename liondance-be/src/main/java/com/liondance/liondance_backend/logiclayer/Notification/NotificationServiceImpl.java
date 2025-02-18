@@ -67,4 +67,38 @@ public class NotificationServiceImpl implements NotificationService {
             return false;
         }
     }
+
+    public boolean sendMail(String to, String subject, String body, NotificationType notificationType, String associatedId) {
+        Notification notification = Notification.builder()
+                .notificationId(UUID.randomUUID().toString())
+                .type(notificationType)
+                .status(NotificationStatus.PENDING)
+                .recipient(to)
+                .sentAt(Instant.now())
+                .build();
+        log.debug(notification.getSentAt().toString());
+        SimpleMailMessage msg = new SimpleMailMessage(this.templateMessage);
+        msg.setTo(to);
+        msg.setSubject(subject);
+        msg.setText(body);
+        notificationRepository.save(notification).subscribe();
+        try{
+            mailSender.send(msg);
+            log.info("Email sent to {}", to);
+            notification.setStatus(NotificationStatus.SENT);
+            notification.setAssociatedId(associatedId);
+            notificationRepository.save(notification).subscribe();
+            return true;
+        } catch (MailException e) {
+            notification.setStatus(NotificationStatus.FAILED);
+            notificationRepository.save(notification).subscribe();
+            log.warn("Failed to send email to {}", to, e);
+            return false;
+        }
+    }
+
+    @Override
+    public Mono<Notification> getNotificationByAssociatedId(String associatedId, NotificationType notificationType) {
+        return notificationRepository.getNotificationByTypeAndAssociatedId(notificationType, associatedId);
+    }
 }

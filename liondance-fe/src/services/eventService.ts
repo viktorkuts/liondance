@@ -1,5 +1,10 @@
 import { useAxiosInstance } from "../utils/axiosInstance";
 import { Event, EventStatus } from "@/models/Event.ts";
+import {
+  PerformerResponseModel,
+  PerformerStatusRequestModel,
+  PerformerStatusResponseModel,
+} from "@/models/Users";
 import { AxiosResponse } from "axios";
 
 export const useEventService = () => {
@@ -82,7 +87,7 @@ export const useEventService = () => {
       { performers }
     );
     return response.data;
-  }
+  };
 
   const removePerformers = async (
     eventId: string,
@@ -93,13 +98,46 @@ export const useEventService = () => {
       { performers }
     );
     return response.data;
-  }
+  };
 
-  const getEventPerformers = async (eventId: string): Promise<string[]> => {
-    const response = await axiosInstance.get<string[]>(`/events/${eventId}/performers`);
+  const getEventPerformers = async (
+    eventId: string
+  ): Promise<PerformerResponseModel[]> => {
+    const response = await axiosInstance.get<PerformerResponseModel[]>(
+      `/events/${eventId}/performers`
+    );
     return response.data;
   };
-  
+
+  const getAllPerformers = async (
+    eventId: string
+  ): Promise<PerformerResponseModel[]> => {
+    const response = await axiosInstance.get<PerformerResponseModel[]>(
+      `/events/${eventId}/performers?type=available`
+    );
+    return response.data;
+  };
+
+  const getPerformersStatus = async (
+    eventId: string
+  ): Promise<PerformerStatusResponseModel> => {
+    const response = await axiosInstance.get<PerformerStatusResponseModel>(
+      `/events/${eventId}/performers/status`
+    );
+    return response.data;
+  };
+
+  const updatePerformersStatus = async (
+    eventId: string,
+    model: PerformerStatusRequestModel
+  ): Promise<PerformerStatusResponseModel> => {
+    const response = await axiosInstance.patch<PerformerStatusResponseModel>(
+      `/events/${eventId}/performers/status`,
+      model
+    );
+    return response.data;
+  };
+
   return {
     getAllEvents,
     bookEvent,
@@ -113,5 +151,8 @@ export const useEventService = () => {
     assignPerformers,
     removePerformers,
     getEventPerformers,
+    getAllPerformers,
+    getPerformersStatus,
+    updatePerformersStatus,
   };
 };

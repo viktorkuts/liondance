@@ -1,3 +1,34 @@
+.registrationForm {
+  width: 50vw;
+  background-color: var(--mantine-color-lionGold-1);
+  padding: 2em;
+  margin: 0 auto;
+  margin-top: 10vh;
+  border-radius: 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.loginPrompt {
+  width: 50vw;
+  background-color: var(--mantine-color-lionGold-1);
+  padding: 2em;
+  margin: 0 auto;
+  margin-top: 10vh;
+  border-radius: 25px;
+  display: flex;
+  flex-direction: column;
+}
+
+.completedForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 .events-modal .mantine-Modal-content {
   background-color: #ecba4b !important;
   border-radius: 10px;
@@ -75,7 +106,7 @@
 }
 
 .events-modal .mantine-Button-root {
-  background-color: #f44336;
+  background-color: #369ef4;
   color: white;
   padding: 10px 20px;
   border: none;
@@ -86,7 +117,7 @@
 }
 
 .events-modal .mantine-Button-root:hover {
-  background-color: #d32f2f;
+  background-color: #1b8396;
 }
 
 .events-modal .mantine-Modal-body div[style*="display: flex"] {

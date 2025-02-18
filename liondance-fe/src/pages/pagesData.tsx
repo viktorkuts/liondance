@@ -25,6 +25,7 @@ import SubscribeToPromotions from "./promotions/subscribeToPromotions";
 import ClassFeedbackReportPage from "./feedback/ClassFeedbackReportPage";
 import { LinkAccount } from "@/components/LinkAccount";
 import FeedbackForm from "./feedback/feedbackForm";
+import { PerformerConfirmation } from "./event/performerConfirmation";
 
 const pagesData: routerType[] = [
   {
@@ -156,6 +157,11 @@ const pagesData: routerType[] = [
     path: "feedback-form/:eventId",
     element: <FeedbackForm />,
     title: "Feedback Form",
+  },
+  {
+    path: "events/:eventId/performers",
+    element: <PerformerConfirmation />,
+    title: "Performance Confirmation",
   },
 ];
 
