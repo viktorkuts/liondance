@@ -12,7 +12,7 @@ const StudentList: React.FC = () => {
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
   const [statuses, setStatuses] = useState<string[]>([]);
-  
+
   useEffect(() => {
     let isMounted = true;
 
@@ -36,48 +36,51 @@ const StudentList: React.FC = () => {
     fetchStudents();
 
     return () => {
-      isMounted = false; 
+      isMounted = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [statuses]);
 
   return (
     <div className="user-list">
-      <Title order={1}>{t('Student List')}</Title>
+      <Title order={1}>{t("Student List")}</Title>
       <MultiSelect
-        data={[t('ACTIVE'), t('INACTIVE')]}
+        data={[t("ACTIVE"), t("INACTIVE")]}
         value={statuses}
         onChange={setStatuses}
-        placeholder={t('Select statuses')}
-        label={t('Filter by Status')}
+        placeholder={t("Select statuses")}
+        label={t("Filter by Status")}
       />
       {loading ? (
-        <p className="no-data">{t('Loading...')}</p>
+        <p className="no-data">{t("Loading...")}</p>
       ) : students.length === 0 ? (
-        <p className="no-data">{t('No students found.')}</p>
+        <p className="no-data">{t("No students found.")}</p>
       ) : (
         <table className="users-table">
           <thead>
             <tr>
               <th>#</th>
-              <th>{t('Name')}</th>
-              <th>{t('Email')}</th>
-              <th>{t('Date of Birth')}</th>
-              <th>{t('Registration Status')}</th>
-              <th>{t('Actions')}</th>
+              <th>{t("Name")}</th>
+              <th>{t("Email")}</th>
+              <th>{t("Date of Birth")}</th>
+              <th>{t("Registration Status")}</th>
+              <th>{t("Actions")}</th>
             </tr>
           </thead>
           <tbody>
             {students.map((student, index) => (
               <tr key={student.userId}>
                 <td>{index + 1}</td>
-                <td>{student.firstName} {student.middleName} {student.lastName}</td>
+                <td>
+                  {student.firstName} {student.middleName} {student.lastName}
+                </td>
                 <td>{student.email}</td>
                 <td>{new Date(student.dob).toLocaleDateString()}</td>
                 <td>{student.registrationStatus}</td>
                 <td>
                   <Link to={`/student-profile/${student.userId}`}>
                     <Button className="view-profile-button" variant="outline">
-                      {t('View Profile')}
+                      {t("View Profile")}
                     </Button>
                   </Link>
                 </td>

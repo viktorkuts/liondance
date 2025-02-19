@@ -71,6 +71,7 @@ const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
   useEffect(() => {
     fetchClientInfo();
     fetchPerformers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [event.clientId, event.performers]);
 
   return (

@@ -217,7 +217,7 @@ const ExpandableEventTable: React.FC<ExpandableEventTableProps> = ({
                     {t("Contact Client")}
                   </button>
                   <button
-                    onClick={(e) => {
+                    onClick={() => {
                       navigate(`/feedbacks/${event.eventId}`);
                     }}
                     className="button_contact_client"

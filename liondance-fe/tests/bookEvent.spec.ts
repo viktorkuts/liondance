@@ -7,16 +7,12 @@ prevDate.setMonth(currentDate.getMonth() - 1);
 const nextDate = new Date(currentDate);
 nextDate.setMonth(currentDate.getMonth() + 1);
 
-const { prevMonth, currentMonth, nextMonth } = {
+const { prevMonth, currentMonth } = {
   prevMonth: prevDate.toLocaleString("default", {
     year: "numeric",
     month: "long",
   }),
   currentMonth: currentDate.toLocaleString("default", {
-    year: "numeric",
-    month: "long",
-  }),
-  nextMonth: nextDate.toLocaleString("default", {
     year: "numeric",
     month: "long",
   }),

@@ -31,8 +31,7 @@ export const PerformerConfirmation = () => {
     if (debounce) return;
     setSuccess(true);
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const res = await eventService.updatePerformersStatus(eventId, {
+      await eventService.updatePerformersStatus(eventId, {
         status: sel,
       });
 

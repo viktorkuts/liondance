@@ -11,6 +11,7 @@ interface UserContextInterface {
 
 const UserContext = createContext<UserContextInterface | undefined>(undefined);
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useUserContext = () => {
   const { t } = useTranslation();
   const context = useContext(UserContext);

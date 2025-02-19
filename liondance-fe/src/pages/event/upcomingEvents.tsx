@@ -39,6 +39,7 @@ function UpcomingEvents() {
       }
     };
     fetchEvents();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [t]);
 
   if (loading) return <div className="loading">{t("Loading...")}</div>;
