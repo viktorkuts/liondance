@@ -13,9 +13,9 @@ test("can edit the details of a specific event", async ({ page }) => {
     "alice.johnson@webmail.com"
   );
   await page
-    .getByRole("row", { name: "2 Alice Johnson alice.johnson" })
+    .getByRole("row", { name: "1 Alice Johnson alice.johnson" })
     .getByRole("button")
-    .nth(3)
+    .nth(2)
     .click();
   await page
     .locator("div")
@@ -40,7 +40,7 @@ test("can edit the details of a specific event", async ({ page }) => {
   await page
     .getByRole("row", { name: "2 Alice Johnson alice.johnson" })
     .getByRole("button")
-    .nth(3)
+    .nth(2)
     .click();
   await page
     .locator("div")

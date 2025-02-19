@@ -23,7 +23,9 @@ const PromotionDetails: React.FC = () => {
       setPromotion(data);
     } catch (err) {
       setError(
-        t("Failed to load promotion details. Please try again later.") + " " + err
+        t("Failed to load promotion details. Please try again later.") +
+          " " +
+          err
       );
     } finally {
       setLoading(false);
@@ -32,6 +34,7 @@ const PromotionDetails: React.FC = () => {
 
   useEffect(() => {
     fetchPromotion();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [promotionId, promotionService, t]);
 
   const handleEditClick = () => {
@@ -44,8 +47,7 @@ const PromotionDetails: React.FC = () => {
 
   const handleEditSuccess = () => {
     setIsEditing(false);
-    fetchPromotion(); 
-
+    fetchPromotion();
   };
 
   const handleDelete = async () => {
@@ -53,9 +55,13 @@ const PromotionDetails: React.FC = () => {
       try {
         await promotionService.deletePromotion(promotionId!);
         navigate("/promotions");
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
-        setError(t("Failed to delete promotion. Please try again later.") + " " + err.message);
+        setError(
+          t("Failed to delete promotion. Please try again later.") +
+            " " +
+            err.message
+        );
       }
     }
   };
@@ -74,15 +80,16 @@ const PromotionDetails: React.FC = () => {
             <div className="promotion-header">{t(promotion.promotionName)}</div>
             <div className="promotion-details">
               <div className="promotion-detail">
-                <strong>{t("Discount Rate")}:</strong> {promotion.discountRate * 100}%
+                <strong>{t("Discount Rate")}:</strong>{" "}
+                {promotion.discountRate * 100}%
               </div>
               <div className="promotion-detail">
-                <strong>{t("Start Date")}:</strong>{' '}
-                {new Date(promotion.startDate).toLocaleDateString('en-CA')}
+                <strong>{t("Start Date")}:</strong>{" "}
+                {new Date(promotion.startDate).toLocaleDateString("en-CA")}
               </div>
               <div className="promotion-detail">
-                <strong>{t("End Date")}:</strong>{' '}
-                {new Date(promotion.endDate).toLocaleDateString('en-CA')}
+                <strong>{t("End Date")}:</strong>{" "}
+                {new Date(promotion.endDate).toLocaleDateString("en-CA")}
               </div>
               <div className="promotion-detail promotion-status">
                 <strong>{t("Status")}:</strong> {t(promotion.promotionStatus)}
@@ -91,13 +98,13 @@ const PromotionDetails: React.FC = () => {
                 <Link to="/promotions" className="action-button back-button">
                   {t("Back")}
                 </Link>
-                <button 
+                <button
                   className="action-button edit-button"
                   onClick={handleEditClick}
                 >
                   {t("Edit")}
                 </button>
-                <button 
+                <button
                   className="action-button delete-button"
                   onClick={handleDelete}
                 >

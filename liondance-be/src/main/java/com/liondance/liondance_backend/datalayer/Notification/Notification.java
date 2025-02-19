@@ -22,4 +22,5 @@ public class Notification {
     private Instant sentAt;
     private NotificationType type;
     private NotificationStatus status;
+    private String associatedId;
 }

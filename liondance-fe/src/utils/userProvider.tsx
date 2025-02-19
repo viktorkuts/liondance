@@ -11,6 +11,7 @@ interface UserContextInterface {
 
 const UserContext = createContext<UserContextInterface | undefined>(undefined);
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useUserContext = () => {
   const { t } = useTranslation();
   const context = useContext(UserContext);
@@ -38,8 +39,6 @@ export const UserProvider = ({ children }: Props) => {
         .getSessionUser()
         .then((res) => {
           console.log(t("Setting user"));
-          console.log(user);
-          console.log(lvhUser);
           setLvhUser(res.data);
         })
         .catch(() => {

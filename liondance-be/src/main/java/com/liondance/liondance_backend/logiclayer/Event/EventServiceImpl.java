@@ -1,39 +1,35 @@
 package com.liondance.liondance_backend.logiclayer.Event;
 
-import com.liondance.liondance_backend.datalayer.Event.Event;
-import com.liondance.liondance_backend.datalayer.Event.EventPrivacy;
-import com.liondance.liondance_backend.datalayer.Event.EventRepository;
-import com.liondance.liondance_backend.datalayer.Event.EventStatus;
+import com.liondance.liondance_backend.datalayer.Event.*;
 import com.liondance.liondance_backend.datalayer.Feedback.Feedback;
 import com.liondance.liondance_backend.datalayer.Feedback.FeedbackRepository;
 import com.liondance.liondance_backend.datalayer.Notification.NotificationType;
 import com.liondance.liondance_backend.datalayer.User.Role;
-import com.liondance.liondance_backend.datalayer.User.Student;
 import com.liondance.liondance_backend.datalayer.User.User;
 import com.liondance.liondance_backend.datalayer.User.UserRepository;
 import com.liondance.liondance_backend.logiclayer.Notification.NotificationService;
 import com.liondance.liondance_backend.logiclayer.User.UserService;
-import com.liondance.liondance_backend.presentationlayer.Event.EventDisplayDTO;
 import com.liondance.liondance_backend.presentationlayer.Event.EventRequestModel;
 import com.liondance.liondance_backend.presentationlayer.Event.EventResponseModel;
+import com.liondance.liondance_backend.presentationlayer.Event.PerformerResponseModel;
+import com.liondance.liondance_backend.presentationlayer.Event.PerformerStatusRequestModel;
 import com.liondance.liondance_backend.presentationlayer.Feedback.FeedbackRequestModel;
 import com.liondance.liondance_backend.presentationlayer.Feedback.FeedbackResponseModel;
+import com.liondance.liondance_backend.presentationlayer.User.UserResponseModel;
 import com.liondance.liondance_backend.presentationlayer.User.UserRolePatchRequestModel;
 import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailSendException;
-import org.springframework.security.access.AccessDeniedException;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
 import static com.liondance.liondance_backend.datalayer.Event.EventStatus.CONFIRMED;
 import static com.liondance.liondance_backend.datalayer.Event.EventStatus.PENDING;
@@ -47,6 +43,8 @@ public class EventServiceImpl implements EventService {
     private final UserService userService;
     private final FeedbackRepository feedbackRepository;
     private final UserRepository userRepository;
+    @Value("${liondance.frontend.url}")
+    private String frontendUrl;
 
     public EventServiceImpl(EventRepository eventRepository, NotificationService notificationService, UserService userService,
                             FeedbackRepository feedbackRepository, UserRepository userRepository) {
@@ -321,7 +319,7 @@ public class EventServiceImpl implements EventService {
 
                                     .toString();
 
-                            Boolean success = notificationService.sendMail(
+                            boolean success = notificationService.sendMail(
                                     user.getEmail(),
                                     "Feedback Request for Your Event",
                                     message,
@@ -341,32 +339,40 @@ public class EventServiceImpl implements EventService {
         return eventRepository.findEventByEventId(eventId)
                 .switchIfEmpty(Mono.error(new NotFoundException("Event not found with ID: " + eventId)))
                 .flatMap(event -> {
-                    event.getPerformers().addAll(performerIds);
-                    performerIds.forEach(performerId -> {
-                        userRepository.findUserByUserId(performerId)
-                                .switchIfEmpty(Mono.error(new NotFoundException("User associated with performer not found")))
-                                .flatMap(user -> {
-                                    String message = new StringBuilder()
-                                            .append("You have been asked to participate at the event on ")
-                                            .append(event.getEventDateTime().atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("MMMM dd, yyyy 'at' hh:mm a")))
-                                            .append(". If you cannot attend, please contact us.")
-                                            .toString();
+                            HashMap<String, PerformerStatus> performers = new HashMap<>(event.getPerformers());
+                            performerIds.forEach(performerId -> {
+                                performers.put(performerId, PerformerStatus.PENDING);
+                            });
+                            event.setPerformers(performers);
+                            return Flux.fromIterable(performers.entrySet())
+                                    .flatMap(entry ->
+                                        userRepository.findUserByUserId(entry.getKey())
+                                                .switchIfEmpty(Mono.error(new NotFoundException("User associated with performer not found")))
+                                                .flatMap(user -> {
+                                                    if(!entry.getValue().equals(PerformerStatus.PENDING)) return Mono.empty();
+                                                    String message = new StringBuilder()
+                                                            .append("You have been asked to participate at the event on ")
+                                                            .append(event.getEventDateTime().atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("MMMM dd, yyyy 'at' hh:mm a")))
+                                                            .append(". Use the link below to confirm:").append("\n " + frontendUrl + "/events/").append(eventId).append("/performers")
+                                                            .toString();
 
-                                    Boolean success = notificationService.sendMail(
-                                            user.getEmail(),
-                                            "Participation Request for Event",
-                                            message,
-                                            NotificationType.PERFORMANCE_REQUEST
-                                    );
+                                                    boolean success = notificationService.sendMail(
+                                                            user.getEmail(),
+                                                            "Participation Request for Event",
+                                                            message,
+                                                            NotificationType.PERFORMANCE_REQUEST,
+                                                            entry.getKey()
 
-                                    if (!success) {
-                                        throw new MailSendException("Failed to send email to " + user.getEmail());
-                                    }
-                                    return Mono.empty();
-                                }).subscribe();
-                    });
-                    return Mono.just(event);
-                })
+                                                    );
+
+                                                    if (!success) {
+                                                        return Mono.error(new MailSendException("Failed to send email to " + user.getEmail()));
+                                                    }
+                                                    return Mono.empty();
+                                                })
+                                    )
+                                    .then(Mono.just(event));
+                        })
                 .flatMap(eventRepository::save)
                 .map(EventResponseModel::from);
     }
@@ -376,41 +382,126 @@ public class EventServiceImpl implements EventService {
         return eventRepository.findEventByEventId(eventId)
                 .switchIfEmpty(Mono.error(new NotFoundException("Event not found with ID: " + eventId)))
                 .flatMap(event -> {
-                    event.getPerformers().removeIf(performerIds::contains);
-                    performerIds.forEach(performerId -> {
-                        userRepository.findUserByUserId(performerId)
-                                .switchIfEmpty(Mono.error(new NotFoundException("User associated with performer not found")))
-                                .flatMap(user -> {
-                                    String message = new StringBuilder()
-                                            .append("You have been removed from the event on ")
-                                            .append(event.getEventDateTime().atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("MMMM dd, yyyy 'at' hh:mm a")))
-                                            .append(". If you have any questions, please contact us.")
-                                            .toString();
+                    event.getPerformers().keySet().removeIf(performerIds::contains);
+                    return Flux.fromIterable(performerIds)
+                                    .flatMap(performerId -> userRepository.findUserByUserId(performerId)
+                                            .switchIfEmpty(Mono.error(new NotFoundException("User associated with performer not found")))
+                                            .flatMap(user -> {
+                                                String message = new StringBuilder()
+                                                        .append("You have been removed from the event on ")
+                                                        .append(event.getEventDateTime().atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("MMMM dd, yyyy 'at' hh:mm a")))
+                                                        .append(". If you have any questions, please contact us.")
+                                                        .toString();
 
-                                    Boolean success = notificationService.sendMail(
-                                            user.getEmail(),
-                                            "Performance Cancellation for Event",
-                                            message,
-                                            NotificationType.PERFORMANCE_UPDATE
-                                    );
+                                                boolean success = notificationService.sendMail(
+                                                        user.getEmail(),
+                                                        "Performance Cancellation for Event",
+                                                        message,
+                                                        NotificationType.PERFORMANCE_UPDATE
+                                                );
 
-                                    if (!success) {
-                                        throw new MailSendException("Failed to send email to " + user.getEmail());
-                                    }
-                                    return Mono.empty();
-                                }).subscribe();
-                    });
-                    return Mono.just(event);
+                                                if (!success) {
+                                                    return Mono.error(new MailSendException("Failed to send email to " + user.getEmail()));
+                                                }
+                                                return Mono.empty();
+                                            }))
+                                    .then(Mono.just(event));
                 })
                 .flatMap(eventRepository::save)
                 .map(EventResponseModel::from);
     }
 
     @Override
-    public Mono<List<String>> getPerformers(String eventId) {
+    public Flux<PerformerResponseModel> getPerformers(String eventId) {
         return eventRepository.findEventByEventId(eventId)
                 .switchIfEmpty(Mono.error(new NotFoundException("Event not found with ID: " + eventId)))
-                .map(event -> event.getPerformers() != null ? event.getPerformers() : new ArrayList<>());
+                .flatMap(e -> {
+                    try{
+                        return Mono.just(e.getPerformers());
+                    } catch (NullPointerException ex) {
+                        return Mono.empty();
+                    }
+                })
+                .defaultIfEmpty(new HashMap<>())
+                .flatMapMany(e -> Flux.fromIterable(e.entrySet())
+                        .flatMap(entry -> userService.getUserByUserId(entry.getKey())
+                                .flatMapMany(user -> {
+                                    PerformerResponseModel model = new PerformerResponseModel();
+                                    model.setPerformer(user);
+                                    model.setStatus(entry.getValue());
+                                    return Mono.just(model);
+                                })
+                        )
+                );
     }
 
+    @Scheduled(cron = "0 0 * * * *")
+    private void sendPerformerReminder48h(){
+        eventRepository.findAll()
+                .filter(event ->
+                        event.getEventStatus().equals(CONFIRMED)
+                                &&
+                        Instant.now().isBefore(event.getEventDateTime())
+                                &&
+                        Instant.now().isAfter(event.getEventDateTime().minus(48, ChronoUnit.HOURS))
+                )
+                .flatMap(e -> notificationService.getNotificationByAssociatedId(e.getEventId(), NotificationType.PERFORMANCE_REMINDER)
+                        .switchIfEmpty(Mono.defer(() -> Flux.fromIterable(e.getPerformers().entrySet())
+                                .flatMap(entry ->
+                                        userRepository.findUserByUserId(entry.getKey())
+                                                .flatMap(user -> {
+                                                    String message = new StringBuilder()
+                                                            .append("Performance Reminder\n")
+                                                            .append(e.getEventDateTime().atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("MMMM dd, yyyy 'at' hh:mm a")))
+                                                            .append(". If you have any questions, please contact us.")
+                                                            .toString();
+
+                                                    boolean success = notificationService.sendMail(
+                                                            user.getEmail(),
+                                                            "Upcoming Performance Reminder",
+                                                            message,
+                                                            NotificationType.PERFORMANCE_REMINDER,
+                                                            e.getEventId()
+                                                    );
+
+                                                    if (!success) {
+                                                        return Mono.error(new MailSendException("Failed to send email to " + user.getEmail()));
+                                                    }
+                                                    return Mono.empty();
+                                                })
+                                )
+                                .then(Mono.empty())
+                        ))
+                        .flatMap(n -> Mono.empty())
+                )
+                .subscribe();
+    }
+
+    @Override
+    public Flux<UserResponseModel> getAvailablePerformers(String eventId) {
+        return eventRepository.findEventByEventId(eventId)
+                .switchIfEmpty(Mono.error(new NotFoundException("Event not found with ID: " + eventId)))
+                .flatMapMany(event -> {
+                    Set<String> performers = event.getPerformers().keySet();
+                    return userService.getAllUsers()
+                            .filter(user -> user.getRoles().contains(Role.STAFF) || user.getRoles().contains(Role.ADMIN) || user.getRoles().contains(Role.STUDENT))
+                            .filter(user -> !performers.contains(user.getUserId()));
+                });
+    }
+
+    @Override
+    public Mono<PerformerResponseModel> updatePerformerStatus(String eventId, String userId, PerformerStatusRequestModel requestModel) {
+        return eventRepository.findEventByEventId(eventId)
+                .switchIfEmpty(Mono.error(new NotFoundException("Event not found")))
+                .map(e -> {
+                    e.getPerformers().replace(userId, requestModel.getStatus());
+                    return e;
+                })
+                .flatMap(eventRepository::save)
+                .flatMap(e -> userService.getUserByUserId(userId))
+                .map(u -> PerformerResponseModel.builder()
+                        .status(requestModel.getStatus())
+                        .performer(u)
+                        .build());
+    }
 }

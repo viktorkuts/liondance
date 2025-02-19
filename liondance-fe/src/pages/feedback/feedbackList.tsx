@@ -33,6 +33,7 @@ const FeedbackList: React.FC = () => {
     };
 
     fetchFeedbacks();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [eventId]);
 
   if (loading) {
@@ -49,9 +50,15 @@ const FeedbackList: React.FC = () => {
       <ul>
         {feedbacks.map((feedback) => (
           <li key={feedback.feedbackId}>
-            <p>{t("Comment")}: {feedback.feedback}</p>
-            <p>{t("Rating")}: {feedback.rating}</p>
-            <p>{t("Time")}: {new Date(feedback.timestamp).toLocaleString()}</p>
+            <p>
+              {t("Comment")}: {feedback.feedback}
+            </p>
+            <p>
+              {t("Rating")}: {feedback.rating}
+            </p>
+            <p>
+              {t("Time")}: {new Date(feedback.timestamp).toLocaleString()}
+            </p>
           </li>
         ))}
       </ul>

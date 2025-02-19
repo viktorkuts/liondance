@@ -6,6 +6,7 @@ import com.liondance.liondance_backend.datalayer.Feedback.FeedbackRepository;
 import com.liondance.liondance_backend.datalayer.Notification.NotificationType;
 import com.liondance.liondance_backend.datalayer.User.Client;
 import com.liondance.liondance_backend.datalayer.User.Role;
+import com.liondance.liondance_backend.datalayer.User.User;
 import com.liondance.liondance_backend.datalayer.User.UserRepository;
 import com.liondance.liondance_backend.datalayer.common.Address;
 import com.liondance.liondance_backend.logiclayer.Notification.NotificationService;
@@ -14,6 +15,7 @@ import com.liondance.liondance_backend.presentationlayer.Event.EventRequestModel
 import com.liondance.liondance_backend.presentationlayer.Event.EventResponseModel;
 import com.liondance.liondance_backend.presentationlayer.Feedback.FeedbackRequestModel;
 import com.liondance.liondance_backend.presentationlayer.User.UserResponseModel;
+import com.liondance.liondance_backend.utils.DataLoaderService;
 import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -65,6 +67,9 @@ class EventServiceImplUnitTest {
 
     private Client client1;
     private Client client2;
+
+    private User performer1;
+    private User performer2;
 
     @BeforeEach
     void setUp() {
@@ -129,6 +134,40 @@ class EventServiceImplUnitTest {
                 .paymentMethod(PaymentMethod.CASH)
                 .specialRequest("Special request")
                 .clientId(client2.getUserId())
+                .build();
+
+        performer1 = Client.builder()
+                .userId(UUID.randomUUID().toString())
+                .firstName("JohnPerforms")
+                .lastName("AndDoesntHack")
+                .email("liondance@yopmail.com")
+                .phone("1234567890")
+                .address(
+                        new Address(
+                                "1234 Main St.",
+                                "Springfield",
+                                "Quebec",
+                                "J2X 2J4")
+                )
+                .roles(EnumSet.of(Role.STAFF))
+                .associatedId("johntheperformer")
+                .build();
+
+        performer2 = Client.builder()
+                .userId(UUID.randomUUID().toString())
+                .firstName("JanePerforms")
+                .lastName("DoesMoves")
+                .email("liondance@yopmail.com")
+                .phone("1234567890")
+                .address(
+                        new Address(
+                                "1234 Main St.",
+                                "Springfield",
+                                "Quebec",
+                                "J2X 2J4")
+                )
+                .roles(EnumSet.of(Role.STAFF))
+                .associatedId("janetheperforma")
                 .build();
     }
 
@@ -691,14 +730,14 @@ class EventServiceImplUnitTest {
     @Test
     void assignPerformersWithValidEventAndPerformers() {
         List<String> performerIds = List.of("performer1", "performer2");
-        event1.setPerformers(new ArrayList<>());
+        event1.setPerformers(new HashMap<>());
         Mockito.when(eventRepository.findEventByEventId(anyString()))
                 .thenReturn(Mono.just(event1));
         Mockito.when(userRepository.findUserByUserId(anyString()))
                 .thenReturn(Mono.just(client1));
         Mockito.when(eventRepository.save(any(Event.class)))
                 .thenReturn(Mono.just(event1));
-        Mockito.when(notificationService.sendMail(anyString(), anyString(), anyString(), any(NotificationType.class)))
+        Mockito.when(notificationService.sendMail(anyString(), anyString(), anyString(), any(NotificationType.class), anyString()))
                 .thenReturn(true);
 
         StepVerifier.create(eventService.assignPerformers(event1.getEventId(), performerIds))
@@ -720,25 +759,23 @@ class EventServiceImplUnitTest {
 
     void assignPerformersWithFailedEmailSend_shouldThrowMailSendException() {
         List<String> performerIds = List.of("performer1", "performer2");
-        event1.setPerformers(new ArrayList<>());
+        event1.setPerformers(new HashMap<>());
         Mockito.when(eventRepository.findEventByEventId(anyString()))
                 .thenReturn(Mono.just(event1));
         Mockito.when(userRepository.findUserByUserId(anyString()))
                 .thenReturn(Mono.just(client1));
-        Mockito.when(eventRepository.save(any(Event.class)))
-                .thenReturn(Mono.just(event1));
-        Mockito.when(notificationService.sendMail(anyString(), anyString(), anyString(), any(NotificationType.class)))
+        Mockito.when(notificationService.sendMail(anyString(), anyString(), anyString(), any(NotificationType.class), anyString()))
                 .thenReturn(false);
 
         StepVerifier.create(eventService.assignPerformers(event1.getEventId(), performerIds))
-                .expectNextMatches(eventResponseModel -> eventResponseModel.getEventId().equals(event1.getEventId()))
-                .verifyComplete();
+                .expectError(MailSendException.class)
+                .verify();
     }
 
     @Test
     void removePerformersWithValidEventAndPerformers() {
         List<String> performerIds = List.of("performer1", "performer2");
-        event1.setPerformers(new ArrayList<>(performerIds));
+        event1.setPerformers(DataLoaderService.createPerformersMap("performer1", "performer2"));
         Mockito.when(eventRepository.findEventByEventId(anyString()))
                 .thenReturn(Mono.just(event1));
         Mockito.when(userRepository.findUserByUserId(anyString()))
@@ -767,36 +804,32 @@ class EventServiceImplUnitTest {
     @Test
     void removePerformersWithFailedEmailSend_shouldThrowMailSendException() {
         List<String> performerIds = List.of("performer1", "performer2");
-        event1.setPerformers(new ArrayList<>(performerIds));
+        event1.setPerformers(DataLoaderService.createPerformersMap("performer1", "performer2"));
         Mockito.when(eventRepository.findEventByEventId(anyString()))
                 .thenReturn(Mono.just(event1));
         Mockito.when(userRepository.findUserByUserId(anyString()))
                 .thenReturn(Mono.just(client1));
-        Mockito.when(eventRepository.save(any(Event.class)))
-                .thenReturn(Mono.just(event1));
         Mockito.when(notificationService.sendMail(anyString(), anyString(), anyString(), any(NotificationType.class)))
                 .thenReturn(false);
 
         StepVerifier.create(eventService.removePerformers(event1.getEventId(), performerIds))
-                .expectNextMatches(eventResponseModel -> eventResponseModel.getEventId().equals(event1.getEventId()))
-                .verifyComplete();
+                .expectError(MailSendException.class)
+                .verify();
     }
 
     @Test
     void whenGetPerformers_withValidEventId_thenReturnPerformersList() {
-        List<String> performers = List.of("performer1", "performer2");
-        event1.setPerformers(performers);
+        event1.setPerformers(DataLoaderService.createPerformersMap(performer1.getUserId(), performer2.getUserId()));
 
         Mockito.when(eventRepository.findEventByEventId(event1.getEventId()))
                 .thenReturn(Mono.just(event1));
+        Mockito.when(userService.getUserByUserId(performer1.getUserId()))
+                        .thenReturn(Mono.just(performer1).map(UserResponseModel::from));
+        Mockito.when(userService.getUserByUserId(performer2.getUserId()))
+                .thenReturn(Mono.just(performer2).map(UserResponseModel::from));
 
         StepVerifier.create(eventService.getPerformers(event1.getEventId()))
-                .expectNextMatches(performerList -> {
-                    assertEquals(2, performerList.size());
-                    assertTrue(performerList.contains("performer1"));
-                    assertTrue(performerList.contains("performer2"));
-                    return true;
-                })
+                .expectNextCount(2)
                 .verifyComplete();
     }
 
@@ -814,13 +847,13 @@ class EventServiceImplUnitTest {
 
     @Test
     void whenGetPerformers_withEmptyPerformersList_thenReturnEmptyList() {
-        event1.setPerformers(new ArrayList<>());
+        event1.setPerformers(new HashMap<>());
 
         Mockito.when(eventRepository.findEventByEventId(event1.getEventId()))
                 .thenReturn(Mono.just(event1));
 
         StepVerifier.create(eventService.getPerformers(event1.getEventId()))
-                .expectNextMatches(performerList -> performerList.isEmpty())
+                .expectNextCount(0)
                 .verifyComplete();
     }
 
@@ -832,7 +865,7 @@ class EventServiceImplUnitTest {
                 .thenReturn(Mono.just(event1));
 
         StepVerifier.create(eventService.getPerformers(event1.getEventId()))
-                .expectNextMatches(performerList -> performerList.isEmpty())
+                .expectNextCount(0)
                 .verifyComplete();
     }
 

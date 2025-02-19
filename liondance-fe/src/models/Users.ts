@@ -1,3 +1,5 @@
+import { Event } from "./Event";
+
 export interface Address {
   streetAddress: string;
   city: string;
@@ -49,4 +51,25 @@ export interface Student extends User {
 export interface Client extends User {
   activeEvents?: Event[];
   pastEvents?: Event[];
+}
+
+export enum PerformerStatus {
+  PENDING = "PENDING",
+  ACCEPTED = "ACCEPTED",
+  REJECTED = "REJECTED",
+  TENTATIVE = "TENTATIVE",
+}
+
+export interface PerformerResponseModel {
+  performer: User;
+  status: PerformerStatus;
+}
+
+export interface PerformerStatusResponseModel {
+  performerInfo: PerformerResponseModel;
+  eventInfo: Event;
+}
+
+export interface PerformerStatusRequestModel {
+  status: PerformerStatus;
 }

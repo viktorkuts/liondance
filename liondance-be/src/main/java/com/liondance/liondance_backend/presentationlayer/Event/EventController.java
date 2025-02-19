@@ -1,6 +1,7 @@
 package com.liondance.liondance_backend.presentationlayer.Event;
 
 import com.liondance.liondance_backend.datalayer.Event.EventStatus;
+import com.liondance.liondance_backend.datalayer.Event.PerformerStatus;
 import com.liondance.liondance_backend.datalayer.User.Student;
 import com.liondance.liondance_backend.logiclayer.Event.EventService;
 import com.liondance.liondance_backend.logiclayer.User.UserService;
@@ -20,6 +21,7 @@ import reactor.core.publisher.Mono;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -48,8 +50,8 @@ public class EventController {
     public Mono<ResponseEntity<EventResponseModel>> bookEvent(@Valid @RequestBody Mono<EventRequestModel> eventRequestModel, @AuthenticationPrincipal JwtAuthenticationToken jwt) {
         return userService.validate(jwt.getName())
                 .flatMap(user ->
-                    eventService.bookEvent(eventRequestModel, user)
-                            .map(eventResponseModel -> ResponseEntity.status(HttpStatus.CREATED).body(eventResponseModel))
+                        eventService.bookEvent(eventRequestModel, user)
+                                .map(eventResponseModel -> ResponseEntity.status(HttpStatus.CREATED).body(eventResponseModel))
                 );
     }
 
@@ -122,21 +124,21 @@ public class EventController {
                 .then(Mono.just(ResponseEntity.ok().build()));
     }
 
-//    @PreAuthorize("hasAuthority('STAFF')")
+    @PreAuthorize("hasAuthority('STAFF')")
     @PatchMapping("/{eventId}/assign-performers")
     public Mono<ResponseEntity<EventResponseModel>> assignPerformers(@PathVariable String eventId, @RequestBody Mono<Map<String, List<String>>> requestBody) {
-    return requestBody
-            .flatMap(body -> {
-                List<String> performerIds = body.get("performers");
-                if (performerIds == null || performerIds.isEmpty()) {
-                    return Mono.error(new IllegalArgumentException("Performers cannot be null or empty"));
-                }
-                return eventService.assignPerformers(eventId, performerIds);
-            })
-            .map(eventResponseModel -> ResponseEntity.ok().body(eventResponseModel));
+        return requestBody
+                .flatMap(body -> {
+                    List<String> performerIds = body.get("performers");
+                    if (performerIds == null || performerIds.isEmpty()) {
+                        return Mono.error(new IllegalArgumentException("Performers cannot be null or empty"));
+                    }
+                    return eventService.assignPerformers(eventId, performerIds);
+                })
+                .map(eventResponseModel -> ResponseEntity.ok().body(eventResponseModel));
     }
 
-//    @PreAuthorize("hasAuthority('STAFF')")
+    @PreAuthorize("hasAuthority('STAFF')")
     @PatchMapping("/{eventId}/remove-performers")
     public Mono<ResponseEntity<EventResponseModel>> removePerformers(@PathVariable String eventId, @RequestBody Mono<Map<String, List<String>>> requestBody) {
         return requestBody
@@ -150,10 +152,59 @@ public class EventController {
                 .map(eventResponseModel -> ResponseEntity.ok().body(eventResponseModel));
     }
 
+    @PreAuthorize("hasAuthority('STAFF')")
     @GetMapping("/{eventId}/performers")
-    public Mono<ResponseEntity<List<String>>> getPerformers(@PathVariable String eventId) {
-        return eventService.getPerformers(eventId)
-                .map(performers -> ResponseEntity.ok().body(performers));
+    public Flux<PerformerResponseModel> getPerformers(@RequestParam(name="type", defaultValue = "current") String filter, @PathVariable String eventId) {
+        if(filter.equals("available")){
+            return eventService.getAvailablePerformers(eventId)
+                    .map(model -> PerformerResponseModel.builder()
+                            .performer(model)
+                            .status(PerformerStatus.AVAILABLE)
+                            .build());
+        }
+        return eventService.getPerformers(eventId);
+    }
+
+    @PreAuthorize("hasAnyAuthority('STUDENT', 'STAFF')")
+    @PatchMapping("/{eventId}/performers/status")
+    public Mono<PerformerResponseModel> updatePerformerStatus(
+            @PathVariable String eventId,
+            @RequestBody PerformerStatusRequestModel requestBody,
+            @AuthenticationPrincipal JwtAuthenticationToken jwt) {
+
+        return userService.validate(jwt.getName())
+                .flatMap(u -> eventService.getPerformers(eventId)
+                        .switchIfEmpty(Mono.error(new NotFoundException("Event not found")))
+                        .filter(performer -> u.getUserId().equals(performer.getPerformer().getUserId()))
+                        .switchIfEmpty(Mono.error(new NotFoundException("User is not a performer for this event!")))
+                        .single()
+                        .flatMap(performer -> eventService.updatePerformerStatus(eventId, u.getUserId(), requestBody)
+                                .map(updated -> PerformerResponseModel.builder()
+                                        .performer(updated.getPerformer())
+                                        .status(updated.getStatus())
+                                        .build()
+                                )
+                        )
+                );
+    }
+
+    @PreAuthorize("hasAnyAuthority('STUDENT', 'STAFF')")
+    @GetMapping("/{eventId}/performers/status")
+    public Mono<PerformerStatusResponseModel> getPerformerStatus(@PathVariable String eventId, @AuthenticationPrincipal JwtAuthenticationToken jwt) {
+        return userService.validate(jwt.getName())
+                .flatMap(u -> eventService.getPerformers(eventId)
+                        .switchIfEmpty(Mono.error(new NotFoundException("Event not found")))
+                        .filter(performer -> u.getUserId().equals(performer.getPerformer().getUserId()))
+                        .switchIfEmpty(Mono.error(new NotFoundException("User is not a performer for this event!")))
+                        .single()
+                        .flatMap(p -> eventService.getEventById(eventId)
+                                .switchIfEmpty(Mono.error(new NotFoundException("Event not found")))
+                                .map(e -> PerformerStatusResponseModel.builder()
+                                        .performerInfo(p)
+                                        .eventInfo(e)
+                                        .build())
+                        )
+                );
     }
 
 }

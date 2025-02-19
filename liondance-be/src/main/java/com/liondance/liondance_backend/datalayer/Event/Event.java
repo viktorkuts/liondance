@@ -14,7 +14,9 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Document(collection = "events")
 @Data
@@ -33,5 +35,6 @@ public class Event {
     private String specialRequest;
     private EventStatus eventStatus;
     private EventPrivacy eventPrivacy;
-    private List<String> performers;
+    @Builder.Default
+    private Map<String, PerformerStatus> performers = new HashMap<>();
 }
