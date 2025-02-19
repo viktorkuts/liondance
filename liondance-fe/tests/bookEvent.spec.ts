@@ -35,12 +35,11 @@ const eventBooking = async (page: Page) => {
     page.getByRole("heading", { name: "Event Registration Form" })
   ).toBeVisible();
   await page.getByPlaceholder("Pick a date").click();
+  await page.getByRole("button").filter({ hasText: /^$/ }).nth(1).click();
   await page
-    .locator("div")
-    .filter({ hasText: currentMonth })
-    .getByRole("button")
-    .nth(2);
-  await page.getByLabel(`1 ${nextMonth}`, { exact: true }).click();
+    .getByRole("button", { name: /^6[^0-9].*\d{4}$/, exact: true })
+    .last()
+    .click();
   await page.getByPlaceholder("Select a time").click();
   await page.getByRole("option", { name: "1:30 PM" }).click();
   await page.getByPlaceholder("Wedding").click();

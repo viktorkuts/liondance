@@ -85,8 +85,9 @@ test("change user role to student", async ({ page }) => {
   await page.goto("/");
   await page.getByText("Admin").click();
   await page.getByRole("link", { name: "Users" }).click();
+  await expect(page.getByText("#")).toBeVisible();
   await page
-    .getByRole("row", { name: "Sarah Jane Smith Sarah.Smith@" })
+    .getByRole("row", { name: "1 Sarah Jane Smith" })
     .getByRole("button")
     .click();
   await page.getByRole("button", { name: "Change Roles" }).click();

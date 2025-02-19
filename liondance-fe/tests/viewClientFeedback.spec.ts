@@ -12,7 +12,7 @@ test("admin can view client feedback on event", async ({ page }) => {
   await page
     .getByRole("row", { name: "1 Alice Johnson alice.johnson" })
     .getByRole("button")
-    .nth(2)
+    .nth(5)
     .click();
   await expect(page.locator("#root")).toContainText("Feedback for Event");
   await page.getByRole("button", { name: "Back to Events" }).click();

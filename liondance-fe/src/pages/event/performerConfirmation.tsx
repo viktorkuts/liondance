@@ -108,6 +108,7 @@ export const PerformerConfirmation = () => {
 
               <h2>Will you participate?</h2>
               <Select
+                placeholder="Pick an option"
                 value={sel}
                 onChange={(val) => {
                   setSuccess(false);

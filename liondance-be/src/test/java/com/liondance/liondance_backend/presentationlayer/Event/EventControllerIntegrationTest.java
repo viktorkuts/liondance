@@ -5,7 +5,9 @@ import com.liondance.liondance_backend.datalayer.Event.*;
 import com.liondance.liondance_backend.datalayer.User.*;
 import com.liondance.liondance_backend.datalayer.common.Address;
 import com.liondance.liondance_backend.logiclayer.Event.EventService;
+import com.liondance.liondance_backend.utils.DataLoaderService;
 import com.liondance.liondance_backend.utils.WebTestAuthConfig;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -33,6 +35,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+@Slf4j
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"spring.data.mongodb.port= 0"})
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -63,6 +66,74 @@ class EventControllerIntegrationTest {
             )
             .roles(EnumSet.of(Role.STAFF))
             .associatedId("thetesterstaff")
+            .build();
+
+    User performer1 = Client.builder()
+            .userId(UUID.randomUUID().toString())
+            .firstName("JohnPerforms")
+            .lastName("AndDoesntHack")
+            .email("liondance@yopmail.com")
+            .phone("1234567890")
+            .address(
+                    new Address(
+                            "1234 Main St.",
+                            "Springfield",
+                            "Quebec",
+                            "J2X 2J4")
+            )
+            .roles(EnumSet.of(Role.STAFF))
+            .associatedId("johntheperformer")
+            .build();
+
+    User performer2 = Client.builder()
+            .userId(UUID.randomUUID().toString())
+            .firstName("JanePerforms")
+            .lastName("DoesMoves")
+            .email("liondance@yopmail.com")
+            .phone("1234567890")
+            .address(
+                    new Address(
+                            "1234 Main St.",
+                            "Springfield",
+                            "Quebec",
+                            "J2X 2J4")
+            )
+            .roles(EnumSet.of(Role.STAFF))
+            .associatedId("janetheperforma")
+            .build();
+
+    User performer3 = Client.builder()
+            .userId(UUID.randomUUID().toString())
+            .firstName("JanePerforms33")
+            .lastName("DoesMovesLikeTYa")
+            .email("liondance@yopmail.com")
+            .phone("1234567890")
+            .address(
+                    new Address(
+                            "1234 Main St.",
+                            "Springfield",
+                            "Quebec",
+                            "J2X 2J4")
+            )
+            .roles(EnumSet.of(Role.STAFF))
+            .associatedId("janetheperforma33")
+            .build();
+
+    User performer4 = Client.builder()
+            .userId(UUID.randomUUID().toString())
+            .firstName("JanePerforms4")
+            .lastName("DoesMovesasfh")
+            .email("liondance@yopmail.com")
+            .phone("1234567890")
+            .address(
+                    new Address(
+                            "1234 Main St.",
+                            "Springfield",
+                            "Quebec",
+                            "J2X 2J4")
+            )
+            .roles(EnumSet.of(Role.STAFF))
+            .associatedId("janetheperforma44")
             .build();
 
     Client client1 = Client.builder()
@@ -112,7 +183,7 @@ class EventControllerIntegrationTest {
                 .paymentMethod(PaymentMethod.CASH)
                 .specialRequest("Special request")
                 .clientId(client1.getUserId())
-            .performers(List.of("performer1", "performer2"))
+            .performers(DataLoaderService.createPerformersMap(performer1.getUserId(), performer2.getUserId()))
             .build();
 
     Event event2 = Event.builder()
@@ -129,7 +200,7 @@ class EventControllerIntegrationTest {
                 .paymentMethod(PaymentMethod.CASH)
                 .specialRequest("Special request")
                 .clientId(client2.getUserId())
-            .performers(List.of("performer1", "performer2"))
+            .performers(DataLoaderService.createPerformersMap(performer1.getUserId(), performer2.getUserId()))
             .build();
 
     @Autowired
@@ -146,7 +217,7 @@ class EventControllerIntegrationTest {
         Publisher<Event> eventPublisher = Flux.just(event1, event2)
                 .flatMap(eventRepository::save);
 
-        Publisher<User> userPublisher = Flux.just(client1, client2)
+        Publisher<User> userPublisher = Flux.just(client1, client2, performer1, performer2, performer3, performer4)
                 .flatMap(userRepository::save);
 
         StepVerifier.create(eventPublisher)
@@ -154,7 +225,7 @@ class EventControllerIntegrationTest {
                 .verifyComplete();
 
         StepVerifier.create(userPublisher)
-                .expectNextCount(2)
+                .expectNextCount(6)
                 .verifyComplete();
     }
 
@@ -681,7 +752,7 @@ class EventControllerIntegrationTest {
     void whenAssignPerformers_thenReturnEventResponseModel() {
         Event event = eventRepository.findAll().blockFirst();
         String eventId = event.getEventId();
-        List<String> performerIds = List.of("performer1", "performer2");
+        List<String> performerIds = List.of(performer3.getUserId(), performer4.getUserId());
 
         webTestClient
                 .mutateWith(WebTestAuthConfig.getAuthFor(staff))
@@ -732,7 +803,7 @@ class EventControllerIntegrationTest {
     void whenRemovePerformers_thenReturnEventResponseModel() {
         Event event = eventRepository.findAll().blockFirst();
         String eventId = event.getEventId();
-        List<String> performerIds = List.of("performer1", "performer2");
+        List<String> performerIds = List.of(performer3.getUserId(), performer4.getUserId());
 
         webTestClient
                 .mutateWith(WebTestAuthConfig.getAuthFor(staff))
@@ -790,10 +861,7 @@ class EventControllerIntegrationTest {
                 .uri("/api/v1/events/" + eventId + "/performers")
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody()
-                .jsonPath("$").isArray()
-                .jsonPath("$[0]").isEqualTo("performer1")
-                .jsonPath("$[1]").isEqualTo("performer2");
+                .expectBodyList(PerformerResponseModel.class);
     }
 
     @Test
@@ -837,7 +905,7 @@ class EventControllerIntegrationTest {
                 .paymentMethod(PaymentMethod.CASH)
                 .specialRequest("Special request")
                 .clientId(client1.getUserId())
-                .performers(List.of())
+                .performers(DataLoaderService.createPerformersMap())
                 .build();
 
         // Save the event
@@ -855,6 +923,69 @@ class EventControllerIntegrationTest {
                 .expectBody()
                 .jsonPath("$").isArray()
                 .jsonPath("$.length()").isEqualTo(0);
+    }
+
+    @Test
+    void getAvailablePerformers_thenReturnPerformers() {
+        Event event = eventRepository.findAll().blockFirst();
+        String eventId = event.getEventId();
+
+        webTestClient
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .get()
+                .uri("/api/v1/events/" + eventId + "/performers?status=available")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(PerformerResponseModel.class);
+    }
+
+    @Test
+    void whenPatchEventStatus_thenReturnUpdatedEvent() {
+        Event event = eventRepository.findAll().blockFirst();
+        String eventId = event.getEventId();
+
+        webTestClient
+                .mutateWith(WebTestAuthConfig.getAuthFor(performer1))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .patch()
+                .uri("/api/v1/events/" + eventId + "/performers//status")
+                .bodyValue(PerformerStatusRequestModel.builder().status(PerformerStatus.TENTATIVE).build())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(PerformerResponseModel.class)
+                .value(e -> {
+                    assertEquals(PerformerStatus.TENTATIVE, e.getStatus());
+                });
+    }
+
+    @Test
+    void whenGetSelfPerformerStatus_thenReturnSelfStatus() {
+        Event event = eventRepository.findAll().blockFirst();
+        String eventId = event.getEventId();
+
+        webTestClient
+                .mutateWith(WebTestAuthConfig.getAuthFor(performer1))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .get()
+                .uri("/api/v1/events/" + eventId + "/performers/status")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(PerformerStatusResponseModel.class);
+    }
+
+    @Test
+    void whenGetSelfPerformerStatusForNotAssignedEvent_thenReturnNotFound() {
+        Event event = eventRepository.findAll().blockFirst();
+        String eventId = event.getEventId();
+
+        webTestClient
+                .mutateWith(WebTestAuthConfig.getAuthFor(performer4))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .get()
+                .uri("/api/v1/events/" + eventId + "/performers/status")
+                .exchange()
+                .expectStatus().isNotFound();
     }
 }
 

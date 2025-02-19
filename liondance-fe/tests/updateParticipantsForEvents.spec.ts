@@ -5,72 +5,86 @@ test.use({
 });
 test.use({ storageState: "playwright/.auth/staff.json" });
 test("can add performers to a specific event", async ({ page }) => {
-    await page.goto('/');
-    await page.getByText('Admin').click();
-    await page.getByRole('link', { name: 'Events', exact: true }).click();
-    await page.getByText('▶').first().click();
-    await page.locator('.button_add_performers').first().click();
-    await page.getByPlaceholder('Pick performers').click();
-    await page.getByRole('option', { name: 'Zippora Snickett' }).click();
-    await page.getByText('Apollo Lightning').click();
-    await page.getByText('Select Performers to addZippora SnickettApollo Lightning').click();
-    await page.getByLabel('Add Performers').locator('button').nth(3).click();
-    await page.getByPlaceholder('Pick performers').click();
-    await page.getByRole('option', { name: 'Zippora Snickett' }).click();
-    await page.getByText('Apollo Lightning').click();
-    await page.getByText('Current PerformersSelect').click();
-    await page.getByPlaceholder('Pick performers').press('Enter');
-    await page.getByPlaceholder('Pick performers').press('Enter');
-    await page.getByText('Current PerformersSelect').click();
-    await page.getByPlaceholder('Pick performers').click();
-    await page.locator('div').filter({ hasText: /^Current Performers$/ }).click();
-    await page.getByLabel('Add Performers').getByRole('button', { name: 'Add Performers' }).click();
-    await page.locator('.button_add_performers').first().click();
-    await expect(page.getByRole('list')).toContainText('Zippora Snickett');
-    await expect(page.getByRole('list')).toContainText('Apollo Lightning');
-    await page.getByRole('banner').getByRole('button').click();
+  await page.goto("/");
+  await page.getByText("Admin").click();
+  await page.getByRole("link", { name: "Events", exact: true }).click();
+  await page.getByText("▶").first().click();
+  await page
+    .getByRole("cell", { name: "Alice Johnson" })
+    .first()
+    .first()
+    .click();
+  await page.getByRole("button", { name: "Add Performers" }).click();
+  await page.getByPlaceholder("Pick performers").click();
+  await page.getByRole("option", { name: "Apollo Lightning" }).click();
+  await page.getByRole("option", { name: "Zippora Snickett" }).click();
+  await page.getByText("Select Performers to add").click();
+  await page.getByLabel("Add Performers").locator("button").nth(3).click();
+  await page.getByPlaceholder("Pick performers").click();
+  await page.getByRole("option", { name: "Zippora Snickett" }).click();
+  await page.getByText("Apollo Lightning").click();
+  await page.getByText("Current Performers").click();
+  await page.getByPlaceholder("Pick performers").press("Enter");
+  await page.getByPlaceholder("Pick performers").press("Enter");
+  await page.getByText("Current Performers").click();
+  await page.getByPlaceholder("Pick performers").click();
+  await page.getByText("Current Performers").click();
+  await page
+    .getByLabel("Add Performers")
+    .getByRole("button", { name: "Add Performers" })
+    .click();
+  await expect(page.getByRole("cell", { name: "Sarah Smith" })).toBeVisible();
+  await expect(
+    page.getByRole("cell", { name: "Apollo Lightning" })
+  ).toBeVisible();
+  await page.getByRole("banner").getByRole("button").click();
 });
 
 test("can remove performers to a specific event", async ({ page }) => {
-    await page.goto('/');
-    await page.getByText('Admin').click();
-    await page.getByRole('link', { name: 'Events', exact: true }).click();
-    await page.getByText('▶').first().click();
-    await page.locator('tr:nth-child(2) > td:nth-child(11) > .button_remove_performers').click();
-    await page.getByRole('banner').getByRole('button').click();
-    await page.locator('tr:nth-child(3) > td:nth-child(11) > .button_remove_performers').click();
-    await page.getByRole('banner').getByRole('button').click();
-    await page.locator('tr:nth-child(4) > td:nth-child(11) > .button_remove_performers').click();
-    await page.locator('div').filter({ hasText: /^Select Performers to remove$/ }).locator('div').nth(1).click();
-    await page.getByRole('option', { name: 'Zippora Snickett' }).click();
-    await page.getByPlaceholder('Pick performers').press('Enter');
-    await page.getByLabel('Remove Performers').getByText('Apollo Lightning').click();
-    await expect(page.getByRole('list')).toContainText('Zippora Snickett');
-    await expect(page.getByRole('list')).toContainText('Apollo Lightning');
-    await page.getByLabel('Remove Performers').getByRole('button', { name: 'Remove Performers' }).click();
-    await page.locator('tr:nth-child(4) > td:nth-child(11) > .button_remove_performers').click();
-    await expect(page.getByRole('listitem')).toContainText('Apollo Lightning');
-    await page.getByPlaceholder('Pick performers').click();
-    await page.getByRole('option', { name: 'Apollo Lightning' }).locator('span').click();
-    await page.getByLabel('Remove Performers').getByRole('button', { name: 'Remove Performers' }).click();
-    await page.locator('.button_add_performers').first().click();
-    await page.getByPlaceholder('Pick performers').click();
-    await page.getByRole('option', { name: 'Zippora Snickett' }).click();
-    await page.getByText('Apollo Lightning').click();
-    await page.getByText('Select Performers to addZippora SnickettApollo Lightning').click();
-    await page.getByLabel('Add Performers').locator('button').nth(3).click();
-    await page.getByPlaceholder('Pick performers').click();
-    await page.getByRole('option', { name: 'Zippora Snickett' }).click();
-    await page.getByText('Apollo Lightning').click();
-    await page.getByText('Current PerformersSelect').click();
-    await page.getByPlaceholder('Pick performers').press('Enter');
-    await page.getByPlaceholder('Pick performers').press('Enter');
-    await page.getByText('Current PerformersSelect').click();
-    await page.getByPlaceholder('Pick performers').click();
-    await page.locator('div').filter({ hasText: /^Current Performers$/ }).click();
-    await page.getByLabel('Add Performers').getByRole('button', { name: 'Add Performers' }).click();
-    await page.locator('.button_add_performers').first().click();
-    await expect(page.getByRole('list')).toContainText('Zippora Snickett');
-    await expect(page.getByRole('list')).toContainText('Apollo Lightning');
-    await page.getByRole('banner').getByRole('button').click();
+  await page.goto("/");
+  await page.getByText("Admin").click();
+  await page.getByRole("link", { name: "Events", exact: true }).click();
+  await page.getByText("▶").first().click();
+  await page
+    .getByRole("cell", { name: "Alice Johnson" })
+    .first()
+    .first()
+    .click();
+  await page.getByRole("button", { name: "Add Performers" }).click();
+  await page.getByPlaceholder("Pick performers").click();
+  await page.getByRole("option", { name: "Apollo Lightning" }).click();
+  await page.getByRole("option", { name: "Zippora Snickett" }).click();
+  await page.getByText("Select Performers to add").click();
+  await page.getByLabel("Add Performers").locator("button").nth(3).click();
+  await page.getByPlaceholder("Pick performers").click();
+  await page.getByRole("option", { name: "Zippora Snickett" }).click();
+  await page.getByText("Apollo Lightning").click();
+  await page.getByText("Current Performers").click();
+  await page.getByPlaceholder("Pick performers").press("Enter");
+  await page.getByPlaceholder("Pick performers").press("Enter");
+  await page.getByText("Current Performers").click();
+  await page.getByPlaceholder("Pick performers").click();
+  await page.getByText("Current Performers").click();
+  await page
+    .getByLabel("Add Performers")
+    .getByRole("button", { name: "Add Performers" })
+    .click();
+  await expect(page.getByRole("cell", { name: "Sarah Smith" })).toBeVisible();
+  await expect(
+    page.getByRole("cell", { name: "Apollo Lightning" })
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Remove Performers" }).click();
+  await page
+    .getByRole("textbox", { name: "Select Performers to remove" })
+    .click();
+  await page.getByRole("option", { name: "Sarah Smith" }).click();
+  await page.getByRole("heading", { name: "Current Performers" }).click();
+  await page
+    .getByLabel("Remove Performers")
+    .getByRole("button", { name: "Remove Performers" })
+    .click();
+  await expect(page.getByRole("cell", { name: "Sarah Smith" })).toBeHidden();
+  await expect(
+    page.getByRole("cell", { name: "Apollo Lightning" })
+  ).toBeVisible();
 });

@@ -19,7 +19,7 @@ interface EventWithClient extends Event {
 
 type SortConfig = {
   key: string;
-  direction: 'asc' | 'desc' | 'none';
+  direction: "asc" | "desc" | "none";
 };
 
 interface ExpandableEventTableProps {
@@ -51,58 +51,79 @@ const ExpandableEventTable: React.FC<ExpandableEventTableProps> = ({
 }) => {
   const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
+  const navigate = useNavigate();
 
   if (events.length === 0) return null;
 
   return (
     <div className="expandable-table">
-      <div 
-        className="expandable-header" 
+      <div
+        className="expandable-header"
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        <h2>{title} ({events.length})</h2>
-        <span>{isExpanded ? '▼' : '▶'}</span>
+        <h2>
+          {title} ({events.length})
+        </h2>
+        <span>{isExpanded ? "▼" : "▶"}</span>
       </div>
       {isExpanded && (
         <table className="events-table">
           <thead>
             <tr>
               <th>#</th>
-              <th onClick={() => handleSort('name')} className="sortable">
-                {t("Name")} {sortConfig.key === 'name' && sortConfig.direction !== 'none' && 
-                  (sortConfig.direction === 'asc' ? '↑' : '↓')}
+              <th onClick={() => handleSort("name")} className="sortable">
+                {t("Name")}{" "}
+                {sortConfig.key === "name" &&
+                  sortConfig.direction !== "none" &&
+                  (sortConfig.direction === "asc" ? "↑" : "↓")}
               </th>
-              <th onClick={() => handleSort('email')} className="sortable">
-                {t("Email")} {sortConfig.key === 'email' && sortConfig.direction !== 'none' && 
-                  (sortConfig.direction === 'asc' ? '↑' : '↓')}
+              <th onClick={() => handleSort("email")} className="sortable">
+                {t("Email")}{" "}
+                {sortConfig.key === "email" &&
+                  sortConfig.direction !== "none" &&
+                  (sortConfig.direction === "asc" ? "↑" : "↓")}
               </th>
-              <th onClick={() => handleSort('phone')} className="sortable">
-                {t("Phone")} {sortConfig.key === 'phone' && sortConfig.direction !== 'none' && 
-                  (sortConfig.direction === 'asc' ? '↑' : '↓')}
+              <th onClick={() => handleSort("phone")} className="sortable">
+                {t("Phone")}{" "}
+                {sortConfig.key === "phone" &&
+                  sortConfig.direction !== "none" &&
+                  (sortConfig.direction === "asc" ? "↑" : "↓")}
               </th>
-              <th onClick={() => handleSort('location')} className="sortable">
-                {t("Location")} {sortConfig.key === 'location' && sortConfig.direction !== 'none' && 
-                  (sortConfig.direction === 'asc' ? '↑' : '↓')}
+              <th onClick={() => handleSort("location")} className="sortable">
+                {t("Location")}{" "}
+                {sortConfig.key === "location" &&
+                  sortConfig.direction !== "none" &&
+                  (sortConfig.direction === "asc" ? "↑" : "↓")}
               </th>
-              <th onClick={() => handleSort('date')} className="sortable">
-                {t("Event Date & Time")} {sortConfig.key === 'date' && sortConfig.direction !== 'none' && 
-                  (sortConfig.direction === 'asc' ? '↑' : '↓')}
+              <th onClick={() => handleSort("date")} className="sortable">
+                {t("Event Date & Time")}{" "}
+                {sortConfig.key === "date" &&
+                  sortConfig.direction !== "none" &&
+                  (sortConfig.direction === "asc" ? "↑" : "↓")}
               </th>
-              <th onClick={() => handleSort('type')} className="sortable">
-                {t("Event Type")} {sortConfig.key === 'type' && sortConfig.direction !== 'none' && 
-                  (sortConfig.direction === 'asc' ? '↑' : '↓')}
+              <th onClick={() => handleSort("type")} className="sortable">
+                {t("Event Type")}{" "}
+                {sortConfig.key === "type" &&
+                  sortConfig.direction !== "none" &&
+                  (sortConfig.direction === "asc" ? "↑" : "↓")}
               </th>
-              <th onClick={() => handleSort('request')} className="sortable">
-                {t("Special Request")} {sortConfig.key === 'request' && sortConfig.direction !== 'none' && 
-                  (sortConfig.direction === 'asc' ? '↑' : '↓')}
+              <th onClick={() => handleSort("request")} className="sortable">
+                {t("Special Request")}{" "}
+                {sortConfig.key === "request" &&
+                  sortConfig.direction !== "none" &&
+                  (sortConfig.direction === "asc" ? "↑" : "↓")}
               </th>
-              <th onClick={() => handleSort('privacy')} className="sortable">
-                {t("Event Privacy")} {sortConfig.key === 'privacy' && sortConfig.direction !== 'none' && 
-                  (sortConfig.direction === 'asc' ? '↑' : '↓')}
+              <th onClick={() => handleSort("privacy")} className="sortable">
+                {t("Event Privacy")}{" "}
+                {sortConfig.key === "privacy" &&
+                  sortConfig.direction !== "none" &&
+                  (sortConfig.direction === "asc" ? "↑" : "↓")}
               </th>
-              <th onClick={() => handleSort('status')} className="sortable">
-                {t("Event Status")} {sortConfig.key === 'status' && sortConfig.direction !== 'none' && 
-                  (sortConfig.direction === 'asc' ? '↑' : '↓')}
+              <th onClick={() => handleSort("status")} className="sortable">
+                {t("Event Status")}{" "}
+                {sortConfig.key === "status" &&
+                  sortConfig.direction !== "none" &&
+                  (sortConfig.direction === "asc" ? "↑" : "↓")}
               </th>
               <th>{t("Actions")}</th>
             </tr>
@@ -136,23 +157,27 @@ const ExpandableEventTable: React.FC<ExpandableEventTableProps> = ({
                 </td>
                 <td>{t(event.eventPrivacy)}</td>
                 <td>
-                  <button onClick={(e) => { 
-                    e.stopPropagation(); 
-                    handleStatusClick(event); 
-                  }}>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleStatusClick(event);
+                    }}
+                  >
                     {t(event.eventStatus) ?? t("N/A")}
                   </button>
                 </td>
                 <td>
-                  <button onClick={(e) => { 
-                    e.stopPropagation(); 
-                    handleRescheduleClick(event); 
-                  }}>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleRescheduleClick(event);
+                    }}
+                  >
                     {t("Reschedule")}
                   </button>
-                  {event.eventStatus === 'COMPLETED' && (
+                  {event.eventStatus === "COMPLETED" && (
                     <button
-                      onClick={(e) => { 
+                      onClick={(e) => {
                         e.stopPropagation();
                         if (event.eventId) {
                           handleViewFeedback(event.eventId);
@@ -163,17 +188,17 @@ const ExpandableEventTable: React.FC<ExpandableEventTableProps> = ({
                       {t("View Feedback")}
                     </button>
                   )}
-                  <button 
-                    onClick={(e) => { 
-                      e.stopPropagation(); 
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
                       handleUpdateDetailsClick(event);
-                    }} 
+                    }}
                     className="button_view_feedback"
                   >
                     {t("Update Details")}
                   </button>
-                  <button 
-                    onClick={(e) => { 
+                  <button
+                    onClick={(e) => {
                       e.stopPropagation();
                       if (event.eventId) {
                         handleRequestFeedback(event.eventId);
@@ -182,14 +207,22 @@ const ExpandableEventTable: React.FC<ExpandableEventTableProps> = ({
                   >
                     {t("Request Feedback")}
                   </button>
-                  <button 
-                    onClick={(e) => { 
-                      e.stopPropagation(); 
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
                       handleContactClick(event);
-                    }} 
+                    }}
                     className="button_contact_client"
                   >
                     {t("Contact Client")}
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      navigate(`/feedbacks/${event.eventId}`);
+                    }}
+                    className="button_contact_client"
+                  >
+                    {t("Event Feedback")}
                   </button>
                 </td>
               </tr>
@@ -207,14 +240,22 @@ function GetAllEvents() {
   const [events, setEvents] = useState<EventWithClient[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
-  const [selectedEvent, setSelectedEvent] = useState<EventWithClient | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<EventWithClient | null>(
+    null
+  );
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [showRescheduleModal, setShowRescheduleModal] = useState<boolean>(false);
-  const [showUpdateDetailsModal, setShowUpdateDetailsModal] = useState<boolean>(false);
+  const [showRescheduleModal, setShowRescheduleModal] =
+    useState<boolean>(false);
+  const [showUpdateDetailsModal, setShowUpdateDetailsModal] =
+    useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [sortConfig, setSortConfig] = useState<SortConfig>({ key: '', direction: 'none' });
+  const [sortConfig, setSortConfig] = useState<SortConfig>({
+    key: "",
+    direction: "none",
+  });
   const [showContactModal, setShowContactModal] = useState<boolean>(false);
-  const [selectedClientToContact, setSelectedClientToContact] = useState<EventWithClient | null>(null);
+  const [selectedClientToContact, setSelectedClientToContact] =
+    useState<EventWithClient | null>(null);
   const [showEventDetailsModal, setShowEventDetailsModal] = useState(false);
 
   const axiosInstance = useAxiosInstance();
@@ -223,67 +264,75 @@ function GetAllEvents() {
 
   const handleSort = (key: string) => {
     setSortConfig((prevConfig) => ({
-      key: prevConfig.key === key && prevConfig.direction === 'desc' ? '' : key,
-      direction: 
-        prevConfig.key !== key ? 'asc' :
-        prevConfig.direction === 'asc' ? 'desc' :
-        prevConfig.direction === 'desc' ? 'none' : 'asc'
+      key: prevConfig.key === key && prevConfig.direction === "desc" ? "" : key,
+      direction:
+        prevConfig.key !== key
+          ? "asc"
+          : prevConfig.direction === "asc"
+            ? "desc"
+            : prevConfig.direction === "desc"
+              ? "none"
+              : "asc",
     }));
   };
 
   const getSortedEvents = (events: EventWithClient[]) => {
     const sortedEvents = [...events];
-    if (sortConfig.key && sortConfig.direction !== 'none') {
+    if (sortConfig.key && sortConfig.direction !== "none") {
       sortedEvents.sort((a, b) => {
         let aValue: string | number;
         let bValue: string | number;
-  
+
         switch (sortConfig.key) {
-          case 'name':
-            aValue = `${a.client?.firstName ?? ''} ${a.client?.lastName ?? ''}`.trim();
-            bValue = `${b.client?.firstName ?? ''} ${b.client?.lastName ?? ''}`.trim();
+          case "name":
+            aValue =
+              `${a.client?.firstName ?? ""} ${a.client?.lastName ?? ""}`.trim();
+            bValue =
+              `${b.client?.firstName ?? ""} ${b.client?.lastName ?? ""}`.trim();
             break;
-          case 'email':
-            aValue = a.client?.email ?? '';
-            bValue = b.client?.email ?? '';
+          case "email":
+            aValue = a.client?.email ?? "";
+            bValue = b.client?.email ?? "";
             break;
-          case 'phone':
-            aValue = a.client?.phone ?? '';
-            bValue = b.client?.phone ?? '';
+          case "phone":
+            aValue = a.client?.phone ?? "";
+            bValue = b.client?.phone ?? "";
             break;
-          case 'location':
-            aValue = `${a.venue?.streetAddress ?? ''} ${a.venue?.city ?? ''}`.trim();
-            bValue = `${b.venue?.streetAddress ?? ''} ${b.venue?.city ?? ''}`.trim();
+          case "location":
+            aValue =
+              `${a.venue?.streetAddress ?? ""} ${a.venue?.city ?? ""}`.trim();
+            bValue =
+              `${b.venue?.streetAddress ?? ""} ${b.venue?.city ?? ""}`.trim();
             break;
-          case 'date':
+          case "date":
             aValue = new Date(a.eventDateTime).getTime();
             bValue = new Date(b.eventDateTime).getTime();
             break;
-          case 'type':
+          case "type":
             aValue = a.eventType;
             bValue = b.eventType;
             break;
-          case 'request':
-            aValue = a.specialRequest ?? '';
-            bValue = b.specialRequest ?? '';
+          case "request":
+            aValue = a.specialRequest ?? "";
+            bValue = b.specialRequest ?? "";
             break;
-          case 'privacy':
+          case "privacy":
             aValue = a.eventPrivacy;
             bValue = b.eventPrivacy;
             break;
-          case 'status':
+          case "status":
             aValue = a.eventStatus;
             bValue = b.eventStatus;
             break;
           default:
             return 0;
         }
-  
+
         if (aValue < bValue) {
-          return sortConfig.direction === 'asc' ? -1 : 1;
+          return sortConfig.direction === "asc" ? -1 : 1;
         }
         if (aValue > bValue) {
-          return sortConfig.direction === 'asc' ? 1 : -1;
+          return sortConfig.direction === "asc" ? 1 : -1;
         }
         return 0;
       });
@@ -299,12 +348,12 @@ function GetAllEvents() {
 
         if (eventsResponse.data) {
           const eventsWithClients = eventsResponse.data.map((event: Event) => {
-            const foundClient = clientsResponse.find((client: User) => 
-              client.userId === event.clientId
+            const foundClient = clientsResponse.find(
+              (client: User) => client.userId === event.clientId
             );
             return {
               ...event,
-              client: foundClient
+              client: foundClient,
             };
           });
           setEvents(eventsWithClients);
@@ -361,22 +410,24 @@ function GetAllEvents() {
   };
 
   const handleEventUpdate = (updatedEvent: Event): void => {
-    setEvents(prevEvents =>
-      prevEvents.map(event => 
-        event.eventId === updatedEvent.eventId 
-          ? { ...updatedEvent, client: event.client } 
+    setEvents((prevEvents) =>
+      prevEvents.map((event) =>
+        event.eventId === updatedEvent.eventId
+          ? { ...updatedEvent, client: event.client }
           : event
       )
     );
-    if(selectedEvent?.eventId === updatedEvent.eventId) {
-      setSelectedEvent(prev => prev ? {...prev, performers: updatedEvent.performers} : null);
+    if (selectedEvent?.eventId === updatedEvent.eventId) {
+      setSelectedEvent((prev) =>
+        prev ? { ...prev, performers: updatedEvent.performers } : null
+      );
     }
   };
-  
+
   const handleReschedule = (updatedEvent: Event): void => {
     setEvents((prevEvents) =>
       prevEvents.map((event) =>
-        event.eventId === updatedEvent.eventId 
+        event.eventId === updatedEvent.eventId
           ? { ...updatedEvent, client: event.client }
           : event
       )
@@ -403,9 +454,9 @@ function GetAllEvents() {
 
   const filteredEvents = events.filter((event: EventWithClient) => {
     if (searchTerm.trim() === "") return true;
-    
+
     const searchValue = searchTerm.toLowerCase();
-    
+
     return (
       event.client?.firstName?.toLowerCase().includes(searchValue) ||
       event.client?.lastName?.toLowerCase().includes(searchValue) ||
@@ -425,10 +476,18 @@ function GetAllEvents() {
 
   const sortedEvents = getSortedEvents(filteredEvents);
   const allEvents = sortedEvents;
-  const pendingEvents = sortedEvents.filter(event => event.eventStatus === 'PENDING');
-  const confirmedEvents = sortedEvents.filter(event => event.eventStatus === 'CONFIRMED');
-  const cancelledEvents = sortedEvents.filter(event => event.eventStatus === 'CANCELLED');
-  const completedEvents = sortedEvents.filter(event => event.eventStatus === 'COMPLETED');
+  const pendingEvents = sortedEvents.filter(
+    (event) => event.eventStatus === "PENDING"
+  );
+  const confirmedEvents = sortedEvents.filter(
+    (event) => event.eventStatus === "CONFIRMED"
+  );
+  const cancelledEvents = sortedEvents.filter(
+    (event) => event.eventStatus === "CANCELLED"
+  );
+  const completedEvents = sortedEvents.filter(
+    (event) => event.eventStatus === "COMPLETED"
+  );
 
   if (loading) return <div className="loading">{t("Loading...")}</div>;
   if (error) return <div className="error">{t(error)}</div>;
@@ -446,7 +505,7 @@ function GetAllEvents() {
           className="search-input"
         />
         {searchTerm && (
-          <button 
+          <button
             className="clear-search"
             onClick={() => setSearchTerm("")}
             title={t("Clear search")}
@@ -458,7 +517,9 @@ function GetAllEvents() {
 
       {filteredEvents.length === 0 ? (
         <p className="no-data">
-          {events.length === 0 ? t("No events found.") : t("No matching events found.")}
+          {events.length === 0
+            ? t("No events found.")
+            : t("No matching events found.")}
         </p>
       ) : (
         <div className="expandable-tables-container">

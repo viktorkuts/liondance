@@ -415,7 +415,14 @@ public class EventServiceImpl implements EventService {
     public Flux<PerformerResponseModel> getPerformers(String eventId) {
         return eventRepository.findEventByEventId(eventId)
                 .switchIfEmpty(Mono.error(new NotFoundException("Event not found with ID: " + eventId)))
-                .map(Event::getPerformers)
+                .flatMap(e -> {
+                    try{
+                        return Mono.just(e.getPerformers());
+                    } catch (NullPointerException ex) {
+                        return Mono.empty();
+                    }
+                })
+                .defaultIfEmpty(new HashMap<>())
                 .flatMapMany(e -> Flux.fromIterable(e.entrySet())
                         .flatMap(entry -> userService.getUserByUserId(entry.getKey())
                                 .flatMapMany(user -> {

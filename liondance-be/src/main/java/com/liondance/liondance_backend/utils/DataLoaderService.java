@@ -54,7 +54,7 @@ public class DataLoaderService implements CommandLineRunner {
         feedbackRepository.deleteAll().subscribe();
     }
 
-    private Map<String, PerformerStatus> createPerformersMap(String... performerIds) {
+    public static Map<String, PerformerStatus> createPerformersMap(String... performerIds) {
         Map<String, PerformerStatus> performersMap = new HashMap<>();
         for (String performerId : performerIds) {
             performersMap.put(performerId, PerformerStatus.ACCEPTED);
