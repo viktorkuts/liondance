@@ -10,7 +10,6 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FeedbackRequestModel {
-
     private String feedback;
     private int rating;
 }

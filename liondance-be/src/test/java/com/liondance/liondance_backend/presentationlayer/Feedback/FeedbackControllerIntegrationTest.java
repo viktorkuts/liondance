@@ -1,9 +1,14 @@
 package com.liondance.liondance_backend.presentationlayer.Feedback;
 
+import com.liondance.liondance_backend.datalayer.Event.Event;
+import com.liondance.liondance_backend.datalayer.Feedback.Feedback;
+import com.liondance.liondance_backend.datalayer.Feedback.FeedbackRepository;
 import com.liondance.liondance_backend.datalayer.User.Client;
 import com.liondance.liondance_backend.datalayer.User.Role;
 import com.liondance.liondance_backend.datalayer.User.User;
 import com.liondance.liondance_backend.datalayer.common.Address;
+import com.liondance.liondance_backend.datalayer.common.Visibility;
+import com.liondance.liondance_backend.presentationlayer.Event.EventResponseModel;
 import com.liondance.liondance_backend.utils.WebTestAuthConfig;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -14,9 +19,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import com.liondance.liondance_backend.logiclayer.Feedback.FeedbackService;
 import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
+import reactor.core.publisher.Mono;
 
 import java.util.EnumSet;
 import java.util.UUID;
@@ -49,6 +58,8 @@ class FeedbackControllerIntegrationTest {
 
     @MockBean
     private FeedbackService feedbackService;
+    @Autowired
+    private FeedbackRepository feedbackRepository;
 
     @Test
     void getFeedbackByEventId_returnsFeedbacks_whenEventIdExists() {
@@ -89,5 +100,22 @@ class FeedbackControllerIntegrationTest {
                 .expectStatus().isNotFound()
                 .expectBody()
                 .jsonPath("$.message").isEqualTo("Event not found");
+    }
+
+    @Test
+    void patchFeedbackStatusByFeedbackId_returnsFeedback() {
+        Feedback feedback = feedbackRepository.findAll().collectList().block().stream().findFirst().get();
+
+        when(feedbackService.updateEventFeedbackVisibility(anyString(), any(Visibility.class))).thenReturn(Mono.just(FeedbackResponseModel.from(feedback)));
+
+        webTestClient
+                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+                .mutateWith(WebTestAuthConfig.csrfConfig)
+                .patch()
+                .uri("/api/v1/feedbacks/" + feedback.getEventId())
+                .bodyValue(Visibility.PUBLIC)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(FeedbackResponseModel.class);
     }
 }

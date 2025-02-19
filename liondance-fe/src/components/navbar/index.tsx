@@ -10,7 +10,7 @@ import { Role } from "@/models/Users";
 function Navbar() {
   const { t } = useTranslation();
   const [adminDropdownOpen, setAdminDropdownOpen] = useState(false);
- 
+
   const toggleAdminDropdown = () => {
     setAdminDropdownOpen(!adminDropdownOpen);
   };
@@ -25,11 +25,14 @@ function Navbar() {
         <h2>{t("Welcome!")}</h2>
       </a>
       <div className={classes.rightSection}>
-      {user && (
+        {user && (
           <Anchor href={`/${user.userId}/subscription`} fw={1000} fz="h2">
             {t("Promotions!")}
           </Anchor>
         )}
+        <Anchor href={"/reviews"} fw={1000} fz="h2">
+          {t("Reviews")}
+        </Anchor>
         {user && user.roles?.includes(Role.STUDENT) ? (
           <Anchor href="/student-courses" fw={1000} fz={"h2"}>
             {t("Courses")}

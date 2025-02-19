@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useFeedbackService } from "../../services/feedbackService";
-import { Feedback } from "../../models/Feedback";
+import { Feedback, Visibility } from "../../models/Feedback";
 import "./feedbackList.css";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { Button } from "@mantine/core";
 
 const FeedbackList: React.FC = () => {
   const { t } = useTranslation();
@@ -14,23 +15,37 @@ const FeedbackList: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  const fetchFeedbacks = async () => {
+    if (!eventId) return;
+    try {
+      const data = await feedbackService.getFeedbacksByEventId(eventId);
+      setFeedbacks(data);
+    } catch {
+      setError(t("Failed to fetch feedback"));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateFeedbackStatus = async (
+    feedbackId: string,
+    status: Visibility
+  ) => {
+    try {
+      await feedbackService.updateFeedbackStatus(feedbackId, status);
+    } catch {
+      setError(t("Failed to update status for a feedback"));
+    } finally {
+      fetchFeedbacks();
+    }
+  };
+
   useEffect(() => {
     if (!eventId) {
       setError(t("Event ID is not defined"));
       setLoading(false);
       return;
     }
-
-    const fetchFeedbacks = async () => {
-      try {
-        const data = await feedbackService.getFeedbacksByEventId(eventId);
-        setFeedbacks(data);
-      } catch {
-        setError(t("Failed to fetch feedback"));
-      } finally {
-        setLoading(false);
-      }
-    };
 
     fetchFeedbacks();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -59,6 +74,20 @@ const FeedbackList: React.FC = () => {
             <p>
               {t("Time")}: {new Date(feedback.timestamp).toLocaleString()}
             </p>
+            <Button
+              onClick={() => {
+                if (!feedback.feedbackId) return;
+                updateFeedbackStatus(
+                  feedback.feedbackId,
+                  feedback.visibility == Visibility.PUBLIC
+                    ? Visibility.PRIVATE
+                    : Visibility.PUBLIC
+                );
+              }}
+            >
+              Make{" "}
+              {feedback.visibility == Visibility.PUBLIC ? "Private" : "Public"}
+            </Button>
           </li>
         ))}
       </ul>
