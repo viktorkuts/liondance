@@ -6,6 +6,7 @@ import com.liondance.liondance_backend.datalayer.Event.EventStatus;
 import com.liondance.liondance_backend.datalayer.Event.EventType;
 import com.liondance.liondance_backend.datalayer.Feedback.Feedback;
 import com.liondance.liondance_backend.datalayer.Feedback.FeedbackRepository;
+import com.liondance.liondance_backend.datalayer.common.Visibility;
 import com.liondance.liondance_backend.presentationlayer.Feedback.FeedbackResponseModel;
 import com.liondance.liondance_backend.utils.exceptions.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +21,7 @@ import reactor.test.StepVerifier;
 
 import java.time.Instant;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 
@@ -88,5 +90,26 @@ class FeedbackServiceImplUnitTest {
                         throwable instanceof NotFoundException &&
                                 throwable.getMessage().equals("No feedback found for event ID: " + eventId))
                 .verify();
+    }
+
+    @Test
+    void whenGetFeedbacksByVisibilityPublic_thenReturnPublicFeedbacks(){
+        String eventId = "e5b07c6c6-dc48-489f-aa20-0d7d6fb12874gf";
+        Feedback feedback = Feedback.builder()
+                .feedbackId("e4e02950-20ca-4010-87cb-8c20e3d3354b")
+                .timestamp(Instant.now())
+                .feedback("Great event!")
+                .rating(5)
+                .eventId(eventId)
+                .visibility(Visibility.PUBLIC)
+                .build();
+
+        when(feedbackRepository.getFeedbacksByVisibility(Visibility.PUBLIC)).thenReturn(Flux.just(feedback));
+
+        Flux<FeedbackResponseModel> result = feedbackService.getFeedbackByVisibility(Visibility.PUBLIC);
+
+        StepVerifier.create(result)
+                .expectNextCount(1)
+                .verifyComplete();
     }
 }

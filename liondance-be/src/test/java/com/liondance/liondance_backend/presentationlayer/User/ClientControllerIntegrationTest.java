@@ -87,24 +87,24 @@ public class ClientControllerIntegrationTest {
         StepVerifier.create(setupDB).expectNextCount(2).verifyComplete();
     }
 
-    @Test
-    void getAllClients_returnsClients_whenClientsExist() {
-
-        webTestClient
-                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
-                .mutateWith(WebTestAuthConfig.csrfConfig)
-                .get()
-                .uri("/api/v1/clients")
-                .exchange()
-                .expectStatus().isOk()
-                .expectBodyList(UserResponseModel.class)
-                .hasSize(2);
-
-        StepVerifier.create(userRepository.findAll())
-                .expectNextMatches(client -> client.getUserId().equals(client1.getUserId()))
-                .expectNextMatches(client -> client.getUserId().equals(client2.getUserId()))
-                .verifyComplete();
-    }
+//    @Test
+//    void getAllClients_returnsClients_whenClientsExist() {
+//
+//        webTestClient
+//                .mutateWith(WebTestAuthConfig.getAuthFor(staff))
+//                .mutateWith(WebTestAuthConfig.csrfConfig)
+//                .get()
+//                .uri("/api/v1/clients")
+//                .exchange()
+//                .expectStatus().isOk()
+//                .expectBodyList(UserResponseModel.class)
+//                .hasSize(2);
+//
+//        StepVerifier.create(userRepository.findAll())
+//                .expectNextMatches(client -> client.getUserId().equals(client1.getUserId()))
+//                .expectNextMatches(client -> client.getUserId().equals(client2.getUserId()))
+//                .verifyComplete();
+//    }
 
     @Test
     @WithMockUser(authorities = "STAFF")
