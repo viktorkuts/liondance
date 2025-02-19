@@ -10,9 +10,9 @@ test("admin can view the list of participants assigned to an event", async ({ pa
   await page.getByText('Admin').click();
   await expect(page.getByRole('link', { name: 'Events', exact: true })).toBeVisible();
   await page.getByRole('link', { name: 'Events', exact: true }).click();
-  await expect(page.getByText('EventsAll Events (17)▶Pending')).toBeVisible();
-  await expect(page.getByText('All Events (17)▶')).toBeVisible();
-  await page.getByText('All Events (17)▶').click();
+  await expect(page.getByText('EventsAll Events ▶Pending')).toBeVisible();
+  await expect(page.getByText('All Events ▶')).toBeVisible();
+  await page.getByText('All Events ▶').click();
   await expect(page.getByRole('cell', { name: 'alice.johnson@webmail.com' }).first()).toBeVisible();
   await page.getByRole('cell', { name: 'alice.johnson@webmail.com' }).first().dblclick();
   await page.getByRole('cell', { name: '-567-8901' }).first().dblclick();
