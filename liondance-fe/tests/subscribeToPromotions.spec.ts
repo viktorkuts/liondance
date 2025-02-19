@@ -8,7 +8,7 @@ test("subcribe to promotion emails", async ({ page }) => {
     await page.goto("/");
     await expect(page.locator('#root')).toContainText('Promotions!');
     await page.getByRole('link', { name: 'Promotions!' }).click();
-    await expect(page.locator('div.m_d3ea56bb.mantine-Checkbox-labelWrapper')).toBeVisible();
+    await expect(page.getByRole("checkbox")).toBeVisible();
     await page.getByLabel('I want to receive promotional emails').check();
     await page.getByRole('button', { name: 'Submit' }).click();
     //recieved email, show class or something lol
