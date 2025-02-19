@@ -11,7 +11,7 @@ test("admin can contact client", async ({ page }) => {
     await expect(page.getByRole('link', { name: 'Events', exact: true })).toBeVisible();
     await page.getByRole('link', { name: 'Events', exact: true }).click();
     await page.getByText('Promotions!ReviewsUpcoming').click();
-    await page.getByText('All Events ▶').click();
+    await page.getByText('▶').first().click();
     await expect(page.locator('.button_contact_client').first()).toBeVisible();
     await page.locator('.button_contact_client').first().click();
     await expect(page.getByText('Contact Alice Johnson Best')).toBeVisible();
