@@ -27,7 +27,7 @@ test("admin can view the list of participants assigned to an event", async ({
   await expect(
     page.getByRole("heading", { name: "Event Details" })
   ).toBeVisible();
-  await expect(page.getByRole("cell", { name: "Sarah Smith" })).toBeVisible();
+  await expect(page.getByRole("cell", { name: "Apollo Lightning" })).toBeVisible();
   await expect(
     page.getByRole("cell", { name: "ACCEPTED" }).first()
   ).toBeVisible();
