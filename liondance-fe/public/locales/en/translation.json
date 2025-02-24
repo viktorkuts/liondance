@@ -150,8 +150,8 @@
   "Failed to fetch pending registrations.": "Failed to fetch pending registrations.",
   "Error fetching student details:": "Error fetching student details:",
   "No pending registrations found.": "No pending registrations found.",
-  "Montrel Youth LVH Lion Dance Wushu Team": "Montrel Youth LVH Lion Dance Wushu Team",
-  "The Montreal Youth LVH Lion Dance Wushu Team is a non-profit team that promotes martial arts (Wushu and Hung Gar Kung Fu) and Lion Dance. We have over 20 years and 300 events experience! Contact us if you want to train with us or book us for any event.": "The Montreal Youth LVH Lion Dance Wushu Team is a non-profit team that promotes martial arts (Wushu and Hung Gar Kung Fu) and Lion Dance. We have over 20 years and 300 events experience! Contact us if you want to train with us or book us for any event.",
+  "Montreal Youth LVH Lion Dance Wushu Team": "Montreal Youth LVH Lion Dance Wushu Team",
+  "The Montreal Youth LVH Lion Dance Wushu Team is a non-profit organization dedicated to promoting Chinese martial arts and cultural heritage through Wushu, Hung Gar Kung Fu, and Lion Dance performances. With over 20 years of experience and more than 300 events, we offer dynamic performances and training opportunities. Our platform makes it easy to manage class enrollments, performance bookings, and client communication. Interested in training with us or booking a performance? Check out our upcoming events to see us in action, or visit the booking page to schedule a performance directly!": "The Montreal Youth LVH Lion Dance Wushu Team is a non-profit organization dedicated to promoting Chinese martial arts and cultural heritage through Wushu, Hung Gar Kung Fu, and Lion Dance performances. With over 20 years of experience and more than 300 events, we offer dynamic performances and training opportunities. Our platform makes it easy to manage class enrollments, performance bookings, and client communication. Interested in training with us or booking a performance? Check out our upcoming events to see us in action, or visit the booking page to schedule a performance directly!",
   "Event ID is not defined": "Event ID is not defined",
   "Failed to fetch feedback": "Failed to fetch feedback",
   "Feedback for Event": "Feedback for Event",
@@ -316,5 +316,7 @@
   "Venue Information": "Venue Information",
   "Performers": "Performers",
   "Date & Time": "Date & Time",
-  "no-public-reviews-at-the-moment": "No public reviews at the moment"
+  "no-public-reviews-at-the-moment": "No public reviews at the moment",
+  "Where can you find us?": "Where can you find us?"
+
 }
