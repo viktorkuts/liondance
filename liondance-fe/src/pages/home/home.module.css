@@ -18,12 +18,24 @@
   }
   
   .textContent {
+    color: aliceblue;
     max-width: 900px;
     text-align: left;
   }
-  
+
+  .textContent h1 {
+    color: aliceblue;
+    max-width: 900px;
+    text-align: left;
+  }
+
+  .textContent p {
+    font-size: 1.2rem;
+  }
+
+
   .lionImage {
-    height: 400px;
     width: auto;
+    height: 400px;
   }
   

@@ -150,8 +150,8 @@
   "Failed to fetch pending registrations.": "Échec de la récupération des inscriptions en attente.",
   "Error fetching student details:": "Erreur lors de la récupération des détails de l'étudiant :",
   "No pending registrations found.": "Aucune inscription en attente trouvée.",
-  "Montrel Youth LVH Lion Dance Wushu Team": "Équipe de danse du lion et de Wushu des jeunes de Montréal LVH",
-  "The Montreal Youth LVH Lion Dance Wushu Team is a non-profit team that promotes martial arts (Wushu and Hung Gar Kung Fu) and Lion Dance. We have over 20 years and 300 events experience! Contact us if you want to train with us or book us for any event.": "L'équipe de danse du lion et de Wushu des jeunes de Montréal LVH est une équipe à but non lucratif qui promeut les arts martiaux (Wushu et Hung Gar Kung Fu) et la danse du lion. Nous avons plus de 20 ans et 300 événements d'expérience ! Contactez-nous si vous souhaitez vous entraîner avec nous ou nous réserver pour un événement.",
+  "Montreal Youth LVH Lion Dance Wushu Team": "Équipe de danse du lion et de Wushu des jeunes de Montréal LVH",
+  "The Montreal Youth LVH Lion Dance Wushu Team is a non-profit organization dedicated to promoting Chinese martial arts and cultural heritage through Wushu, Hung Gar Kung Fu, and Lion Dance performances. With over 20 years of experience and more than 300 events, we offer dynamic performances and training opportunities. Our platform makes it easy to manage class enrollments, performance bookings, and client communication. Interested in training with us or booking a performance? Check out our upcoming events to see us in action, or visit the booking page to schedule a performance directly!": "L'équipe de danse du lion et de wushu des jeunes de Montréal LVH est une organisation à but non lucratif dédiée à la promotion des arts martiaux chinois et du patrimoine culturel à travers des performances de Wushu, de Kung Fu Hung Gar et de danse du lion. Avec plus de 20 ans d'expérience et plus de 300 événements, nous offrons des performances dynamiques et des opportunités de formation. Notre plateforme facilite la gestion des inscriptions aux cours, des réservations de performances et de la communication avec les clients. Intéressé par une formation avec nous ou par la réservation d'une performance ? Consultez nos événements à venir pour nous voir en action, ou visitez la page de réservation pour planifier une performance directement !",
   "Event ID is not defined": "L'ID de l'événement n'est pas défini",
   "Failed to fetch feedback": "Échec de la récupération des commentaires",
   "Feedback for Event": "Commentaires pour l'événement",
@@ -316,5 +316,7 @@
   "Venue Information": "Informations sur le lieu",
   "Performers": "Artistes",
   "Date & Time": "Date et heure",
-  "no-public-reviews-at-the-moment": "Pas d'avis publique pour le moment"
+  "no-public-reviews-at-the-moment": "Pas d'avis publique pour le moment",
+  "Where can you find us?": "Où pouvez-vous nous trouver ?"
+
 }
